@@ -22,7 +22,7 @@ if (config.validateEmails === undefined) {
     config.validateEmails = true;
 }
 
-if (config.settings.marketplaceDeleteAddonThreshold === undefined) {
+if (config.settings?.marketplaceDeleteAddonThreshold === undefined) {
     config.settings.marketplaceDeleteAddonThreshold = 10;
 }
 
