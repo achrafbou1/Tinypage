@@ -124,6 +124,7 @@ interface Link {
     style: string | null,
     customCss: string | null,
     metadata: any,
+    hidden: boolean,
     createdOn: string
 }
 

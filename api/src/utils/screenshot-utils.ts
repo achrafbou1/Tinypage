@@ -4,7 +4,8 @@ import * as ObjectHash from "object-hash";
 import {StatusCodes} from "http-status-codes";
 import {HttpError} from "./http-error";
 import * as fs from "fs";
-import Pageres, {Options as PageresOptions} from "pageres";
+import Pageres from "pageres";
+import {Options as PageresOptions} from "pageres";
 
 /**
  * This represents a query coming in from a user.
@@ -23,7 +24,7 @@ export class ScreenshotUtils {
         if (config.s3Bucket) {
             this.minio = new Client({
                 endPoint: config.s3Bucket.endPoint,
-                port: config.s3Bucket.port,
+                port: config.s3Bucket.port ?? config.s3Bucket.useSSL ? 443 : 80,
                 useSSL: config.s3Bucket.useSSL,
                 accessKey: config.s3Bucket.accessKey,
                 secretKey: config.s3Bucket.secretKey

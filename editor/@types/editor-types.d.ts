@@ -31,7 +31,8 @@ type EditorLink = Partial<Link> & {
   label: string,
   subtitle: string,
   customCss: string,
-  url: string
+  url: string,
+  hidden: boolean
 };
 
 type EditorAddon = Partial<Addon> & {

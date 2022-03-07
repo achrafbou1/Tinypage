@@ -261,10 +261,12 @@ export class RouteHandler {
             // language=HTML
             let linkHtml = '';
 
-            // Define links & sort by order
-            const links = response.data.links.sort(function (a: Link, b: Link) {
+            // Define links & filter out hidden & sort by order
+            const links = response.data.links.filter(link => !link.hidden).sort(function (a: Link, b: Link) {
                 return a.sortOrder - b.sortOrder;
             });
+
+            //
 
             // Add link html to html block link-by-link
             for (let index = 0; index < links.length; index++) {

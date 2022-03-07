@@ -81,7 +81,7 @@ www/node_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-**/.env
+editor/.env
 **/*.env
 !*.template.env
 
