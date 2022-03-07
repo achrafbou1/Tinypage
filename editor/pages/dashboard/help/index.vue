@@ -3,7 +3,7 @@
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
       <img class="w-8" src="/editor/static/icons/Rainbow.svg">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
-        Appearance
+        Help
       </h1>
     </div>
     <!-- Customization -->
@@ -22,6 +22,8 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  name: 'Index'
+  name: 'Index',
+  layout: 'dashboard',
+  middleware: 'authenticated',
 });
 </script>
