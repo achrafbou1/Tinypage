@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col p-8 items-center overflow-x-hidden overflow-y-scroll">
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
-      <img class="w-8" src="/icons/Pencil.svg"/>
+      <img class="w-8" src="/icons/Pencil.svg">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
         <span v-if="intent==='create'">Create element</span>
         <span v-if="intent==='edit'">Edit element</span>
@@ -9,49 +9,89 @@
     </div>
 
     <!-- Type -->
-    <div v-show="intent !=='view'"
-         class="flex flex-col mb-4 justify-start w-full"
+    <div
+        v-show="intent !=='view'"
+        class="flex flex-col mb-4 justify-start w-full"
     >
       <label class="font-semibold mb-2">Element type</label>
-      <select v-model="pendingLink.type" class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+      <select
+          v-model="pendingLink.type"
+          class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
       >
-        <option disabled>Select an element type</option>
+        <option disabled>
+          Select an element type
+        </option>
 
-        <option value="divider">Divider</option>
-        <option value="html">HTML Snippet</option>
-        <option value="image">Image</option>
-        <option value="social">Social Icon</option>
-        <option value="text">Text</option>
-        <option value="link" selected>URL (default)</option>
-        <option value="vcard">vCard/Add To Contacts</option>
-        <option value="youtube">Youtube Video</option>
+        <option value="divider">
+          Divider
+        </option>
+        <option value="html">
+          HTML Snippet
+        </option>
+        <option value="image">
+          Image
+        </option>
+        <option value="social">
+          Social Icon
+        </option>
+        <option value="text">
+          Text
+        </option>
+        <option selected value="link">
+          URL (default)
+        </option>
+        <option value="vcard">
+          vCard/Add To Contacts
+        </option>
+        <option value="youtube">
+          Youtube Video
+        </option>
       </select>
     </div>
 
     <!-- Label -->
-    <div v-show="intent !=='view'"
-         class="flex flex-col mb-4 justify-start w-full"
+    <div
+        v-show="intent !=='view'"
+        class="flex flex-col mb-4 justify-start w-full"
     >
       <label class="font-semibold mb-2">Label</label>
 
-      <input v-model="pendingLink.label"
-             class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
-             placeholder="e.g. Some memorable name" type="text"
-      />
+      <input
+          v-model="pendingLink.label"
+          class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+          placeholder="e.g. Some memorable name"
+          type="text"
+      >
+    </div>
+
+    <!-- Label -->
+    <div
+        v-show="intent !=='view'"
+        class="flex flex-col mb-4 justify-start w-full"
+    >
+      <label class="font-semibold mb-2">Hide from display</label>
+      <input
+          id="checkbox-1"
+          v-model="pendingLink.hidden"
+          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          type="checkbox"
+      >
     </div>
 
     <!-- Subtitle -->
-    <div v-show="intent!=='view' && showOption(pendingLink.type, 'subtitle')"
-         class="flex flex-col mb-4 justify-start w-full"
+    <div
+        v-show="intent!=='view' && showOption(pendingLink.type, 'subtitle')"
+        class="flex flex-col mb-4 justify-start w-full"
     >
       <label v-if="pendingLink.type === 'text'" class="font-semibold mb-2">Text</label>
       <label v-else-if="pendingLink.type === 'html'" class="font-semibold mb-2">HTML</label>
       <label v-else class="font-semibold mb-2">Subtitle (optional)</label>
 
       <client-only>
-        <VueEditor v-if="pendingLink.type === 'text'"
-                   v-model="pendingLink.subtitle"
-                   class="mb-20"
+        <VueEditor
+            v-if="pendingLink.type === 'text'"
+            v-model="pendingLink.subtitle"
+            class="mb-20"
         />
 
         <textarea
@@ -62,11 +102,13 @@
             rows="12"
         />
 
-        <input v-else
-               v-model="pendingLink.subtitle"
-               class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
-               placeholder="e.g. Read more about my adventures in Peru!" type="text"
-        />
+        <input
+            v-else
+            v-model="pendingLink.subtitle"
+            class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+            placeholder="e.g. Read more about my adventures in Peru!"
+            type="text"
+        >
       </client-only>
     </div>
 
@@ -111,14 +153,14 @@
               style="align-self: flex-end"
               @click="moveSocialIcon(index, 'up')"
           >
-            <img src="/caret-up-outline.svg" style="width: 20px; height: 20px; filter: invert()" alt="move up"/>
+            <img alt="move up" src="/caret-up-outline.svg" style="width: 20px; height: 20px; filter: invert()">
           </button>
           <button
               class="text-sm px-2 py-2 ml-2 font-bold text-white rounded-2xl bg-gdp hover:bg-blue-400 mb-4 lg:mb-0 cursor-pointer"
               style="align-self: flex-end"
               @click="moveSocialIcon(index, 'down')"
           >
-            <img src="/caret-down-outline.svg" style="width: 20px; height: 20px; filter: invert()" alt="move up"/>
+            <img alt="move up" src="/caret-down-outline.svg" style="width: 20px; height: 20px; filter: invert()">
           </button>
           <button
               class="text-sm px-2 py-2 ml-2 font-bold text-white rounded-2xl hover:bg-red-500 bg-red-600 mb-4 lg:mb-0 cursor-pointer"
@@ -129,41 +171,83 @@
           </button>
         </div>
 
-        <select v-model="siSettings.type"
-                class="p-2 mt-2 w-full text-sm border-solid border-gray-300 rounded-2xl border"
-                @change="onSocialIconTypeChange($event, siSettings)"
+        <select
+            v-model="siSettings.type"
+            class="p-2 mt-2 w-full text-sm border-solid border-gray-300 rounded-2xl border"
+            @change="onSocialIconTypeChange($event, siSettings)"
         >
-          <option disabled selected>Select an icon</option>
+          <option disabled selected>
+            Select an icon
+          </option>
 
-          <option value="phone">Phone</option>
-          <option value="text">Text</option>
-          <option value="email">Email</option>
+          <option value="phone">
+            Phone
+          </option>
+          <option value="text">
+            Text
+          </option>
+          <option value="email">
+            Email
+          </option>
 
-          <option value="applemusic">Apple Music</option>
-          <option value="cuplr">Cuplr</option>
-          <option value="discord">Discord</option>
-          <option value="facebook">Facebook</option>
-          <option value="instagram">Instagram</option>
-          <option value="linkedin">LinkedIn</option>
-          <option value="pinterest">Pinterest</option>
-          <option value="soundcloud">SoundCloud</option>
-          <option value="spotify">Spotify</option>
-          <option value="tiktok">Tiktok</option>
-          <option value="twitch">Twitch</option>
-          <option value="twitter">Twitter</option>
-          <option value="whatsapp">WhatsApp</option>
-          <option value="youtube">YouTube</option>
-          <option value="zoom">Zoom</option>
-          <option value="custom">Custom</option>
+          <option value="applemusic">
+            Apple Music
+          </option>
+          <option value="cuplr">
+            Cuplr
+          </option>
+          <option value="discord">
+            Discord
+          </option>
+          <option value="facebook">
+            Facebook
+          </option>
+          <option value="instagram">
+            Instagram
+          </option>
+          <option value="linkedin">
+            LinkedIn
+          </option>
+          <option value="pinterest">
+            Pinterest
+          </option>
+          <option value="soundcloud">
+            SoundCloud
+          </option>
+          <option value="spotify">
+            Spotify
+          </option>
+          <option value="tiktok">
+            Tiktok
+          </option>
+          <option value="twitch">
+            Twitch
+          </option>
+          <option value="twitter">
+            Twitter
+          </option>
+          <option value="whatsapp">
+            WhatsApp
+          </option>
+          <option value="youtube">
+            YouTube
+          </option>
+          <option value="zoom">
+            Zoom
+          </option>
+          <option value="custom">
+            Custom
+          </option>
         </select>
 
         <div class="mt-2">
           <label class="font-semibold">URL</label>
-          <input v-model="siSettings.url"
-                 class="p-2 mt-2 w-full text-sm border-solid border-gray-300 rounded-2xl border"
-                 placeholder="e.g. https://exampleurl.com/example"
-                 type="url"
-          />
+          <input
+              v-model="siSettings.url"
+              class="p-2 mt-2 w-full text-sm border-solid border-gray-300 rounded-2xl border"
+              placeholder="e.g. https://exampleurl.com/example"
+              type="url"
+          >
         </div>
 
         <div class="flex flex-row">
@@ -187,7 +271,6 @@
           </div>
         </div>
 
-
         <div class="flex flex-row">
           <div class="flex flex-row mt-3 mb-3">
             <label class="font-semibold mt-2 mb-2 mr-2">Label</label>
@@ -209,7 +292,7 @@
           </div>
         </div>
 
-        <div class="flex flex-row" v-if="siSettings.type === 'custom'">
+        <div v-if="siSettings.type === 'custom'" class="flex flex-row">
           <div class="flex flex-row mt-3 mb-3">
             <label class="font-semibold mt-2 mb-2 mr-2">Custom SVG</label>
             <textarea
@@ -217,8 +300,7 @@
                 class="border border-2 text-white"
                 style="font-family: monospace; background-color: #1E1E1E"
                 rows="2"
-            >
-            </textarea>
+            />
           </div>
 
           <div
@@ -241,45 +323,52 @@
     </div>
 
     <!-- URL -->
-    <div v-show="intent!=='view' && showOption(pendingLink.type, 'url')"
-         class="flex flex-col mb-8 justify-start w-full"
+    <div
+        v-show="intent!=='view' && showOption(pendingLink.type, 'url')"
+        class="flex flex-col mb-8 justify-start w-full"
     >
       <label v-if="pendingLink.type === 'link'" class="font-semibold mb-2">Link URL</label>
       <label v-else-if="pendingLink.type === 'image'" class="font-semibold mb-2">Image URL</label>
       <label v-else-if="pendingLink.type === 'youtube'" class="font-semibold mb-2">Video URL</label>
       <label v-else class="font-semibold mb-2">URL</label>
 
-      <input v-model="pendingLink.url" class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
-             placeholder="e.g. https://exampleurl.com/example"
-             type="url"
-      />
+      <input
+          v-model="pendingLink.url"
+          class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+          placeholder="e.g. https://exampleurl.com/example"
+          type="url"
+      >
     </div>
 
     <!-- Button Image URL -->
-    <div v-if="intent!=='view' && (pendingLink.type === 'link' || pendingLink.type === 'vcard')"
-         class="flex flex-col mb-8 justify-start w-full"
+    <div
+        v-if="intent!=='view' && (pendingLink.type === 'link' || pendingLink.type === 'vcard')"
+        class="flex flex-col mb-8 justify-start w-full"
     >
       <label class="font-semibold mb-2">Button Image URL</label>
 
-      <input v-model="buttonImageUrl"
-             class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
-             placeholder="e.g. https://exampleurl.com/example"
-             type="url"
-      />
+      <input
+          v-model="buttonImageUrl"
+          class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+          placeholder="e.g. https://exampleurl.com/example"
+          type="url"
+      >
 
       <div v-show="buttonImageUrl" class="mt-4">
         <label class="font-semibold mb-2">Button Image Full Width?</label>
         <br>
-        <input v-model="buttonImageFullWidth"
-               class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
-               type="checkbox"
+        <input
+            v-model="buttonImageFullWidth"
+            class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+            type="checkbox"
         >
       </div>
     </div>
 
     <!-- vCard -->
-    <div v-show="intent!=='view' && pendingLink.type === 'vcard'"
-         class="flex flex-col mb-8 justify-start w-full"
+    <div
+        v-show="intent!=='view' && pendingLink.type === 'vcard'"
+        class="flex flex-col mb-8 justify-start w-full"
     >
       <label class="font-semibold mb-2">vCard Data (will overwrite existing vCard data)</label>
 
@@ -288,8 +377,10 @@
             class="flex flex-row justify-center items-center pl-4 pr-4 text-sm rounded-lg border border-blue-600 text-blue-500 bg-blue-200"
         >
         <span class="text-center">
-             <a class="font-semibold text-xl" href="https://vcardmaker.com/"
-                target="_blank"
+             <a
+                 class="font-semibold text-xl"
+                 href="https://vcardmaker.com/"
+                 target="_blank"
              >
             Create a .vcf file
             </a>
@@ -312,9 +403,7 @@
 
       </div>
 
-      <div>
-
-      </div>
+      <div/>
 
       <div class="hidden lg:flex flex-col p-6 bg-white shadow rounded-xl w-full mt-6">
         <div
@@ -332,21 +421,22 @@
               <h6 class="text-center">
                 {{ vCardShowData ? 'Close Editor' : 'Open Editor' }}
               </h6>
-              <img :src="vCardShowData ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
-                   style="width: 20px; height: 20px;"
-                   alt="show hide CSS editor"
-              />
+              <img
+                  :src="vCardShowData ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
+                  alt="show hide CSS editor"
+                  style="width: 20px; height: 20px;"
+              >
             </div>
           </div>
         </div>
 
         <client-only v-if="vCardShowData">
-          <textarea v-model="vCard"
-                    class="mt-4 border-solid border-gray-300 rounded-2xl border p-2"
-                    placeholder="vCard data will show up here... or enter it yourself."
-                    rows="8"
-          >
-          </textarea>
+          <textarea
+              v-model="vCard"
+              class="mt-4 border-solid border-gray-300 rounded-2xl border p-2"
+              placeholder="vCard data will show up here... or enter it yourself."
+              rows="8"
+          />
         </client-only>
       </div>
     </div>
@@ -368,10 +458,11 @@
             <h6 class="text-center">
               {{ showStyle ? 'Close Editor' : 'Open Editor' }}
             </h6>
-            <img :src="showStyle ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
-                 style="width: 20px; height: 20px;"
-                 alt="show hide CSS editor"
-            />
+            <img
+                :src="showStyle ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
+                alt="show hide CSS editor"
+                style="width: 20px; height: 20px;"
+            >
           </div>
         </div>
 
@@ -409,10 +500,11 @@
             <h6 class="text-center">
               {{ showCSS ? 'Close Editor' : 'Open Editor' }}
             </h6>
-            <img :src="showCSS ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
-                 style="width: 20px; height: 20px;"
-                 alt="show hide CSS editor"
-            />
+            <img
+                :src="showCSS ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
+                alt="show hide CSS editor"
+                style="width: 20px; height: 20px;"
+            >
           </div>
         </div>
 
@@ -436,22 +528,27 @@
 
     <!-- Buttons -->
     <div class="flex flex-col lg:flex-row items-center justify-start w-full mt-4">
-      <div v-if="intent==='create'" class="button cursor-pointer" @click="addNewLink">Create link</div>
-      <div v-if="intent==='edit'"
-           class="flex-grow text-center text-lg px-8 py-4 font-bold text-white rounded-2xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
-           @click="saveLinkChanges"
+      <div v-if="intent==='create'" class="button cursor-pointer" @click="addNewLink">
+        Create link
+      </div>
+      <div
+          v-if="intent==='edit'"
+          class="flex-grow text-center text-lg px-8 py-4 font-bold text-white rounded-2xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
+          @click="saveLinkChanges"
       >
         Save and Exit
       </div>
-      <div v-if="intent==='edit'"
-           class="flex-grow text-center text-lg px-8 py-4 font-bold text-white rounded-2xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
-           @click="applyLinkChanges"
+      <div
+          v-if="intent==='edit'"
+          class="flex-grow text-center text-lg px-8 py-4 font-bold text-white rounded-2xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
+          @click="applyLinkChanges"
       >
         Apply
       </div>
-      <div v-if="intent==='edit'"
-           class="flex-grow text-center text-lg px-8 py-4 font-bold text-white rounded-2xl hover:bg-red-500 bg-red-600 cursor-pointer"
-           @click="deleteLink"
+      <div
+          v-if="intent==='edit'"
+          class="flex-grow text-center text-lg px-8 py-4 font-bold text-white rounded-2xl hover:bg-red-500 bg-red-600 cursor-pointer"
+          @click="deleteLink"
       >
         Delete element
       </div>
@@ -481,39 +578,6 @@ export default Vue.extend({
   layout: 'dashboard',
   middleware: 'authenticated',
 
-  head() {
-    return {
-      title: 'Link panel - ' + this.$customSettings.productName,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'View, manage, and create new links from your ' + this.$customSettings.productName + ' link panel'
-        },
-        {
-          hid: 'twitter:description',
-          name: 'twitter:description',
-          content: 'View, manage, and create new links from your ' + this.$customSettings.productName + ' link panel'
-        },
-        {
-          hid: 'og:title',
-          name: 'og:title',
-          content: 'Link panel - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'twitter:title',
-          name: 'twitter:title',
-          content: 'Link panel - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'View, manage, and create new links from your ' + this.$customSettings.productName + ' link panel'
-        },
-      ]
-    };
-  },
-
   data() {
     const pendingLink: EditorLink = {
       id: "",
@@ -523,6 +587,7 @@ export default Vue.extend({
       subtitle: "",
       customCss: "",
       url: "",
+      hidden: false,
       metadata: {}
     };
 
@@ -563,6 +628,39 @@ export default Vue.extend({
     };
   },
 
+  head() {
+    return {
+      title: 'Link panel - ' + this.$customSettings.productName,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'View, manage, and create new links from your ' + this.$customSettings.productName + ' link panel'
+        },
+        {
+          hid: 'twitter:description',
+          name: 'twitter:description',
+          content: 'View, manage, and create new links from your ' + this.$customSettings.productName + ' link panel'
+        },
+        {
+          hid: 'og:title',
+          name: 'og:title',
+          content: 'Link panel - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: 'Link panel - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'View, manage, and create new links from your ' + this.$customSettings.productName + ' link panel'
+        },
+      ]
+    };
+  },
+
   async beforeMount() {
     await this.getUserData();
     await this.getLinks();
@@ -584,8 +682,13 @@ export default Vue.extend({
       }
     }
 
-    if (!this.pendingLink.metadata)
+    if (!this.pendingLink.hidden) {
+      this.pendingLink.hidden = false;
+    }
+
+    if (!this.pendingLink.metadata) {
       this.pendingLink.metadata = {};
+    }
 
     if (this.pendingLink.type === 'divider') {
       this.dividerSettings = this.pendingLink.metadata.dividerSettings ?? {};
@@ -625,7 +728,7 @@ export default Vue.extend({
 
   methods: {
     initColorPickers() {
-      let jscolor = ((window as any).jscolor) as any;
+      const jscolor = ((window as any).jscolor) as any;
       jscolor.install();
     },
 
@@ -661,9 +764,9 @@ export default Vue.extend({
         const index = this.links.findIndex(x => x.id === this.pendingLink.id);
         this.links.splice(index, 1);
 
-        //this.resortLinks();
+        // this.resortLinks();
 
-        //this.closeModal();
+        // this.closeModal();
 
         this.$router.push('/dashboard/');
         this.$root.$emit('refreshUserProfileView');
@@ -689,6 +792,7 @@ export default Vue.extend({
             label: this.pendingLink.label,
             type: this.pendingLink.type,
             subtitle: this.pendingLink.subtitle,
+            hidden: this.pendingLink.hidden,
             url: this.pendingLink.url,
             style: this.style,
             customCss: this.customCss,
@@ -711,17 +815,21 @@ export default Vue.extend({
     },
 
     addMetadata() {
-      if (!this.pendingLink.metadata)
+      if (!this.pendingLink.metadata) {
         this.pendingLink.metadata = {};
+      }
 
-      if (this.pendingLink.type === 'divider')
+      if (this.pendingLink.type === 'divider') {
         this.pendingLink.metadata.dividerSettings = this.dividerSettings;
+      }
 
-      if (this.pendingLink.type === 'social')
+      if (this.pendingLink.type === 'social') {
         this.pendingLink.metadata.socialIcons = this.socialIcons;
+      }
 
-      if (this.pendingLink.type === 'vcard')
+      if (this.pendingLink.type === 'vcard') {
         this.pendingLink.metadata.vCard = this.vCard;
+      }
 
       if (this.pendingLink.type === 'link' || this.pendingLink.type === 'vcard') {
         this.pendingLink.metadata.buttonImageUrl = this.buttonImageUrl;
@@ -746,6 +854,7 @@ export default Vue.extend({
             type: this.pendingLink.type,
             subtitle: this.pendingLink.subtitle,
             url: this.pendingLink.url,
+            hidden: this.pendingLink.hidden,
             style: this.style || '',
             customCss: this.customCss || '',
             metadata: this.pendingLink.metadata
@@ -753,9 +862,9 @@ export default Vue.extend({
         });
 
         this.links.push(response.data);
-        //this.clearPending();
+        // this.clearPending();
 
-        //this.resortLinks();
+        // this.resortLinks();
 
         this.$router.push('/dashboard/');
         this.$root.$emit('refreshUserProfileView');
@@ -768,21 +877,23 @@ export default Vue.extend({
     },
 
     onSocialIconTypeChange(event: Event, siSettings: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }) {
-      let selectElement = event.target as HTMLSelectElement;
+      const selectElement = event.target as HTMLSelectElement;
 
-      if (!selectElement)
+      if (!selectElement) {
         return;
+      }
 
-      let val = selectElement.value;
+      const val = selectElement.value;
 
       function removePrefix() {
-        if (!siSettings.url)
+        if (!siSettings.url) {
           siSettings.url = "";
-        else
+        } else {
           siSettings.url = siSettings.url
               .replace("tel:", "")
               .replace("sms:", "")
               .replace("mailto:", "");
+        }
       }
 
       switch (val) {
@@ -827,7 +938,7 @@ export default Vue.extend({
 
     moveSocialIcon(index: number, direction: "up" | "down") {
       if (direction === "up") {
-        let x = index;
+        const x = index;
         let y = index - 1;
 
         if (y < 0) {
@@ -839,7 +950,7 @@ export default Vue.extend({
         this.$set(this.socialIcons, x, temp);
         this.socialIcons[x] = temp;
       } else if (direction === "down") {
-        let x = index;
+        const x = index;
         let y = index + 1;
 
         if (y >= this.socialIcons.length) {
@@ -853,25 +964,27 @@ export default Vue.extend({
     },
 
     async importVCard(event: Event) {
-      let htmlInputEvent = event.target as HTMLInputElement;
+      const htmlInputEvent = event.target as HTMLInputElement;
       const files = htmlInputEvent.files;
 
-      if (!files || files.length < 1)
+      if (!files || files.length < 1) {
         return;
+      }
 
-      let file = files[0];
+      const file = files[0];
 
       this.vCard = await file.text();
     },
 
     async importCustomSVG(event: Event, siSettings: { customSvg: string }) {
-      let htmlInputEvent = event.target as HTMLInputElement;
+      const htmlInputEvent = event.target as HTMLInputElement;
       const files = htmlInputEvent.files;
 
-      if (!files || files.length < 1)
+      if (!files || files.length < 1) {
         return;
+      }
 
-      let file = files[0];
+      const file = files[0];
 
       siSettings.customSvg = await file.text();
     },

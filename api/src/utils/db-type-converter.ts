@@ -108,6 +108,7 @@ export class DbTypeConverter {
             label: link.label,
             subtitle: link.subtitle,
             style: link.style,
+            hidden: link.hidden,
             customCss: link.custom_css,
             metadata: link.metadata,
             createdOn: link.created_on
@@ -125,6 +126,7 @@ export class DbTypeConverter {
             subtitle: link.subtitle,
             style: link.style,
             customCss: link.custom_css,
+            hidden: link.hidden,
             metadata: link.metadata,
             privateMetadata: link.private_metadata,
             createdOn: link.created_on

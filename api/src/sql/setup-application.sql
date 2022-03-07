@@ -125,6 +125,7 @@ create table if not exists app.links
     subtitle         text,
     style            text,
     custom_css       text,
+    hidden           boolean,
     metadata         jsonb     not null default '{}',
     private_metadata jsonb     not null default '{}',
     created_on       timestamp not null default current_timestamp
@@ -267,3 +268,7 @@ alter table app.links
 
 alter table app.profiles
     drop constraint if exists profiles_custom_domain_key;
+
+-- Update v3.1 - add hidden column in links --
+alter table app.links
+    add column if not exists hidden boolean default 'false' not null;
