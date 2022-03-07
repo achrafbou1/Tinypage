@@ -39,7 +39,7 @@
     "passwordResetEmail": {
       "subjectCharset": "UTF-8",
       "subject": "Password Reset Request for Tinypage",
-      "message": "Hello,\n\nSomebody requested a password request for your account on Tinypage.\n\nIf this was your doing, please visit the link below to reset your password.\n\n${url}\n\nThis link will be valid for 15 minutes.\nIf you cannot click the link above, copy & paste the link into your browser.\n\nIf this was not you, please ignore this email.\n\nThank you,\nTinypage Team\n\nNote: Do not reply to this email, as there is no inbox for it.",
+      "message": "Hello,\n\nA password reset for your account on TinyPage was requested.\n\nIf you are aware of this request, please visit the link below to reset your password.\n\n${url}\n\nThis link will be valid for 15 minutes.\nIf you cannot click the link above, copy & paste the link into your browser.\n\nIf this was not you, please ignore this email.\n\nThank you,\nTinypage Assistant.",
       "messageCharset": "UTF-8"
     }
   },

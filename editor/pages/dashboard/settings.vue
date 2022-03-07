@@ -244,9 +244,10 @@
 
           <label class="font-normal mb-2 text-sm">Use for this HTML snippets like Facebook Pixel.</label>
 
-          <a class="text-gray-500 text-xs hover:underline hover:text-gray-600 mb-1"
-             href="https://www.notion.so/neutroncreative/Customizing-your-Singlelink-profile-ab34c4a8e3174d66835fa460774e7432"
-             target="_blank"
+          <a
+              class="text-gray-500 text-xs hover:underline hover:text-gray-600 mb-1"
+              href="/help"
+              target="_blank"
           >Need help? Read our
             documentation</a>
 
@@ -464,7 +465,7 @@
       >
         <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
           <h2 class="text-black font-semibold text-xl">
-            {{ passwordError ? "Error on password request!" : "Password reset requested" }}
+            {{ passwordError ? 'Error on password request!' : 'Password reset requested' }}
           </h2>
           <p v-if="!passwordError" class="text-gray-800 text-sm">A password reset link has been sent to your account
             email inbox successfully.

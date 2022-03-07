@@ -468,7 +468,7 @@
 
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            href="https://www.notion.so/neutroncreative/Customizing-your-Singlelink-profile-ab34c4a8e3174d66835fa460774e7432"
+            href="/help"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -510,7 +510,7 @@
 
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            href="https://www.notion.so/neutroncreative/Customizing-your-Singlelink-profile-ab34c4a8e3174d66835fa460774e7432"
+            href="/help"
             target="_blank"
         >Need help? Read our
           documentation</a>
