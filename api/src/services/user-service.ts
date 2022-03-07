@@ -232,7 +232,7 @@ export class UserService extends DatabaseService {
         let token = jwt.sign(
             {
                 userId: user.id,
-                type: <TokenType>"password_reset"
+                type: <TokenType>"passwordReset"
             },
             config.secret,
             {expiresIn: '15m'}
