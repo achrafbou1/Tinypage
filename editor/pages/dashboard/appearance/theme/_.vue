@@ -27,7 +27,7 @@
         </h2>
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            href="/help"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -42,7 +42,7 @@
         </h2>
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            href="/help"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -62,7 +62,7 @@
         </h2>
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            href="/help"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -118,22 +118,10 @@ export default Vue.extend({
     Builder
   },
 
-  head() {
-    return {
-      title: 'Theme editing - ' + this.$customSettings.productName,
-      meta: [
-        {
-          hid: 'robots',
-          name: 'robots',
-          content: 'noindex'
-        }
-      ]
-    };
-  },
-
   data() {
     return {
       id: null as string | null,
+      rendererUrl: process.env.RENDERER_URL,
       themes: [] as EditorTheme[],
       builderCss: '',
       editorCss: '',
@@ -145,6 +133,19 @@ export default Vue.extend({
       intent: 'edit',
       builderLoaded: false,
       error: '',
+    };
+  },
+
+  head() {
+    return {
+      title: 'Theme editing - ' + this.$customSettings.productName,
+      meta: [
+        {
+          hid: 'robots',
+          name: 'robots',
+          content: 'noindex'
+        }
+      ]
     };
   },
 

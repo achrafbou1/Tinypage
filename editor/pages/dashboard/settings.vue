@@ -246,7 +246,7 @@
 
           <a
               class="text-gray-500 text-xs hover:underline hover:text-gray-600 mb-1"
-              href="/help"
+              :href="rendererUrl + '/help'"
               target="_blank"
           >Need help? Read our
             documentation</a>
@@ -552,6 +552,7 @@ export default Vue.extend({
           customDomain: '',
           visibility: '',
           showWatermark: false,
+          rendererUrl: process.env.RENDERER_URL,
           metadata: {
             privacyMode: false as boolean | null | undefined,
             unlisted: false as boolean | null | undefined,
