@@ -468,7 +468,7 @@
 
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            :href="process.env.RENDERER_URL + '/help'"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -510,7 +510,7 @@
 
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            :href="process.env.RENDERER_URL + '/help'"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our
           documentation</a>
@@ -593,7 +593,7 @@ export default Vue.extend({
 
     return {
       jsColorOptions: "{alphaChannel: true, format: 'rgba'}",
-
+      rendererUrl: process.env.RENDERER_URL,
       id: '',
       links: new Array<EditorLink>(),
       modalActive: false,
