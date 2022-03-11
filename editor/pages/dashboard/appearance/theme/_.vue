@@ -27,7 +27,7 @@
         </h2>
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            href="/help"
+            :href="process.env.RENDERER_URL + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -42,7 +42,7 @@
         </h2>
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            href="/help"
+            :href="process.env.RENDERER_URL + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -62,7 +62,7 @@
         </h2>
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            href="/help"
+            :href="process.env.RENDERER_URL + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
