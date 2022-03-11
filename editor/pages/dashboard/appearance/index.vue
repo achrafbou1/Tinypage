@@ -17,7 +17,7 @@
         </h2>
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            :href="process.env.RENDERER_URL + '/help'"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -79,7 +79,7 @@
 
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            :href="process.env.RENDERER_URL + '/help'"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our
           documentation</a>
@@ -130,7 +130,7 @@
 
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            :href="process.env.RENDERER_URL + '/help'"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our
           documentation</a>
@@ -202,7 +202,7 @@ export default Vue.extend({
     return {
       showHTML: false,
       showCSS: false,
-
+      rendererUrl: process.env.RENDERER_URL,
       error: '',
       themes: new Array<EditorTheme>(),
       globalThemes: new Array<EditorTheme>(),
