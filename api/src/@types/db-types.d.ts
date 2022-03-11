@@ -161,6 +161,7 @@ interface DbLink {
     label: string,
     subtitle: string | null,
     style: string | null,
+    hidden: boolean,
     custom_css: string | null,
     metadata: any,
     created_on: string

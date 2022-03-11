@@ -176,6 +176,7 @@ interface DbLink {
     style: string | null,
     custom_css: string | null,
     metadata: any,
+    hidden: boolean,
     created_on: string
 }
 

@@ -261,10 +261,12 @@ export class RouteHandler {
             // language=HTML
             let linkHtml = '';
 
-            // Define links & sort by order
+            // Define links & filter out hidden & sort by order
             const links = response.data.links.sort(function (a: Link, b: Link) {
                 return a.sortOrder - b.sortOrder;
             });
+
+            //
 
             // Add link html to html block link-by-link
             for (let index = 0; index < links.length; index++) {
@@ -305,22 +307,41 @@ export class RouteHandler {
                                 ${customCss}
                             </style>
 
-                            <a
-                                    id="sl-item-${link.id}"
-                                    href="${config.apiUrl}/analytics/link/record/${link.id}"
-                                    class="w-full sl-item-parent"
-                                    target="_blank"
-                            >
-                                <div
-                                        class="rounded-2xl shadow bg-white w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
-                                        style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
-                                >
-                                    ${buttonImageHtml}
-                                    <span class="font-medium text-gray-900 sl-label"
-                                    ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
-                                </div>
-                            </a>
+
                         `;
+                        if (!link.hidden) {
+                            linkHtml += `<a
+                                id="sl-item-${link.id}"
+                                href="${config.apiUrl}/analytics/link/record/${link.id}"
+                                class="w-full sl-item-parent"
+                                target="_blank"
+                                >
+                                <div
+                                    class="rounded-2xl shadow bg-white w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
+                                style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
+                                >
+                                ${buttonImageHtml}
+                                <span class="font-medium text-gray-900 sl-label"
+                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    </div>
+                            </a>`;
+                        } else {
+                            linkHtml += `<a
+                                id="sl-item-${link.id}"
+                                href="${config.apiUrl}/analytics/link/record/${link.id}"
+                                class="w-full sl-item-parent"
+                                target="_blank"
+                                >
+                                <div
+                                    class="rounded-2xl shadow w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
+                                style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; background-color: darkgray; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
+                                >
+                                ${buttonImageHtml}
+                                <span class="font-medium sl-label"
+                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: gray; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    </div>
+                            </a>`;
+                        }
                         break;
                     }
                     case 'social': {
@@ -834,7 +855,7 @@ export class RouteHandler {
                     <div id="qrcode"></div>
 
                     <script>
-                        async function onClickCopyLink() {
+                        async function onClickCopyLink () {
                             try {
                                 let text = window.location.href;
 
@@ -847,7 +868,7 @@ export class RouteHandler {
                             }
                         }
 
-                        async function onClickQRCode() {
+                        async function onClickQRCode () {
                             window.open('/qr/${profile.id}', '_blank').focus();
                         }
                     </script>
