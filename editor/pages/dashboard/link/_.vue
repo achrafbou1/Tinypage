@@ -468,7 +468,7 @@
 
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            :href="process.env.RENDERER_URL + '/help'"
+            href="/help"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -510,7 +510,7 @@
 
         <a
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
-            :href="process.env.RENDERER_URL + '/help'"
+            href="/help"
             target="_blank"
         >Need help? Read our
           documentation</a>

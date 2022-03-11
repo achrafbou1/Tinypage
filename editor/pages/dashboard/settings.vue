@@ -246,7 +246,7 @@
 
           <a
               class="text-gray-500 text-xs hover:underline hover:text-gray-600 mb-1"
-              :href="process.env.RENDERER_URL + '/help'"
+              href="/help"
               target="_blank"
           >Need help? Read our
             documentation</a>
