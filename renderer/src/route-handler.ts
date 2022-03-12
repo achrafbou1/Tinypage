@@ -1229,7 +1229,6 @@ export class RouteHandler {
                             'Helvetica Neue',
                             Arial,
                             sans-serif;
-                            font-size: 16px;
                             line-height: 1.65;
                             word-spacing: 1px;
                             -ms-text-size-adjust: 100%;
