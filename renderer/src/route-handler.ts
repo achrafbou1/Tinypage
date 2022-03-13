@@ -1379,7 +1379,7 @@ export class RouteHandler {
                             class="relative flex min-h-screen w-screen bg-gray-100 justify-center w-full sl-bg"
                     >
                         <section class="flex flex-col p-6 pt-8 pb-8 items-center text-center page-width w-full"
-                        >
+                                 ${profile.metadata?.coverImage ? 'style="z-index: 0;\nmargin-top: 200px;">' : null}>
                             ${shareMenuHtml}
                             ${avatarHtml}
                             ${headlineHtml}
