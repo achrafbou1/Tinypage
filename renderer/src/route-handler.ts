@@ -745,11 +745,11 @@ export class RouteHandler {
                             right: 0;
                             padding-bottom: min(56.25%, 240px);
                             width: 100%;
-                            max-width: 35rem;
+                            max-width: 30rem;
                             border-radius: 10px 10px 3px 3px;
                             background: #9D50BB; /* Your cover background color, fallback if image doesn't load/before image loads */
                             background: url('${profile.metadata?.coverImage}');
-                            background-size: cover;
+                            background-size: contain;
                             background-position: center;
                             margin: 0 auto 10px auto;
                             z-index: -1;
