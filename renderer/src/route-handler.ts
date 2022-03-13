@@ -718,8 +718,24 @@ export class RouteHandler {
             let coverImageHtml = ``;
 
             if (profile.metadata?.coverImage) {
+                coverImageHtml += `
+            <img class="w-full h-auto text-center" src="${profile.metadata?.coverImage}" style="
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    left: 0;
+                    max-width: 512px;
+                    max-height: 288px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    z-index: -1;
+            " alt="cover image">`;
+            } else {
                 // language=HTML
                 coverImageHtml += `
+                    <div id="theme-html">
+                        <div class="sl-banner"></div>
+                    </div>
                     <style>
                         img.nc-avatar {
                             border: solid 2px #FFF;
@@ -1369,10 +1385,6 @@ export class RouteHandler {
                             ${headlineHtml}
                             ${subtitleHtml}
                             ${linkHtml}
-                            <!-- Theme html -->
-                            <div id="theme-html">
-                                <div class="sl-banner"></div>
-                            </div>
                             <!-- Watermark -->
                             ${watermarkHtml}
                             ${coverImageHtml}
