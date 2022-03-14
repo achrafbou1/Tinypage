@@ -240,7 +240,7 @@ export class RouteHandler {
 
             if (imageUrl) {
                 // language=HTML
-                avatarHtml = `<img class="nc-avatar mb-2" src="${imageUrl}" alt="avatar"/>`;
+                avatarHtml = `<img class="nc-avatar mb-2" src="${imageUrl}" alt="avatar" style="margin-top: 200px;"/>`;
             } else if (profile.metadata?.coverImage) {
                 // language=HTML
                 avatarHtml = `<img class="nc-avatar mb-2" src=""
