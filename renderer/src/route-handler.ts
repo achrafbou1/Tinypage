@@ -719,17 +719,20 @@ export class RouteHandler {
 
             if (profile.metadata?.coverImage) {
                 coverImageHtml += `
-            <img class="w-full h-auto text-center" src="${profile.metadata?.coverImage}" style="
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    left: 0;
-                    max-width: 512px;
-                    max-height: 288px;
-                    margin-left: auto;
-                    margin-right: auto;
-                    z-index: -1;
-            " alt="cover image">`;
+            <img class="sl-banner w-full h-auto text-center" src="${profile.metadata?.coverImage}" alt="cover image">
+            <style>
+            .sl-banner {
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                width: 512px;
+                height: 288px;
+                margin-left: auto;
+                margin-right: auto;
+                z-index: -1;
+            }
+            </style>`;
             } else {
                 // language=HTML
                 coverImageHtml += `
