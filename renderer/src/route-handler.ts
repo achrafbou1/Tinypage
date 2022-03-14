@@ -1373,6 +1373,10 @@ export class RouteHandler {
                         h6 {
                             font-size: .67em;
                         }
+
+                        .main-section {
+                            z-index: 0;
+                        }
                     </style>
                 </head>
                 <body>
@@ -1382,7 +1386,7 @@ export class RouteHandler {
                             class="relative flex min-h-screen w-screen bg-gray-100 justify-center w-full sl-bg"
                     >
                         <section
-                                class="flex flex-col p-6 pt-8 pb-8 items-center text-center page-width w-full">
+                                class="flex flex-col p-6 pt-8 pb-8 items-center text-center page-width w-full main-section">
                             ${shareMenuHtml}
                             ${avatarHtml}
                             ${headlineHtml}
