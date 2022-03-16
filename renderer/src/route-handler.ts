@@ -325,27 +325,11 @@ export class RouteHandler {
                                 ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                     </div>
                             </a>`;
-                        } else {
-                            linkHtml += `<a
-                                id="sl-item-${link.id}"
-                                href="${config.apiUrl}/analytics/link/record/${link.id}"
-                                class="w-full sl-item-parent"
-                                target="_blank"
-                                >
-                                <div
-                                    class="rounded-2xl shadow w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
-                                style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; background-color: darkgray; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
-                                >
-                                ${buttonImageHtml}
-                                <span class="font-medium sl-label"
-                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: gray; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
-                                    </div>
-                            </a>`;
                         }
                         break;
                     }
                     case 'social': {
-                        if (!link.metadata?.socialIcons)
+                        if (!link.metadata?.socialIcons || link.hidden)
                             break;
 
                         try {
@@ -504,7 +488,7 @@ export class RouteHandler {
                         let customCss = link.customCss ?? '';
                         let vCardData = link.metadata?.vCard ?? null;
 
-                        if (!vCardData)
+                        if (!vCardData || link.hidden)
                             break;
 
                         let encodedVCard = encodeURI(vCardData);
@@ -569,19 +553,21 @@ export class RouteHandler {
                         let customCss = link.customCss ?? '';
 
                         // language=HTML
-                        linkHtml += `
-                            <style>
-                                ${customCss}
-                            </style>
-                            <img id="sl-item-${link.id}" src="${link.url}" class="w-full h-auto"
-                                 style="margin-bottom:.75rem;border-radius:4px;${style}" alt="link image"
-                            />
-                        `;
+                        if (!link.hidden) {
+                            linkHtml += `
+                                <style>
+                                    ${customCss}
+                                </style>
+                                <img id="sl-item-${link.id}" src="${link.url}" class="w-full h-auto"
+                                     style="margin-bottom:.75rem;border-radius:4px;${style}" alt="link image"
+                                />
+                            `;
+                        }
                         break;
                     }
 
                     case 'divider': {
-                        if (!link.metadata?.dividerSettings)
+                        if (!link.metadata?.dividerSettings || link.hidden)
                             break;
 
                         let style = link.style ?? '';
@@ -624,21 +610,21 @@ export class RouteHandler {
                         let text = link.subtitle;
                         let style = link.style ?? '';
                         let customCss = link.customCss ?? '';
-
-                        // language=HTML
-                        linkHtml += `
-                            <style>
-                                ${customCss}
-                            </style>
-                            <div style="overflow: hidden; ${style}"
-                                 class="rounded-2xl w-full font-medium mb-3"
-                            >
-                                <div class="ql-editor">
-                                    ${text}
+                        if (!link.hidden) {
+                            // language=HTML
+                            linkHtml += `
+                                <style>
+                                    ${customCss}
+                                </style>
+                                <div style="overflow: hidden; ${style}"
+                                     class="rounded-2xl w-full font-medium mb-3"
+                                >
+                                    <div class="ql-editor">
+                                        ${text}
+                                    </div>
                                 </div>
-                            </div>
-                        `;
-
+                            `;
+                        }
                         break;
                     }
                     case "html": {
@@ -646,19 +632,19 @@ export class RouteHandler {
 
                         let style = link.style ?? '';
                         let customCss = link.customCss ?? '';
-
-                        // language=HTML
-                        linkHtml += `
-                            <style>
-                                ${customCss}
-                            </style>
-                            <div style="overflow: hidden; ${style}"
-                                 class="rounded-2xl w-full mb-3"
-                            >
-                                ${text}
-                            </div>
-                        `;
-
+                        if (!link.hidden) {
+                            // language=HTML
+                            linkHtml += `
+                                <style>
+                                    ${customCss}
+                                </style>
+                                <div style="overflow: hidden; ${style}"
+                                     class="rounded-2xl w-full mb-3"
+                                >
+                                    ${text}
+                                </div>
+                            `;
+                        }
                         break;
                     }
                     case 'youtube': {
@@ -666,7 +652,7 @@ export class RouteHandler {
                         let customCss = link.customCss ?? '';
 
                         let watchId = link.url.match(/v=([^&]*)/);
-                        if (watchId && watchId.length > 0 && watchId[1]) {
+                        if (watchId && watchId.length > 0 && watchId[1] && !link.hidden) {
                             // language=HTML
                             linkHtml += `
                                 <style>
