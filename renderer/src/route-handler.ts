@@ -653,37 +653,39 @@ export class RouteHandler {
                         let customCss = link.customCss ?? '';
 
                         let watchId = link.url.match(/v=([^&]*)/);
-                        if (watchId && watchId.length > 0 && watchId[1] || !link.hidden) {
-                            // language=HTML
-                            linkHtml += `
-                                <style>
-                                    ${customCss}
-                                </style>
-                                <style>
-                                    .embed-container {
-                                        border-radius: 4px;
-                                        width: 100%;
-                                        position: relative;
-                                        padding-bottom: 56.25%;
-                                        height: 0;
-                                        overflow: hidden;
-                                        max-width: 100%;
-                                    }
+                        if (watchId && watchId.length > 0 && watchId[1]) {
+                            if (!link.hidden) {
+                                // language=HTML
+                                linkHtml += `
+                                    <style>
+                                        ${customCss}
+                                    </style>
+                                    <style>
+                                        .embed-container {
+                                            border-radius: 4px;
+                                            width: 100%;
+                                            position: relative;
+                                            padding-bottom: 56.25%;
+                                            height: 0;
+                                            overflow: hidden;
+                                            max-width: 100%;
+                                        }
 
-                                    .embed-container iframe, .embed-container object, .embed-container embed {
-                                        position: absolute;
-                                        top: 0;
-                                        left: 0;
-                                        width: 100%;
-                                        height: 100%;
-                                    }</style>
-                                <div class="embed-container" style="margin-bottom:.75rem;${style}">
-                                    <iframe title="youtube"
-                                            src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
-                                            frameborder="0" allowfullscreen
-                                    ></iframe>
-                                </div>
-                            `;
+                                        .embed-container iframe, .embed-container object, .embed-container embed {
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
+                                            width: 100%;
+                                            height: 100%;
+                                        }</style>
+                                    <div class="embed-container" style="margin-bottom:.75rem;${style}">
+                                        <iframe title="youtube"
+                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
+                                                frameborder="0" allowfullscreen
+                                        ></iframe>
+                                    </div>
+                                `;
+                            }
                         }
                     }
                         break;
