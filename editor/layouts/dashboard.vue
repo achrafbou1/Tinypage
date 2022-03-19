@@ -5,7 +5,7 @@
     </component>
 
     <div
-        class="flex flex-row w-full py-6 justify-between relative"
+        class="flex flex-row w-full justify-between relative"
         style="z-index:2;background:linear-gradient(180deg, rgba(255,255,255) 60%, rgba(255,255,255,.65) 80%, rgba(255,255,255,0) 100%);max-width:1520px;"
     >
       <!--      <div class="flex flex-row items-center justify-start bg-opaqueBlack px-4 py-1 rounded-full w-full max-w-md"-->
@@ -245,7 +245,6 @@
           <Nuxt
               id="child"
               class="relative p-16 flex-grow flex-1 w-auto lg:overflow-y-scroll lg:h-screen"
-              style="top:-88px;padding-top:6.5rem !important;"
           />
         </div>
       </div>
