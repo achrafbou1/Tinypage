@@ -599,15 +599,16 @@ export default Vue.extend({
   },
 
   async mounted() {
-    await this.getUserData();
+    if (process.env.NODE_ENV === 'production') {
+      await this.getUserData();
 
-    if (this.$route.query.googleLinked) {
-      this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
+      if (this.$route.query.googleLinked) {
+        this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
+      }
+
+      await this.updateProfileUsage();
     }
-
     this.loaded = true;
-
-    await this.updateProfileUsage();
   },
 
   methods: {
