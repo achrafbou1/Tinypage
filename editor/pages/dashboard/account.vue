@@ -243,7 +243,7 @@
       >
         <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
           <h2 class="text-black font-bold text-xl">
-            {{ passwordError ? "Error on password request!" : "Password reset requested" }}
+            {{ passwordError ? 'Error on password request!' : 'Password reset requested' }}
           </h2>
           <p v-if="!passwordError" class="text-gray-600 text-sm">A password reset link has been sent to your account
             email inbox successfully.
