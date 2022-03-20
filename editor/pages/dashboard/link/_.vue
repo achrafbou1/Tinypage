@@ -890,8 +890,8 @@ export default Vue.extend({
           siSettings.url = "";
         } else {
           siSettings.url = siSettings.url
-              .replace("tel:", "")
-              .replace("sms:", "")
+              .replace("tel:+1", "")
+              .replace("sms:+1", "")
               .replace("mailto:", "");
         }
       }
@@ -899,11 +899,11 @@ export default Vue.extend({
       switch (val) {
         case "phone":
           removePrefix();
-          siSettings.url = "tel:" + siSettings.url;
+          siSettings.url = "tel:+1" + siSettings.url;
           break;
         case "text":
           removePrefix();
-          siSettings.url = "sms:" + siSettings.url;
+          siSettings.url = "sms:+1" + siSettings.url;
           break;
         case "email":
           removePrefix();
