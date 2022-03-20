@@ -18,7 +18,7 @@
     </div>
 
     <div class="usability-warning p-2 m-3 bg-red-300 rounded-xl" style="width: 80%">
-      <img class="inline float-left ml-3 mr-3" src="/icons/caution.svg" alt="caution"/>
+      <img alt="caution" class="inline float-left ml-3 mr-3" src="/icons/caution.svg">
       <strong>WARNING:</strong>
       The editor is meant to be used on Desktop resolutions. Mobile is not guaranteed to work correctly.
     </div>
@@ -42,8 +42,9 @@
               />
 
               <div class="flex flex-col justify-start">
-                <span class="font-extrabold text-2xl leading-tight mt-4 mb-1"
-                      style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                <span
+                    class="font-extrabold text-2xl leading-tight mt-4 mb-1"
+                    style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
                 >
                   {{ user.activeProfile.headline }}
                 </span>
@@ -89,11 +90,12 @@
                 </div>
               </div>
 
-              <div @focusout="onSelectingProfilesFocusOut($event)"
+              <div
+                  @focusout="onSelectingProfilesFocusOut($event)"
               >
                 <ul
-                    id="profileSelection"
                     v-if="selectingProfile"
+                    id="profileSelection"
                     class="absolute bottom-0 rounded-2xl shadow bg-whiteish border border-gray-200 profile-list z-30"
                     style="left:0;right:0; top: 170px; width:100%;height:fit-content;max-height:450px;"
                     tabindex="0"
@@ -203,7 +205,7 @@
               </n-link>
 
               <n-link :class="getActiveStyles('dashboard-account')" to="/dashboard/account">
-                <img src="/icons/Person.svg" style="width:24px;height:24px;"/>
+                <img src="/icons/Person.svg" style="width:24px;height:24px;">
                 <span class="ml-4 font-extrabold">Account Settings</span>
               </n-link>
 
@@ -215,9 +217,10 @@
               <a v-if="community" :class="getActiveStyles('dashboard-community')" :href="community" target="_blank">
                 <div style="color:#0000ff">
                   <svg width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path fill="currentColor"
-                          d="M480 257.35c0-123.7-100.3-224-224-224s-224 100.3-224 224c0 111.8 81.9 204.47 189 221.29V322.12h-56.89v-64.77H221V208c0-56.13 33.45-87.16 84.61-87.16 24.51 0 50.15 4.38 50.15 4.38v55.13H327.5c-27.81 0-36.51 17.26-36.51 35v42h62.12l-9.92 64.77H291v156.54c107.1-16.81 189-109.48 189-221.31z"
-                          fill-rule="evenodd"
+                    <path
+                        d="M480 257.35c0-123.7-100.3-224-224-224s-224 100.3-224 224c0 111.8 81.9 204.47 189 221.29V322.12h-56.89v-64.77H221V208c0-56.13 33.45-87.16 84.61-87.16 24.51 0 50.15 4.38 50.15 4.38v55.13H327.5c-27.81 0-36.51 17.26-36.51 35v42h62.12l-9.92 64.77H291v156.54c107.1-16.81 189-109.48 189-221.31z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
                     />
                   </svg>
                 </div>
@@ -227,14 +230,22 @@
               <a v-if="support" :class="getActiveStyles('dashboard-support')" :href="support" target="_blank">
                 <div style="color:#5865F2">
                   <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="currentColor"
-                          d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"
+                    <path
+                        d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"
+                        fill="currentColor"
                     />
                   </svg>
                 </div>
                 <span class="ml-4 font-extrabold">Support</span>
               </a>
-
+              <a
+                  class="nav-link"
+                  href="https://feedback.tnypg.com/boards/feature-requests"
+                  target="_blank"
+              >
+                <img src="/icons/icons8-chat-bubble-96.png" style="width:24px;height:24px;">
+                <span class="ml-4 font-extrabold">Feature requests</span>
+              </a>
 
               <n-link :class="getActiveStyles('logout')" to="/logout">
                 <img src="/icons/Waving hand.svg" style="width:24px;height:24px;">
@@ -252,19 +263,30 @@
       <div v-if="preview" class="relative ml-8 hidden lg:flex xl:mb-20" style="width:286px;height:592px;">
 
         <div class="preview-menu">
-          <div class="sbutton"
-               style="display: flex; align-items: center; justify-content: center;"
-               @click="onClickDownloadPreviewImage()"
+          <div
+              class="sbutton"
+              style="display: flex; align-items: center; justify-content: center;"
+              @click="onClickDownloadPreviewImage()"
           >
             <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" viewBox="0 0 512 512">
               <title>
                 Download Preview Image
               </title>
-              <path d="M336 176h40a40 40 0 0140 40v208a40 40 0 01-40 40H136a40 40 0 01-40-40V216a40 40 0 0140-40h40"
-                    fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"
+              <path
+                  d="M336 176h40a40 40 0 0140 40v208a40 40 0 01-40 40H136a40 40 0 01-40-40V216a40 40 0 0140-40h40"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="32"
               />
-              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"
-                    d="M176 272l80 80 80-80M256 48v288"
+              <path
+                  d="M176 272l80 80 80-80M256 48v288"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="32"
               />
             </svg>
           </div>
@@ -303,6 +325,63 @@ import GDPRConsentPopup from "~/components/utilities/GDPRConsentPopup.vue";
 export default Vue.extend({
   components: {
     GDPRConsentPopup,
+  },
+
+  data() {
+    return {
+      active: "dashboard",
+      originalHandle: '',
+
+      user: {
+        id: '',
+        emailHash: '',
+        activeProfile: {
+          handle: '',
+          visibility: '',
+          customDomain: '',
+        },
+      },
+
+      rendererUrl: '' as string | undefined,
+      rendererDomain: '' as string | undefined,
+      preview: false,
+      share_modal: false,
+      qr_src: null,
+      profiles: [] as EditorProfile[],
+      filteredProfiles: [] as EditorProfile[],
+      selectingProfile: false,
+      profileUrl: "",
+      version: "Version loading...",
+      previewMode: 'mobile',
+      profile_visibility: '' as String,
+      isAdmin: false,
+      leaderboard: process.env.LEADERBOARD,
+      support: process.env.SUPPORT,
+      community: process.env.COMMUNITY_GROUP,
+      mobile_menu: false,
+      mobile_preview: false,
+      previewVisible: true,
+
+      error: '',
+      errorIntervalHandler: undefined as any,
+
+      // usetiful_script
+      // (function (w, d, s) {
+      //   const a = d.getElementsByTagName('head')[0];
+      //   const r = d.createElement('script');
+      //   r.async = 1;
+      //   r.src = s;
+      //   r.setAttribute('id', 'usetifulScript');
+      //   r.dataset.token = "28f17918d3a60fc2f638a53eeb3a23d9";
+      //   a.appendChild(r);
+      //   if (window.location.href.split('?').length > 1) {
+      //     const links = document.getElementsByTagName('a');
+      //     for (let i = 0; i < links.length; i++) {
+      //       links[i].href += '?' + window.location.href.split('?')[1];
+      //     }
+      //   }
+      // })(window, document, "https://www.usetiful.com/dist/usetiful.js");
+    };
   },
 
   head() {
@@ -376,65 +455,8 @@ export default Vue.extend({
         }
       ],
       bodyAttrs: {
-        'style': 'overflow: hidden; height: 100vh; max-height: 100vh;'
+        style: 'overflow: hidden; height: 100vh; max-height: 100vh;'
       }
-    };
-  },
-
-  data() {
-    return {
-      active: "dashboard",
-      originalHandle: '',
-
-      user: {
-        id: '',
-        emailHash: '',
-        activeProfile: {
-          handle: '',
-          visibility: '',
-          customDomain: '',
-        },
-      },
-
-      rendererUrl: '' as string | undefined,
-      rendererDomain: '' as string | undefined,
-      preview: false,
-      share_modal: false,
-      qr_src: null,
-      profiles: [] as EditorProfile[],
-      filteredProfiles: [] as EditorProfile[],
-      selectingProfile: false,
-      profileUrl: "",
-      version: "Version loading...",
-      previewMode: 'mobile',
-      profile_visibility: '' as String,
-      isAdmin: false,
-      leaderboard: process.env.LEADERBOARD,
-      support: process.env.SUPPORT,
-      community: process.env.COMMUNITY_GROUP,
-      mobile_menu: false,
-      mobile_preview: false,
-      previewVisible: true,
-
-      error: '',
-      errorIntervalHandler: undefined as any,
-
-      // usetiful_script
-      // (function (w, d, s) {
-      //   const a = d.getElementsByTagName('head')[0];
-      //   const r = d.createElement('script');
-      //   r.async = 1;
-      //   r.src = s;
-      //   r.setAttribute('id', 'usetifulScript');
-      //   r.dataset.token = "28f17918d3a60fc2f638a53eeb3a23d9";
-      //   a.appendChild(r);
-      //   if (window.location.href.split('?').length > 1) {
-      //     const links = document.getElementsByTagName('a');
-      //     for (let i = 0; i < links.length; i++) {
-      //       links[i].href += '?' + window.location.href.split('?')[1];
-      //     }
-      //   }
-      // })(window, document, "https://www.usetiful.com/dist/usetiful.js");
     };
   },
 
@@ -511,8 +533,9 @@ export default Vue.extend({
 
         this.selectingProfile = false;
 
-        if (profile?.id)
+        if (profile?.id) {
           await this.selectProfile(profile.id);
+        }
       } catch (err) {
         if (err.response) {
           if (err.response.status === StatusCodes.TOO_MANY_REQUESTS) {
@@ -535,9 +558,9 @@ export default Vue.extend({
     },
 
     getProfilePreviewUrl(): string {
-      let token = this.$store.getters['auth/getToken'];
+      const token = this.$store.getters['auth/getToken'];
 
-      let queryParams = new URLSearchParams({
+      const queryParams = new URLSearchParams({
         token: token as string,
         scrolling: "false",
         uid: new Date().toISOString() // necessary to reload the URL...
@@ -764,7 +787,7 @@ export default Vue.extend({
 
         if (process.client) {
           this.$nextTick(() => {
-            let elem = document.getElementById("profileSelection");
+            const elem = document.getElementById("profileSelection");
 
             if (elem) {
               elem.focus({preventScroll: true});
@@ -790,7 +813,7 @@ export default Vue.extend({
 
     async onClickDownloadPreviewImage() {
       if (process.client) {
-        let token = this.$store.getters['auth/getToken'];
+        const token = this.$store.getters['auth/getToken'];
 
         const response = await this.$axios.get('/profile/preview-image/' + this.originalHandle, {
           responseType: "blob"
@@ -800,7 +823,7 @@ export default Vue.extend({
 
         let filename = "preview-image.png";
         const disposition = response.headers['content-disposition'];
-        if (disposition && disposition.indexOf('filename') !== -1) {
+        if (disposition && disposition.includes('filename')) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(disposition);
           if (matches != null && matches[1]) {
