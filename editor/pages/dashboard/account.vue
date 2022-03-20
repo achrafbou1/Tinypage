@@ -418,12 +418,15 @@ export default Vue.extend({
   },
 
   async beforeMount() {
-    await this.getUserData();
+    if (process.env.NODE_ENV === 'production') {
+      await this.getUserData();
 
-    this.availableSubscriptions = (await this.$axios.post('/products', {})).data;
+      this.availableSubscriptions = (await this.$axios.post('/products', {})).data
 
-    await this.checkSubscription();
+      await this.checkSubscription();
+    }
     this.loaded = true;
+
   },
 
   async mounted() {
