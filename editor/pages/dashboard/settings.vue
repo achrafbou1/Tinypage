@@ -428,7 +428,7 @@
           class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
           to="/dashboard/account"
       >
-        Go to account settings
+        Manage
       </n-link>
     </div>
 
