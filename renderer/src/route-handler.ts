@@ -719,7 +719,7 @@ export class RouteHandler {
 
             if (profile.metadata?.coverImage) {
                 coverImageHtml += `
-            <img class="sl-banner text-center" src="${profile.metadata?.coverImage}" alt="cover image">
+            <img class="sl-banner w-full h-auto text-center" src="${profile.metadata?.coverImage}" alt="cover image">
             <style>
             .sl-banner {
                 position: absolute;
@@ -727,7 +727,7 @@ export class RouteHandler {
                 right: 0;
                 left: 0;
                 width: 512px;
-                aspect-ratio: 16/9;
+                height: 288px;
                 margin-left: auto;
                 margin-right: auto;
                 z-index: -1;
