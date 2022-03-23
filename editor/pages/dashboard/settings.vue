@@ -219,7 +219,6 @@
           </label>
         </div>
 
-
         <!-- Page HTML -->
         <div class="flex flex-col mb-4 justify-start w-full">
 
@@ -234,10 +233,11 @@
                 <h6 class="text-center">
                   {{ showHTML ? 'Close Editor' : 'Open Editor' }}
                 </h6>
-                <img :src="showHTML ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
-                     style="width: 20px; height: 20px;"
-                     alt="show hide HTML editor"
-                />
+                <img
+                    :src="showHTML ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
+                    alt="show hide HTML editor"
+                    style="width: 20px; height: 20px;"
+                >
               </div>
             </div>
           </div>
@@ -350,8 +350,9 @@
 
       <div class="flex flex-col space-y-2">
         <div>
-          <label for="importProfileButton"
-                 class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
+          <label
+              class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
+              for="importProfileButton"
           >Import</label>
 
           <input
@@ -373,16 +374,14 @@
     </div>
 
     <!-- Import from Linktree -->
-    <div class="flex flex-col lg:flex-col p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col w-full">
+    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
+      <div class="flex flex-col mr-auto w-full lg:w-1/2">
         <h2 class="text-black font-bold text-lg w-full">
           Import from Linktree
         </h2>
         <p class="text-black opacity-70 font-semibold">
           Replace all of your profile links with links from your linktree profile.
         </p>
-      </div>
-      <div class="flex flex-col w-full">
         <div class="flex flex-row rounded-2xl border border-solid border-gray-300 text-sm mt-2 overflow-hidden">
           <span
               class="flex p-2 bg-gray-100 border text-gray-900 border-solid border-gray-300 border-t-0 border-l-0 border-b-0"
@@ -395,9 +394,11 @@
               type="text"
           >
         </div>
+      </div>
+      <div class="flex flex-col space-y-2">
         <button
             v-if="alerts.linktreeImported === null"
-            class="mt-4 inline-flex p-3 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-auto justify-center align-center"
+            class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
             type="button"
             @click="importLinktree"
         >
@@ -419,13 +420,15 @@
         <h2 class="text-black font-bold text-lg w-full">
           Account settings
         </h2>
-        <p class="text-black opacity-70 font-semibold">Need to configure the account managing your micro-sites?</p>
+        <p class="text-black opacity-70 font-semibold">
+          Need to configure the account managing your micro-sites?
+        </p>
       </div>
       <n-link
           class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
           to="/dashboard/account"
       >
-        Go to account settings
+        Manage
       </n-link>
     </div>
 
@@ -498,39 +501,6 @@ export default Vue.extend({
   layout: 'dashboard',
   middleware: 'authenticated',
 
-  head() {
-    return {
-      title: 'Page Settings - ' + this.$customSettings.productName,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Take administrative control over your microsites through the settings panel.'
-        },
-        {
-          hid: 'twitter:description',
-          name: 'twitter:description',
-          content: 'Take administrative control over your microsites through the settings panel.'
-        },
-        {
-          hid: 'og:title',
-          name: 'og:title',
-          content: 'Page Settings - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'twitter:title',
-          name: 'twitter:title',
-          content: 'Page Settings - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'Take administrative control over your microsites through the settings panel.'
-        },
-      ],
-    };
-  },
-
   data() {
     return {
       showHTML: false,
@@ -582,6 +552,39 @@ export default Vue.extend({
     };
   },
 
+  head() {
+    return {
+      title: 'Page Settings - ' + this.$customSettings.productName,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Take administrative control over your microsites through the settings panel.'
+        },
+        {
+          hid: 'twitter:description',
+          name: 'twitter:description',
+          content: 'Take administrative control over your microsites through the settings panel.'
+        },
+        {
+          hid: 'og:title',
+          name: 'og:title',
+          content: 'Page Settings - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: 'Page Settings - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Take administrative control over your microsites through the settings panel.'
+        },
+      ],
+    };
+  },
+
   computed: {
     getTXTRecord() {
       const profileId = this.$data.user.activeProfile.id;
@@ -599,15 +602,16 @@ export default Vue.extend({
   },
 
   async mounted() {
-    await this.getUserData();
+    if (process.env.NODE_ENV === 'production') {
+      await this.getUserData();
 
-    if (this.$route.query.googleLinked) {
-      this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
+      if (this.$route.query.googleLinked) {
+        this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
+      }
+
+      await this.updateProfileUsage();
     }
-
     this.loaded = true;
-
-    await this.updateProfileUsage();
   },
 
   methods: {
@@ -649,17 +653,18 @@ export default Vue.extend({
 
     async importProfile(event: Event) {
       if (process.client) {
-        let htmlInputEvent = event.target as HTMLInputElement;
+        const htmlInputEvent = event.target as HTMLInputElement;
         const files = htmlInputEvent.files;
 
-        if (!files || files.length < 1)
+        if (!files || files.length < 1) {
           return;
+        }
 
-        let file = files[0];
+        const file = files[0];
 
-        let data = await file.text();
+        const data = await file.text();
 
-        let token = this.$store.getters['auth/getToken'];
+        const token = this.$store.getters['auth/getToken'];
 
         await this.$axios.post('/profile/import', {
           token,
@@ -673,7 +678,7 @@ export default Vue.extend({
 
     async exportProfile() {
       if (process.client) {
-        let token = this.$store.getters['auth/getToken'];
+        const token = this.$store.getters['auth/getToken'];
 
         const response = await this.$axios.post('/profile/export', {
           token
@@ -681,7 +686,7 @@ export default Vue.extend({
 
         let filename = "data.json";
         const disposition = response.headers['content-disposition'];
-        if (disposition && disposition.indexOf('filename') !== -1) {
+        if (disposition && disposition.includes('filename')) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(disposition);
           if (matches != null && matches[1]) {
