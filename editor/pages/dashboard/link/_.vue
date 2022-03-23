@@ -885,31 +885,18 @@ export default Vue.extend({
 
       const val = selectElement.value;
 
-      function removePrefix() {
-        if (!siSettings.url) {
-          siSettings.url = "";
-        } else {
-          siSettings.url = siSettings.url
-              .replace("tel:", "")
-              .replace("sms:", "")
-              .replace("mailto:", "");
-        }
-      }
-
       switch (val) {
         case "phone":
-          removePrefix();
-          siSettings.url = "tel:" + siSettings.url;
+          siSettings.url = "tel:+1";
           break;
         case "text":
-          removePrefix();
-          siSettings.url = "sms:" + siSettings.url;
+          siSettings.url = "sms:+1";
           break;
         case "email":
-          removePrefix();
-          siSettings.url = "mailto:" + siSettings.url;
+          siSettings.url = "mailto:";
           break;
         default:
+          siSettings.url = "";
           break;
       }
 
