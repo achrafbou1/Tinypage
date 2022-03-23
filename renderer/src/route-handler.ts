@@ -245,7 +245,7 @@ export class RouteHandler {
                 // language=HTML
                 avatarHtml = `<img class="nc-avatar mb-2" src=""
                                    alt="avatar"
-                                   style="visibility: hidden; margin-top: 200px;"
+                                   style="visibility: hidden; margin-top: min(calc(56.25vw - 65px), 130px);"
                 />`;
             }
 
@@ -1381,8 +1381,8 @@ export class RouteHandler {
                             id="user-site-view"
                             class="relative flex min-h-screen w-screen bg-gray-100 justify-center w-full sl-bg"
                     >
-                        <section
-                                class="flex flex-col p-6 pt-8 pb-8 items-center text-center page-width w-full">
+                        <section class="flex flex-col p-6 pt-8 pb-8 items-center text-center page-width w-full"
+                                 ${profile.metadata?.coverImage ? 'style="z-index: 0;\nmargin-top: 200px;">' : null}>
                             ${shareMenuHtml}
                             ${avatarHtml}
                             ${headlineHtml}
