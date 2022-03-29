@@ -578,7 +578,7 @@ export class RouteHandler {
                                 ${customCss}
                             </style>
                             <img id="sl-item-${link.id}" src="${link.url}" class="w-full h-auto"
-                                 style="margin-bottom:.75rem;border-radius:4px;${style}" alt="link image"
+                                 style="border-radius:4px;${style}" alt="link image"
                             />
                         `;
                         }
