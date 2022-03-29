@@ -349,7 +349,7 @@ export class RouteHandler {
                         break;
                     }
                     case 'social': {
-                        if (!link.metadata?.socialIcons)
+                        if (!link.metadata?.socialIcons || link.hidden)
                             break;
 
                         try {

@@ -5,7 +5,7 @@
     </component>
 
     <div
-        class="flex flex-row w-full py-6 justify-between relative"
+        class="flex flex-row w-full justify-between relative"
         style="z-index:2;background:linear-gradient(180deg, rgba(255,255,255) 60%, rgba(255,255,255,.65) 80%, rgba(255,255,255,0) 100%);max-width:1520px;"
     >
       <!--      <div class="flex flex-row items-center justify-start bg-opaqueBlack px-4 py-1 rounded-full w-full max-w-md"-->
@@ -238,7 +238,14 @@
                 </div>
                 <span class="ml-4 font-extrabold">Support</span>
               </a>
-
+              <a
+                  class="nav-link"
+                  href="https://feedback.tnypg.com/boards/feature-requests"
+                  target="_blank"
+              >
+                <img src="/icons/icons8-chat-bubble-96.png" style="width:24px;height:24px;">
+                <span class="ml-4 font-extrabold">Feature requests</span>
+              </a>
               <n-link :class="getActiveStyles('logout')" to="/logout">
                 <img src="/icons/Waving hand.svg" style="width:24px;height:24px;">
                 <span class="ml-4 font-extrabold">Logout</span>
@@ -248,7 +255,6 @@
           <Nuxt
               id="child"
               class="relative p-16 flex-grow flex-1 w-auto lg:overflow-y-scroll lg:h-screen"
-              style="top:-88px;padding-top:6.5rem !important;"
           />
         </div>
       </div>
