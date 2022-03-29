@@ -16,8 +16,8 @@
           Customization
         </h2>
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -69,17 +69,18 @@
               {{ showHTML ? 'Close Editor' : 'Open Editor' }}
             </h6>
             <transition name="fade">
-              <img :src="showHTML ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
-                   style="width: 20px; height: 20px;"
-                   alt="show hide HTML editor"
-              />
+              <img
+                  :src="showHTML ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
+                  alt="show hide HTML editor"
+                  style="width: 20px; height: 20px;"
+              >
             </transition>
           </div>
         </div>
 
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our
           documentation</a>
@@ -89,8 +90,8 @@
         <textarea
             v-model="customHtml"
             class="border border-2 text-white p-2"
-            style="font-family: monospace; background-color: #1E1E1E"
             rows="12"
+            style="font-family: monospace; background-color: #1E1E1E"
         />
       </client-only>
       <button
@@ -120,17 +121,18 @@
               {{ showCSS ? 'Close Editor' : 'Open Editor' }}
             </h6>
             <transition name="fade">
-              <img :src="showCSS ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
-                   style="width: 20px; height: 20px;"
-                   alt="show hide CSS editor"
-              />
+              <img
+                  :src="showCSS ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
+                  alt="show hide CSS editor"
+                  style="width: 20px; height: 20px;"
+              >
             </transition>
           </div>
         </div>
 
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our
           documentation</a>
@@ -140,8 +142,8 @@
         <textarea
             v-model="editorCss"
             class="border border-2 text-white p-2"
-            style="font-family: monospace; background-color: #1E1E1E"
             rows="12"
+            style="font-family: monospace; background-color: #1E1E1E"
         />
       </client-only>
       <button

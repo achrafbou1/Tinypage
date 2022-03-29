@@ -10,7 +10,8 @@ import fs, {promises as fsPromises} from "fs";
 interface MicrositeRequest extends FastifyRequest {
     Querystring: {
         token?: string,
-        scrolling: string
+        scrolling: string,
+        preview?: string
     };
 }
 
@@ -134,6 +135,7 @@ export class RouteHandler {
             let response: AxiosResponse<{ profile: Profile, links: Link[], user: User, theme: Theme }> | undefined;
 
             const scrolling = request.query.scrolling === undefined || request.query.scrolling === "true";
+            const preview = request.query.preview === undefined || request.query.preview === "true";
             let isPreview = false;
 
             try {
@@ -261,7 +263,7 @@ export class RouteHandler {
             // language=HTML
             let linkHtml = '';
 
-            // Define links & filter out hidden & sort by order
+            // Define links & sort by order
             const links = response.data.links.sort(function (a: Link, b: Link) {
                 return a.sortOrder - b.sortOrder;
             });
@@ -325,11 +327,29 @@ export class RouteHandler {
                                 ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                     </div>
                             </a>`;
+                        } else {
+                            if (preview) {
+                                linkHtml += `<a
+                                id="sl-item-${link.id}"
+                                href="${config.apiUrl}/analytics/link/record/${link.id}"
+                                class="w-full sl-item-parent"
+                                target="_blank"
+                                >
+                                <div
+                                    class="rounded-2xl shadow w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
+                                style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; background-color: darkgray; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
+                                >
+                                ${buttonImageHtml}
+                                <span class="font-medium sl-label"
+                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: gray; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    </div>
+                            </a>`;
+                            }
                         }
                         break;
                     }
                     case 'social': {
-                        if (!link.metadata?.socialIcons || link.hidden)
+                        if (!link.metadata?.socialIcons)
                             break;
 
                         try {
