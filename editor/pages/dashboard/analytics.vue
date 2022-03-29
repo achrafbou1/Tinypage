@@ -22,15 +22,18 @@
     <div class="flex flex-col justify-center items-center mb-2">
       <div>
         <label class="font-semibold mb-2">Days Range</label>
-        <input v-model="dayRange"
-               type="number"
-               class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
-               style="max-width: 5rem"
-               @blur="onDayRangeChange"
-               :disabled="!hasPerms"
+        <input
+            v-model="dayRange"
+            :disabled="!hasPerms"
+            class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+            style="max-width: 5rem"
+            type="number"
+            @blur="onDayRangeChange"
         >
       </div>
-      <div v-if="!hasPerms">Pro tier or higher is required to view analytics beyond 30 days.</div>
+      <div v-if="!hasPerms">
+        Pro tier or higher is required to view analytics beyond 30 days.
+      </div>
     </div>
 
     <div v-if="!user.activeProfile.metadata.privacyMode" class="grid lg:grid-cols-3 gap-x-4 w-full">
@@ -39,7 +42,7 @@
           Total views
         </h2>
         <h4 class="text-blue-600 text-4xl leading-tight font-bold">
-          {{ analytics.totalProfileViews.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
+          {{ analytics.totalProfileViews.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
         </h4>
       </div>
       <div class="flex flex-col p-6 bg-white shadow items-center text-center rounded-2xl mb-8">
@@ -47,7 +50,7 @@
           Total clicks
         </h2>
         <h4 class="text-blue-600 text-4xl leading-tight font-bold">
-          {{ visitSum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
+          {{ visitSum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
         </h4>
       </div>
       <div class="flex flex-col p-6 bg-white shadow items-center text-center rounded-2xl mb-8">
@@ -75,7 +78,7 @@
       >
         <div class="text-left mr-4 flex flex-col justify-start w-full lg:w-auto pt-1 px-2 lg:pt-0 lg:px-0">
           <span class="font-medium text-black font-bold text-lg mb-2">
-            {{ link.link.label.length > 30 ? link.link.label.substring(0, 30) + "..." : link.link.label }}
+            {{ link.link.label.length > 30 ? link.link.label.substring(0, 30) + '...' : link.link.label }}
           </span>
           <span
               v-if="link.link.url && link.link.url.length > 41"
@@ -92,7 +95,7 @@
           <span class="uppercase text-gray-800 font-bold mr-1 lg:mr-0 lg:mb-1">Total clicks</span>
           <span class="lg:hidden text-sm uppercase text-gray-700 font-semibold mr-2 lg:mr-0 lg:mb-1">:</span>
           <h4 class="lg:ml-auto text-blue-600 text-2xl font-bold">
-            {{ link.views.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
+            {{ link.views.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
           </h4>
         </div>
       </div>
@@ -109,39 +112,6 @@ export default Vue.extend({
   name: 'DashboardAnalytics',
   layout: 'dashboard',
   middleware: 'authenticated',
-
-  head() {
-    return {
-      title: 'Site Analytics - ' + this.$customSettings.productName,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'View your site analytics from your analytics dashboard.'
-        },
-        {
-          hid: 'twitter:description',
-          name: 'twitter:description',
-          content: 'View your site analytics from your analytics dashboard.'
-        },
-        {
-          hid: 'og:title',
-          name: 'og:title',
-          content: 'Site Analytics - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'twitter:title',
-          name: 'twitter:title',
-          content: 'Site Analytics - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'View your site analytics from your analytics dashboard.'
-        },
-      ],
-    };
-  },
 
   data() {
     return {
@@ -178,6 +148,39 @@ export default Vue.extend({
     };
   },
 
+  head() {
+    return {
+      title: 'Site Analytics - ' + this.$customSettings.productName,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'View your site analytics from your analytics dashboard.'
+        },
+        {
+          hid: 'twitter:description',
+          name: 'twitter:description',
+          content: 'View your site analytics from your analytics dashboard.'
+        },
+        {
+          hid: 'og:title',
+          name: 'og:title',
+          content: 'Site Analytics - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: 'Site Analytics - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'View your site analytics from your analytics dashboard.'
+        },
+      ],
+    };
+  },
+
   async mounted() {
     await this.getUserData();
 
@@ -197,15 +200,15 @@ export default Vue.extend({
       token
     });
 
-    let permLevel = Permission.PRO.permLevel;
+    const permLevel = Permission.PRO.permLevel;
 
     this.hasPerms = permLevel <= Permission.parse(this.subInfo.tier).permLevel;
   },
 
   methods: {
     onDayRangeChange(evt: Event) {
-      let target = evt.target as HTMLInputElement;
-      let value = target.value;
+      const target = evt.target as HTMLInputElement;
+      const value = target.value;
 
       this.dayRange = Number.parseInt(value);
 
@@ -220,11 +223,11 @@ export default Vue.extend({
           dayRange: this.dayRange
         });
 
-        let linkVisits = this.analytics.linkVisits;
+        const linkVisits = this.analytics.linkVisits;
 
         if (linkVisits.length > 0) {
           this.analytics.linkVisits = linkVisits.filter(value => {
-            let type = value.link.type;
+            const type = value.link.type;
             return type !== 'image' &&
                 type !== 'divider' &&
                 type !== 'text' &&

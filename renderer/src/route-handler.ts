@@ -10,7 +10,8 @@ import fs, {promises as fsPromises} from "fs";
 interface MicrositeRequest extends FastifyRequest {
     Querystring: {
         token?: string,
-        scrolling: string
+        scrolling: string,
+        preview?: string
     };
 }
 
@@ -134,6 +135,7 @@ export class RouteHandler {
             let response: AxiosResponse<{ profile: Profile, links: Link[], user: User, theme: Theme }> | undefined;
 
             const scrolling = request.query.scrolling === undefined || request.query.scrolling === "true";
+            const preview = request.query.preview === undefined || request.query.preview === "true";
             let isPreview = false;
 
             try {
@@ -240,12 +242,12 @@ export class RouteHandler {
 
             if (imageUrl) {
                 // language=HTML
-                avatarHtml = `<img class="nc-avatar mb-2" src="${imageUrl}" alt="avatar" style="margin-top: 200px;"/>`;
+                avatarHtml = `<img class="nc-avatar mb-2" src="${imageUrl}" alt="avatar"/>`;
             } else if (profile.metadata?.coverImage) {
                 // language=HTML
                 avatarHtml = `<img class="nc-avatar mb-2" src=""
                                    alt="avatar"
-                                   style="visibility: hidden; margin-top: 200px;"
+                                   style="visibility: hidden; margin-top: min(calc(56.25vw - 65px), 130px);"
                 />`;
             }
 
@@ -261,7 +263,7 @@ export class RouteHandler {
             // language=HTML
             let linkHtml = '';
 
-            // Define links & filter out hidden & sort by order
+            // Define links & sort by order
             const links = response.data.links.sort(function (a: Link, b: Link) {
                 return a.sortOrder - b.sortOrder;
             });
@@ -325,6 +327,24 @@ export class RouteHandler {
                                 ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                     </div>
                             </a>`;
+                        } else {
+                            if (preview) {
+                                linkHtml += `<a
+                                id="sl-item-${link.id}"
+                                href="${config.apiUrl}/analytics/link/record/${link.id}"
+                                class="w-full sl-item-parent"
+                                target="_blank"
+                                >
+                                <div
+                                    class="rounded-2xl shadow w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
+                                style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; background-color: darkgray; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
+                                >
+                                ${buttonImageHtml}
+                                <span class="font-medium sl-label"
+                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: gray; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    </div>
+                            </a>`;
+                            }
                         }
                         break;
                     }
@@ -707,27 +727,8 @@ export class RouteHandler {
             let coverImageHtml = ``;
 
             if (profile.metadata?.coverImage) {
-                coverImageHtml += `
-            <img class="sl-banner text-center" src="${profile.metadata?.coverImage}" alt="cover image">
-            <style>
-            .sl-banner {
-                position: absolute;
-                top: 0;
-                right: 0;
-                left: 0;
-                width: 512px;
-                aspect-ratio: 16/9;
-                margin-left: auto;
-                margin-right: auto;
-                z-index: -1;
-            }
-            </style>`;
-            } else {
                 // language=HTML
                 coverImageHtml += `
-                    <div id="theme-html">
-                        <div class="sl-banner"></div>
-                    </div>
                     <style>
                         img.nc-avatar {
                             border: solid 2px #FFF;
@@ -753,11 +754,11 @@ export class RouteHandler {
                             right: 0;
                             padding-bottom: min(56.25%, 240px);
                             width: 100%;
-                            max-width: 30rem;
+                            max-width: 35rem;
                             border-radius: 10px 10px 3px 3px;
                             background: #9D50BB; /* Your cover background color, fallback if image doesn't load/before image loads */
                             background: url('${profile.metadata?.coverImage}');
-                            background-size: contain;
+                            background-size: cover;
                             background-position: center;
                             margin: 0 auto 10px auto;
                             z-index: -1;
@@ -1362,10 +1363,6 @@ export class RouteHandler {
                         h6 {
                             font-size: .67em;
                         }
-
-                        .main-section {
-                            z-index: 0;
-                        }
                     </style>
                 </head>
                 <body>
@@ -1374,13 +1371,17 @@ export class RouteHandler {
                             id="user-site-view"
                             class="relative flex min-h-screen w-screen bg-gray-100 justify-center w-full sl-bg"
                     >
-                        <section
-                                class="flex flex-col p-6 pt-8 pb-8 items-center text-center page-width w-full main-section">
+                        <section class="flex flex-col p-6 pt-8 pb-8 items-center text-center page-width w-full"
+                        >
                             ${shareMenuHtml}
                             ${avatarHtml}
                             ${headlineHtml}
                             ${subtitleHtml}
                             ${linkHtml}
+                            <!-- Theme html -->
+                            <div id="theme-html">
+                                <div class="sl-banner"></div>
+                            </div>
                             <!-- Watermark -->
                             ${watermarkHtml}
                             ${coverImageHtml}

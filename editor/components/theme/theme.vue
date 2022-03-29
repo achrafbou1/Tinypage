@@ -3,10 +3,10 @@
     <div class="relative rounded" style="width: 201px;height:217px;overflow:hidden;">
       <iframe
           v-if="theme"
-          scrolling="no"
-          style="pointer-events: none;width: 375px;height: 406px;transform: scale(.536) translate(-163px, -175px);top:0;left:0;position:absolute;"
           :src="'/dashboard/appearance/preview/' + id"
           loading="lazy"
+          scrolling="no"
+          style="pointer-events: none;width: 375px;height: 406px;transform: scale(.536) translate(-163px, -175px);top:0;left:0;position:absolute;"
       />
     </div>
     <!--<span class="text-sm text-gray-500">Author: {{ userId }}</span>-->
@@ -38,12 +38,6 @@ export default Vue.extend({
     };
   },
 
-  async beforeMount() {
-    this.theme = await this.$axios.$post('/theme/' + this.id, {
-      token: this.$store.getters['auth/getToken']
-    }) as EditorTheme;
-  },
-
   computed: {
     activeStyles() {
       if (!this.active) {
@@ -51,6 +45,12 @@ export default Vue.extend({
       }
       return ' bg-blue-200 border-blue-600 border hover:bg-blue-300';
     }
+  },
+
+  async beforeMount() {
+    this.theme = await this.$axios.$post('/theme/' + this.id, {
+      token: this.$store.getters['auth/getToken']
+    }) as EditorTheme;
   },
 
   methods: {

@@ -10,10 +10,10 @@
           {{ $customSettings.productName }} sites.
         </p>
         <a
-          class="flex flex-row items-center font-bold justify-center rounded-full w-full px-8 py-4 text-lg border-gray-300 hover:border-gray-600"
-          href="#"
-          style="border-width:3px;border-style:solid;"
-          @click="attemptGoogleLogin"
+            class="flex flex-row items-center font-bold justify-center rounded-full w-full px-8 py-4 text-lg border-gray-300 hover:border-gray-600"
+            href="#"
+            style="border-width:3px;border-style:solid;"
+            @click="attemptGoogleLogin"
         >
           <img class="w-5 mr-4" src="/icons/google-icon.png">
           Sign in with Google
@@ -36,28 +36,32 @@
         <div class="flex flex-row items-center justify-apart w-full my-4">
           <div class="flex flex-row justify-start items-center" style="width:150px;">
             <input
-              id="remember-me"
-              v-model="rememberMe"
-              name="remember_me"
-              style="border-radius:3px;width:15px;height:15px;"
-              type="checkbox"
+                id="remember-me"
+                v-model="rememberMe"
+                name="remember_me"
+                style="border-radius:3px;width:15px;height:15px;"
+                type="checkbox"
             >
             <label
-              class="opacity-50 ml-3 font-bold"
-              for="remember-me"
-              style="margin-bottom:0;width:105px;font-size: 14px;"
+                class="opacity-50 ml-3 font-bold"
+                for="remember-me"
+                style="margin-bottom:0;width:105px;font-size: 14px;"
             >
               <nobr>Remember me?</nobr>
             </label>
           </div>
           <a class="text-blue-500 hover:underline ml-auto font-bold" href="/forgot-password">Forgot your password?</a>
         </div>
-        <div class="button cursor-pointer" @click="attemptEmailLogin()">Login to your account</div>
+        <div class="button cursor-pointer" @click="attemptEmailLogin()">
+          Login to your account
+        </div>
         <div v-if="error" class="error">
           {{ error }}
         </div>
-        <a class="mx-auto text-center font-bold text-blue-500 mb-4 text-sm hover:underline font-bold"
-           href="/create-account">Don't have an
+        <a
+            class="mx-auto text-center font-bold text-blue-500 mb-4 text-sm hover:underline font-bold"
+            href="/create-account"
+        >Don't have an
           account? Get started free</a>
         <span class="mx-auto font-bold text-center opacity-50 text-sm">©{{
             new Date().getFullYear()
@@ -66,7 +70,7 @@
     </section>
 
     <section
-      class="hidden lg:flex order-first lg:order-last right w-full lg:w-1/2 xl:w-7/12 flex-col lg:h-screen text-center items-center justify-center p-12 text-white"
+        class="hidden lg:flex order-first lg:order-last right w-full lg:w-1/2 xl:w-7/12 flex-col lg:h-screen text-center items-center justify-center p-12 text-white"
     >
       <img class="w-full max-w-sm" src="/integrations.png">
       <h3 class="text-4xl font-bold max-w-sm mb-4">
@@ -147,8 +151,9 @@ export default Vue.extend({
       if (!this.email) {
         this.error = 'Email address is required to login.';
 
-        if (this.errorIntervalHandler !== undefined)
+        if (this.errorIntervalHandler !== undefined) {
           clearInterval(this.errorIntervalHandler);
+        }
 
         this.errorIntervalHandler = setInterval(this.clearErrors, 5000);
 
@@ -159,8 +164,9 @@ export default Vue.extend({
       if (!this.password) {
         this.error = 'Password is required to login.';
 
-        if (this.errorIntervalHandler !== undefined)
+        if (this.errorIntervalHandler !== undefined) {
           clearInterval(this.errorIntervalHandler);
+        }
 
         this.errorIntervalHandler = setInterval(this.clearErrors, 5000);
 
@@ -187,8 +193,9 @@ export default Vue.extend({
         if (err.response.status === StatusCodes.FORBIDDEN) {
           this.error = err.response.data.error;
 
-          if (this.errorIntervalHandler !== undefined)
+          if (this.errorIntervalHandler !== undefined) {
             clearInterval(this.errorIntervalHandler);
+          }
 
           this.errorIntervalHandler = setInterval(this.clearErrors, 5000);
 
@@ -197,8 +204,9 @@ export default Vue.extend({
         } else if (err.response.status === StatusCodes.UNAUTHORIZED) {
           this.error = 'Your email or password is incorrect!';
 
-          if (this.errorIntervalHandler !== undefined)
+          if (this.errorIntervalHandler !== undefined) {
             clearInterval(this.errorIntervalHandler);
+          }
 
           this.errorIntervalHandler = setInterval(this.clearErrors, 5000);
 
