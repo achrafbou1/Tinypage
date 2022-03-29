@@ -585,39 +585,6 @@ export default Vue.extend({
     };
   },
 
-  head() {
-    return {
-      title: 'Page Settings - ' + this.$customSettings.productName,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Take administrative control over your microsites through the settings panel.'
-        },
-        {
-          hid: 'twitter:description',
-          name: 'twitter:description',
-          content: 'Take administrative control over your microsites through the settings panel.'
-        },
-        {
-          hid: 'og:title',
-          name: 'og:title',
-          content: 'Page Settings - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'twitter:title',
-          name: 'twitter:title',
-          content: 'Page Settings - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'Take administrative control over your microsites through the settings panel.'
-        },
-      ],
-    };
-  },
-
   computed: {
     getTXTRecord() {
       const profileId = this.$data.user.activeProfile.id;
