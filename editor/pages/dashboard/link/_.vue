@@ -57,6 +57,7 @@
       <label class="font-semibold mb-2">Label</label>
 
       <input
+          ref="label"
           v-model="pendingLink.label"
           class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
           placeholder="e.g. Some memorable name"
@@ -717,6 +718,7 @@ export default Vue.extend({
   },
 
   async mounted() {
+    this.$refs.label.focus();
     if (process.client) {
       await new Promise(res => setTimeout(res, 1000));
 
