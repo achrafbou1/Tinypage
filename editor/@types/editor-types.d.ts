@@ -31,7 +31,8 @@ type EditorLink = Partial<Link> & {
     label: string,
     subtitle: string,
     customCss: string,
-    url: string
+    url: string,
+    items: { url: '' }[]
 };
 
 type EditorAddon = Partial<Addon> & {

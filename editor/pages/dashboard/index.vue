@@ -193,7 +193,8 @@ export default Vue.extend({
       label: "",
       subtitle: "",
       customCss: "",
-      url: ""
+      url: "",
+      items: [{url: ''}]
     };
 
     return {
@@ -391,7 +392,8 @@ export default Vue.extend({
         label: '',
         subtitle: '',
         url: '',
-        customCss: ''
+        customCss: '',
+        items: [{url: ''}]
       };
     },
 
@@ -404,7 +406,8 @@ export default Vue.extend({
         label: link.label,
         subtitle: link.subtitle,
         customCss: link.customCss,
-        url: link.url
+        url: link.url,
+        items: link.items
       };
 
       this.openModal('edit');
@@ -452,6 +455,8 @@ export default Vue.extend({
         case "vcard":
           return '/icons/business-card.svg';
         case "image":
+          return '/icons/image-outline.svg';
+        case "gallery":
           return '/icons/image-outline.svg';
         case "divider":
           return '/icons/divider-solid.svg';
