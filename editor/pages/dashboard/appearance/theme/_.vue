@@ -26,8 +26,8 @@
           Customization
         </h2>
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -41,16 +41,16 @@
           Custom HTML
         </h2>
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
       <textarea
           v-model="theme.customHtml"
           class="border border-2 text-white p-2"
-          style="font-family: monospace; background-color: #1E1E1E"
           rows="12"
+          style="font-family: monospace; background-color: #1E1E1E"
       />
     </div>
     <div class="hidden lg:flex flex-col p-6 bg-white shadow rounded-lg w-full">
@@ -61,16 +61,16 @@
           Custom CSS
         </h2>
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
       <textarea
           v-model="editorCss"
           class="border border-2 text-white p-2"
-          style="font-family: monospace; background-color: #1E1E1E"
           rows="12"
+          style="font-family: monospace; background-color: #1E1E1E"
       />
     </div>
 
@@ -111,12 +111,12 @@ import Vue from "vue";
 import Builder from "~/components/no-code/builder.vue";
 
 export default Vue.extend({
-  layout: 'dashboard',
-  middleware: 'authenticated',
 
   components: {
     Builder
   },
+  layout: 'dashboard',
+  middleware: 'authenticated',
 
   data() {
     return {
@@ -158,10 +158,10 @@ export default Vue.extend({
       this.builderLoaded = true;
 
       if (process.client) {
-        let copyToNewThemeRaw = localStorage.getItem("copyToNewTheme");
+        const copyToNewThemeRaw = localStorage.getItem("copyToNewTheme");
 
         if (copyToNewThemeRaw) {
-          let copyToNewTheme: { builderCss: string } = JSON.parse(copyToNewThemeRaw);
+          const copyToNewTheme: { builderCss: string } = JSON.parse(copyToNewThemeRaw);
           this.builderCss = copyToNewTheme.builderCss;
 
           this.theme.label = "Appearance Theme (Cloned)";
@@ -267,7 +267,7 @@ export default Vue.extend({
             customHtml: this.theme.customHtml,
           });
 
-          let href = window.location.href;
+          const href = window.location.href;
           window.location.replace(href.replace("/create", `/${response.id}`));
         } else {
           const response = await this.$axios.$post('/theme/update', {

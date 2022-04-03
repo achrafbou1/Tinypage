@@ -102,8 +102,8 @@
             v-else-if="pendingLink.type === 'html'"
             v-model="pendingLink.subtitle"
             class="border border-2 text-white p-2"
-            style="font-family: monospace; background-color: #1E1E1E"
             rows="12"
+            style="font-family: monospace; background-color: #1E1E1E"
         />
 
         <input
@@ -154,9 +154,9 @@
       <div v-show="pendingLink.type === 'divider'">
         <input
             v-model="dividerSettings.color"
+            :data-jscolor="jsColorOptions"
             class="p-3 mb-5 w-full rounded-lg bg-white text-sm text-gray-700"
             placeholder="e.g. #FFF"
-            :data-jscolor="jsColorOptions"
         >
 
         <label v-if="pendingLink.type === 'divider'" class="font-semibold mt-2 mb-2">Divider Font Size</label>
@@ -299,9 +299,9 @@
             <label class="font-semibold mt-2 mb-2 mr-2">Icon Color</label>
             <input
                 v-model="siSettings.color"
+                :data-jscolor="jsColorOptions"
                 class="rounded-lg bg-white text-sm text-gray-700"
                 placeholder="e.g. #FFF"
-                :data-jscolor="jsColorOptions"
             >
           </div>
         </div>
@@ -320,9 +320,9 @@
             <label class="font-semibold mt-2 mb-2 mr-2">Label Color</label>
             <input
                 v-model="siSettings.labelColor"
+                :data-jscolor="jsColorOptions"
                 class="rounded-lg bg-white text-sm text-gray-700"
                 placeholder="e.g. #FFF"
-                :data-jscolor="jsColorOptions"
             >
           </div>
         </div>
@@ -333,8 +333,8 @@
             <textarea
                 v-model="siSettings.customSvg"
                 class="border border-2 text-white"
-                style="font-family: monospace; background-color: #1E1E1E"
                 rows="2"
+                style="font-family: monospace; background-color: #1E1E1E"
             />
           </div>
 
@@ -346,9 +346,9 @@
             </label>
             <input
                 :id="'importCustomSVG' + index"
-                type="file"
                 accept=".svg"
                 hidden
+                type="file"
                 @change="importCustomSVG($event, siSettings)"
             >
           </div>
@@ -425,13 +425,13 @@
         <div
             class="flex flex-row justify-center items-center pl-4 pr-4 text-sm rounded-lg border border-blue-600 text-blue-500 bg-blue-200"
         >
-          <label for="importVCardFileInput" class="cursor-pointer text-center text-xl font-semibold">
+          <label class="cursor-pointer text-center text-xl font-semibold" for="importVCardFileInput">
             Import a .vcf file
           </label>
           <input
               id="importVCardFileInput"
-              type="file"
               hidden
+              type="file"
               @change="importVCard"
           >
         </div>
@@ -502,8 +502,8 @@
         </div>
 
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -512,8 +512,8 @@
         <textarea
             v-model="style"
             class="border border-2 text-white p-2"
-            style="font-family: monospace; background-color: #1E1E1E"
             rows="12"
+            style="font-family: monospace; background-color: #1E1E1E"
         />
       </client-only>
     </div>
@@ -544,8 +544,8 @@
         </div>
 
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our
           documentation</a>
@@ -555,8 +555,8 @@
         <textarea
             v-model="customCss"
             class="border border-2 text-white p-2"
-            style="font-family: monospace; background-color: #1E1E1E"
             rows="12"
+            style="font-family: monospace; background-color: #1E1E1E"
         />
       </client-only>
     </div>
