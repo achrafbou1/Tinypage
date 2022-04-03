@@ -17,6 +17,7 @@
       <select
           v-model="pendingLink.type"
           class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+          @change="onElementTypeChanged"
       >
         <option disabled>
           Select an element type
@@ -764,6 +765,9 @@ export default Vue.extend({
   },
 
   methods: {
+    onElementTypeChanged() {
+      this.$refs.label.focus();
+    },
     initColorPickers() {
       const jscolor = ((window as any).jscolor) as any;
       jscolor.install();
