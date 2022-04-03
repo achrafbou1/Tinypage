@@ -122,6 +122,7 @@ interface Link {
     id: string,
     profileId: string,
     type: LinkType,
+    items: { url: '' }[],
     url: string,
     sortOrder: number,
     label: string,

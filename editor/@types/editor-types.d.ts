@@ -26,12 +26,13 @@ type EditorTheme = Partial<Theme> & {
 };
 
 type EditorLink = Partial<Link> & {
-  id: string,
-  sortOrder: number,
-  label: string,
-  subtitle: string,
-  customCss: string,
-  url: string
+    id: string,
+    sortOrder: number,
+    label: string,
+    subtitle: string,
+    customCss: string,
+    url: string,
+    items: { url: '' }[]
 };
 
 type EditorAddon = Partial<Addon> & {
