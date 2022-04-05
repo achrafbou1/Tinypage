@@ -127,6 +127,7 @@ interface Link {
     label: string,
     subtitle: string | null,
     style: string | null,
+    items: { url: '' }[],
     customCss: string | null
     metadata: any,
     hidden: boolean,

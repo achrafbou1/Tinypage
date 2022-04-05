@@ -350,56 +350,25 @@ export class RouteHandler {
                     }
                     case 'gallery': {
                         if (link.items) {
-                            linkHtml += `<div class="max-w-2xl m-auto">
-  <div class="relative mb-4 mt-4 ml-4" data-carousel="static">
-    <!-- Carousel wrapper -->
-    <div class="overflow-hidden relative h-56 rounded-lg sm:h-64 xl:h-80 2xl:h-96">
+                            linkHtml += `<div class="carousel">
+  <div class="slides">
+    
     ${(function fun() {
                                 let html = '';
                                 for (const item of link.items) {
-                                    html += `<div class = "hidden duration-700 ease-in-out" data-carousel-item>
-                                               <img src="${item.url}" class="block absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2" alt="...">
-                                               </div>`;
+                                    html += `<img src="${item.url}" alt="slide image" class="slide">`;
                                 }
                                 return html;
                             })()
                             }
-    </div>
-    <!-- Slider indicators -->
-    <div class="flex absolute bottom-5 left-1/2 z-30 space-x-3 -translate-x-1/2">
-        ${(function fun() {
-                                let html = '';
-                                for (const idx in link.items) {
-                                    html += `<button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide ${idx}" data-carousel-slide-to="${idx}"></button>`;
-                                }
-                                return html;
-                            })()
-                            }
-    </div>
-    <!-- Slider controls -->
-    <button type="button" class="flex absolute top-0 left-0 z-30 justify-center items-center px-4 h-full cursor-pointer group focus:outline-none" data-carousel-prev>
-        <span class="inline-flex justify-center items-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-            <svg class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-            <span class="hidden">Previous</span>
-        </span>
-    </button>
-    <button type="button" class="flex absolute top-0 right-0 z-30 justify-center items-center px-4 h-full cursor-pointer group focus:outline-none" data-carousel-next>
-        <span class="inline-flex justify-center items-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-            <svg class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-            <span class="hidden">Next</span>
-        </span>
-    </button>
+  </div>
+  <div class="controls">
+    <div class="control prev-slide">&#9668;</div>
+    <div class="control next-slide">&#9658;</div>
+  </div>
 </div>
-</div>
-                        `;
-                            // for (const picture of link.items) {
-                            //     linkHtml += `
-                            // <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                            //     <img src="${picture.url}" class="block absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2" alt="...">
-                            // </div>
-                            // `;
-                            // }
-                            // linkHtml += `</div></div></div>`;
+        
+`;
                         }
                         break;
                     }
@@ -605,7 +574,7 @@ export class RouteHandler {
                                     onclick="{
                                            let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
                                            fetch(recordUrl, {method: 'POST'});
-                                           
+
                                            window.open('${dataUrl}');
                                            return false;
                                        }"
@@ -1019,7 +988,8 @@ export class RouteHandler {
                     <link rel="icon" type="image/png" href="/tinypage-logo.svg"/>
 
                     <link rel="stylesheet" href="/css/quill.core.min.css"/>
-                    ${links.some(element => element.type == 'gallery') ? '<link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.0/dist/flowbite.min.css" />' : '\n'}
+
+                    ${links.some(element => element.type == 'gallery') ? '<style>.carousel { width: 80vw; height: 250px; border-radius: 3px; overflow: hidden; position: relative; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); } .carousel:hover .controls { opacity: 1; } .carousel .controls { opacity: 0; display: flex; position: absolute; top: 50%; left: 0; justify-content: space-between; width: 100%; z-index: 99999; transition: all ease 0.5s; } .carousel .controls .control { margin: 0 5px; display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.7); opacity: 0.5; transition: ease 0.3s; cursor: pointer; } .carousel .controls .control:hover { opacity: 1; } .carousel .slides { position: absolute; top: 50%; left: 0; transform: translateY(-50%); display: flex; width: 100%; transition: 1s ease-in-out all; } .carousel .slides .slide { min-width: 100%; min-height: 250px; height: auto; }</style>' : '\n'}
 
                     <!-- Tailwind CSS Embedded Styles -->
                     <style>
@@ -1445,7 +1415,7 @@ export class RouteHandler {
                         </section>
                     </div>
                 </div>
-                ${links.some(element => element.type == 'gallery') ? '<script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js"></script>' : '\n'}
+                ${links.some(element => element.type == 'gallery') ? '<script>const delay = 3000; const slides = document.querySelector(".slides"); const slidesCount = slides.childElementCount; const maxLeft = (slidesCount - 1) * 100 * -1; let current = 0; function changeSlide(next = true) { if (next) { current += current > maxLeft ? -100 : current * -1; } else { current = current < 0 ? current + 100 : maxLeft; } slides.style.left = current + "%"; } let autoChange = setInterval(changeSlide, delay); const restart = function() { clearInterval(autoChange); autoChange = setInterval(changeSlide, delay); }; document.querySelector(".next-slide").addEventListener("click", function() { changeSlide(); restart(); }); document.querySelector(".prev-slide").addEventListener("click", function() { changeSlide(false); restart(); });</script>' : ''}
                 </body>
                 </html>
             `);

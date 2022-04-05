@@ -126,11 +126,14 @@
       <button
           class="text-sm px-2 py-2 ml-2 font-bold text-white rounded-2xl mb-4 bg-gdp hover:bg-blue-400 lg:mb-0 cursor-pointer"
           style="align-self: flex-start"
-          @click="pendingLink.items.push({ url: '' })"
+          @click="pendingLink.items.push({url: ''})"
       >
         Add Item
       </button>
-      <div v-for="(item, index) in pendingLink.items" :key="'items-' + index">
+      <div
+          v-for="(item, index) in pendingLink.items"
+          v-if="pendingLink.items && pendingLink.items.length > 0"
+      >
         <input
             v-model="item.url"
             class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
