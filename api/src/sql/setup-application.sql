@@ -265,12 +265,11 @@ alter table app.users
     drop column if exists payment_id;
 
 alter table app.links
-alter
-column type type text;
+    alter
+        column type type text;
 
 alter table app.profiles
-drop
-constraint if exists profiles_custom_domain_key;
+    drop constraint if exists profiles_custom_domain_key;
 
 -- Update v3.1 - add hidden column in links --
 alter table app.links
@@ -278,4 +277,8 @@ alter table app.links
 
 -- Update v3.2 - add custom items for other types of links --
 alter table app.links
-    add column if not exists items jsonb default '[]'::jsonb not null;
+    add column if not exists items jsonb default '[
+      {
+        "url": ""
+      }
+    ]'::jsonb not null;
