@@ -351,7 +351,7 @@ export class RouteHandler {
                     case 'gallery': {
                         if (link.items) {
                             linkHtml += `<div class="carousel">
-  <div class="slides">
+  <div class="slides-${index}">
     
     ${(function fun() {
                                 let html = '';
@@ -363,11 +363,26 @@ export class RouteHandler {
                             }
   </div>
   <div class="controls">
-    <div class="control prev-slide">&#9668;</div>
-    <div class="control next-slide">&#9658;</div>
+    <div class="control prev-slide-${index}">&#9668;</div>
+    <div class="control next-slide-${index}">&#9658;</div>
   </div>
 </div>
-        
+<script>
+let current_${index} = 0; 
+function changeSlide(next = true, index) { 
+  const slides = document.querySelector(".slides-" + index); 
+  const slidesCount = slides.childElementCount; 
+  const maxLeft = (slidesCount - 1) * 100 * -1; 
+  if (next) { 
+    current_${index} += current_${index} > maxLeft ? -100 : current_${index} * -1; 
+  } 
+  else { 
+    current_${index} = current_${index} < 0 ? current_${index} + 100 : maxLeft; 
+  } 
+  slides.style.left = current_${index} + "%"; } 
+  document.querySelector(".prev-slide-${index}").addEventListener("click", function () { changeSlide(false, ${index}); }); 
+  document.querySelector(".next-slide-${index}").addEventListener("click", function () { changeSlide(true, ${index}) });
+</script>       
 `;
                         }
                         break;
@@ -989,7 +1004,7 @@ export class RouteHandler {
 
                     <link rel="stylesheet" href="/css/quill.core.min.css"/>
 
-                    ${links.some(element => element.type == 'gallery') ? '<style>.carousel { width: 80vw; height: 250px; border-radius: 3px; overflow: hidden; position: relative; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); } .carousel:hover .controls { opacity: 1; } .carousel .controls { opacity: 0; display: flex; position: absolute; top: 50%; left: 0; justify-content: space-between; width: 100%; z-index: 99999; transition: all ease 0.5s; } .carousel .controls .control { margin: 0 5px; display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.7); opacity: 0.5; transition: ease 0.3s; cursor: pointer; } .carousel .controls .control:hover { opacity: 1; } .carousel .slides { position: absolute; top: 50%; left: 0; transform: translateY(-50%); display: flex; width: 100%; transition: 1s ease-in-out all; } .carousel .slides .slide { min-width: 100%; min-height: 250px; height: auto; }</style>' : '\n'}
+                    ${links.some(element => element.type == 'gallery') ? '<style>.carousel { aspect-ratio: 16/9; width: 80vw; height: 100%; border-radius: 3px; overflow: hidden; position: relative; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); } .carousel:hover .controls { opacity: 1; } .carousel .controls { opacity: 0; display: flex; position: absolute; top: 50%; left: 0; justify-content: space-between; width: 100%; z-index: 99999; transition: all ease 0.5s; } .carousel .controls .control { margin: 0 5px; display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.7); opacity: 0.5; transition: ease 0.3s; cursor: pointer; } .carousel .controls .control:hover { opacity: 1; } .carousel [class^="slides"] { position: absolute; top: 50%; left: 0; transform: translateY(-50%); display: flex; width: 100%; transition: 1s ease-in-out all; } .carousel [class^="slides"] .slide { min-width: 100%; min-height: 250px; height: auto; }</style>' : '\n'}
 
                     <!-- Tailwind CSS Embedded Styles -->
                     <style>
@@ -1415,7 +1430,6 @@ export class RouteHandler {
                         </section>
                     </div>
                 </div>
-                ${links.some(element => element.type == 'gallery') ? '<script>const delay = 3000; const slides = document.querySelector(".slides"); const slidesCount = slides.childElementCount; const maxLeft = (slidesCount - 1) * 100 * -1; let current = 0; function changeSlide(next = true) { if (next) { current += current > maxLeft ? -100 : current * -1; } else { current = current < 0 ? current + 100 : maxLeft; } slides.style.left = current + "%"; } let autoChange = setInterval(changeSlide, delay); const restart = function() { clearInterval(autoChange); autoChange = setInterval(changeSlide, delay); }; document.querySelector(".next-slide").addEventListener("click", function() { changeSlide(); restart(); }); document.querySelector(".prev-slide").addEventListener("click", function() { changeSlide(false); restart(); });</script>' : ''}
                 </body>
                 </html>
             `);
