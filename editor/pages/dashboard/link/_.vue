@@ -123,8 +123,7 @@
     >
       <label class="font-semibold mb-2">Image Urls</label>
       <button
-          class="text-sm px-2 py-2 ml-2 font-bold text-white rounded-2xl mb-4 bg-gdp hover:bg-blue-400 lg:mb-0 cursor-pointer"
-          style="align-self: flex-start"
+          class="text-sm px-2 py-2 font-bold text-white rounded-2xl mb-4 bg-gdp hover:bg-blue-400 lg:mb-0 cursor-pointer"
           @click="pendingLink.items.push({url: ''})"
       >
         Add Item
@@ -132,17 +131,17 @@
       <div
           v-for="(item, index) in pendingLink.items"
           v-if="pendingLink.items && pendingLink.items.length > 0"
+          class="flex flex-row mb-4 justify-start w-full"
       >
         <input
             v-model="item.url"
-            class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+            class="flex-auto p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
             placeholder="e.g. https://exampleurl.com/example"
             type="url"
         >
         <button
             v-show="pendingLink.items.length > 1"
-            class="text-sm px-2 py-2 ml-2 font-bold text-white rounded-2xl hover:bg-red-500 bg-red-600 mb-4 lg:mb-0 cursor-pointer"
-            style="align-self: flex-end"
+            class="flex-auto text-sm px-2 py-2 mt-2 ml-2 font-bold text-white rounded-2xl hover:bg-red-500 bg-red-600 mb-4 lg:mb-0 cursor-pointer"
             @click="pendingLink.items.splice(index, 1);"
         >
           Delete
