@@ -10,8 +10,7 @@ import fs, {promises as fsPromises} from "fs";
 interface MicrositeRequest extends FastifyRequest {
     Querystring: {
         token?: string,
-        scrolling: string,
-        preview?: string
+        scrolling: string
     };
 }
 
@@ -135,7 +134,6 @@ export class RouteHandler {
             let response: AxiosResponse<{ profile: Profile, links: Link[], user: User, theme: Theme }> | undefined;
 
             const scrolling = request.query.scrolling === undefined || request.query.scrolling === "true";
-            const preview = request.query.preview === undefined || request.query.preview === "true";
             let isPreview = false;
 
             try {
@@ -271,9 +269,8 @@ export class RouteHandler {
             //
 
             // Add link html to html block link-by-link
-            for (let index = 0; index < links.length; index++) {
-
-                let link = links[index];
+            for (const element of links) {
+                let link = element;
                 switch (link.type) {
                     case 'link': {
                         let subtitleHtml = '';
@@ -327,31 +324,12 @@ export class RouteHandler {
                                 ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                     </div>
                             </a>`;
-                        } else {
-                            if (preview) {
-                                linkHtml += `<a
-                                id="sl-item-${link.id}"
-                                href="${config.apiUrl}/analytics/link/record/${link.id}"
-                                class="w-full sl-item-parent"
-                                target="_blank"
-                                >
-                                <div
-                                    class="rounded-2xl shadow w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
-                                style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; background-color: darkgray; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
-                                >
-                                ${buttonImageHtml}
-                                <span class="font-medium sl-label"
-                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: gray; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
-                                    </div>
-                            </a>`;
-                            }
                         }
                         break;
                     }
                     case 'social': {
-                        if (!link.metadata?.socialIcons)
+                        if (!link.metadata?.socialIcons || link.hidden)
                             break;
-
                         try {
                             let socialIcons: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }[] = link.metadata?.socialIcons ?? [];
 
