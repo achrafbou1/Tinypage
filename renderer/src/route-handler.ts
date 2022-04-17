@@ -269,8 +269,8 @@ export class RouteHandler {
             //
 
             // Add link html to html block link-by-link
-            for (const element of links) {
-                let link = element;
+            for (let index = 0; index < links.length; index++) {
+                let link = links[index];
                 switch (link.type) {
                     case 'link': {
                         let subtitleHtml = '';
