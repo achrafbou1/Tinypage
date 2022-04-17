@@ -562,7 +562,6 @@ export default Vue.extend({
       const queryParams = new URLSearchParams({
         token: token as string,
         scrolling: "false",
-        preview: "true", // To know if its the small preview of the editor or not
         uid: new Date().toISOString() // necessary to reload the URL...
       });
 
@@ -719,7 +718,7 @@ export default Vue.extend({
       }
     },
 
-    async openUrl() {
+    openUrl() {
       let text = '';
 
       if (this.user.activeProfile.customDomain) {

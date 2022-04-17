@@ -32,7 +32,7 @@
             v-for="link in sortedLinks"
             :key="link.id"
             :to="'/dashboard/link/' + link.id"
-            class="flex flex-col flex-shrink-0 p-4 bg-white text-center font-medium items-center justify-center rounded-2xl w-full mb-2 opacity-90 hover:opacity-100 cursor-pointer"
+            :class="getLinkClasses(link.hidden)"
             style="box-shadow: inset 0 0 0 3px rgba(0,0,0,.05), 0 10px 25px rgba(81,173,255,0.1);"
         >
           <img :src="getLinkTypeIcon(link.type)" alt="link type icon" class="sl-editor-link-icon">
@@ -249,6 +249,13 @@ export default Vue.extend({
   },
 
   methods: {
+    getLinkClasses(hidden: boolean) {
+      let classes = "flex flex-col flex-shrink-0 p-4 bg-white text-center font-medium items-center justify-center rounded-2xl w-full mb-2 opacity-90 hover:opacity-100 cursor-pointer";
+      if (hidden) {
+        classes += ' bg-gray-400 text-gray-600';
+      }
+      return classes;
+    },
     async getUserData() {
       try {
         this.user = await this.$axios.$post('/user', {
