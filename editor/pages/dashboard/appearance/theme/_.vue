@@ -17,6 +17,13 @@
           placeholder="e.g. My beautiful theme"
           type="text"
       >
+      <label class="font-semibold mt-2">Available to all pages</label>
+      <input
+          id="checkbox-available"
+          v-model="theme.global"
+          class="p-3 p-2 mt-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          type="checkbox"
+      >
     </div>
     <div class="hidden lg:flex flex-col p-6 bg-white shadow rounded-lg w-full mb-6">
       <div
@@ -123,10 +130,12 @@ export default Vue.extend({
       id: null as string | null,
       rendererUrl: process.env.RENDERER_URL,
       themes: [] as EditorTheme[],
+      activeProfileId: "-1",
       builderCss: '',
       editorCss: '',
       theme: {
         label: null,
+        global: false,
         customHtml: null,
         customCss: null
       } as unknown as EditorTheme,
@@ -149,7 +158,8 @@ export default Vue.extend({
     };
   },
 
-  mounted() {
+  async mounted() {
+    await this.getUserData();
     this.id = this.$route.path.replace('/dashboard/appearance/theme/', '');
     if (this.id !== 'create') {
       this.loadThemes();
@@ -172,10 +182,21 @@ export default Vue.extend({
   },
 
   methods: {
+    async getUserData() {
+      const token = this.$store.getters['auth/getToken'];
+      try {
+        const profileResponse = await this.$axios.$post('/profile/active-profile', {
+          token
+        });
+        this.activeProfileId = profileResponse.id;
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async loadThemes() {
       try {
         // Grab themes from response
-        this.themes = await this.$axios.$post('/themes', {
+        this.themes = await this.$axios.$post('/themes/' + this.activeProfileId, {
           token: this.$store.getters['auth/getToken'],
           includeGlobal: false
         });
@@ -210,9 +231,12 @@ export default Vue.extend({
     },
     async saveCreateTheme() {
       try {
+
         const response = await this.$axios.$post('/theme/create', {
           token: this.$store.getters['auth/getToken'],
           label: this.theme.label,
+          global: this.theme.global,
+          profileId: this.activeProfileId,
           customCss: this.editorCss + '/* SL-NO-CODE */' + this.builderCss,
           customHtml: this.theme.customHtml,
         });
@@ -263,6 +287,7 @@ export default Vue.extend({
           const response = await this.$axios.$post('/theme/create', {
             token: this.$store.getters['auth/getToken'],
             label: this.theme.label,
+            global: this.theme.global,
             customCss: this.editorCss + '/* SL-NO-CODE */' + this.builderCss,
             customHtml: this.theme.customHtml,
           });
@@ -274,6 +299,7 @@ export default Vue.extend({
             token: this.$store.getters['auth/getToken'],
             id: this.theme.id,
             label: this.theme.label,
+            global: this.theme.global,
             customCss: this.editorCss + '/* SL-NO-CODE */' + this.builderCss,
             customHtml: this.theme.customHtml,
           });

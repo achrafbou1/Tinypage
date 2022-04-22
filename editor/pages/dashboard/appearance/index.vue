@@ -202,6 +202,7 @@ export default Vue.extend({
 
   data() {
     return {
+      activeProfileId: "-1",
       showHTML: false,
       showCSS: false,
       rendererUrl: process.env.RENDERER_URL,
@@ -257,9 +258,9 @@ export default Vue.extend({
     };
   },
 
-  beforeMount() {
-    this.getUserData();
-    this.loadThemes();
+  async beforeMount() {
+    await this.getUserData();
+    await this.loadThemes();
   },
 
   methods: {
@@ -269,6 +270,7 @@ export default Vue.extend({
         const profileResponse = await this.$axios.$post<Profile>('/profile/active-profile', {
           token
         });
+        this.activeProfileId = profileResponse.id;
         this.activeThemeId = profileResponse.themeId ?? null;
         this.customCss = profileResponse.customCss ?? '';
         const strings = this.customCss.split('/* SL-NO-CODE */');
@@ -290,7 +292,7 @@ export default Vue.extend({
     async loadThemes() {
       try {
         // Grab themes from response
-        this.themes = (await this.$axios.$post<EditorTheme[]>('/themes', {
+        this.themes = (await this.$axios.$post<EditorTheme[]>('/themes/' + this.activeProfileId, {
           token: this.$store.getters['auth/getToken'],
           includeGlobal: false
         }));
