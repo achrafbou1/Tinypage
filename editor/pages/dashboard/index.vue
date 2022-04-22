@@ -37,7 +37,7 @@
         >
           <img class="sl-editor-link-icon" :src="getLinkTypeIcon(link.type)" alt="link type icon">
           <span class="text-lg font-bold">
-            {{ link.label.length > 30 ? link.label.substring(0, 30) + "..." : link.label }}
+            {{ link.label.length > 30 ? link.label.substring(0, 30) + '...' : link.label }}
           </span>
           <span v-if="link.subtitle && link.type === 'link'" class="text-md font-bold opacity-70 sl-subtitle mt-1">
             {{ link.subtitle.length > 30 ? link.subtitle.substring(0, 30) : link.subtitle }}
@@ -193,7 +193,8 @@ export default Vue.extend({
       label: "",
       subtitle: "",
       customCss: "",
-      url: ""
+      url: "",
+      items: [{url: ''}]
     };
 
     return {
@@ -391,7 +392,8 @@ export default Vue.extend({
         label: '',
         subtitle: '',
         url: '',
-        customCss: ''
+        customCss: '',
+        items: [{url: ''}]
       };
     },
 
@@ -404,7 +406,8 @@ export default Vue.extend({
         label: link.label,
         subtitle: link.subtitle,
         customCss: link.customCss,
-        url: link.url
+        url: link.url,
+        items: link.items
       };
 
       this.openModal('edit');
@@ -452,6 +455,8 @@ export default Vue.extend({
         case "vcard":
           return '/icons/business-card.svg';
         case "image":
+          return '/icons/image-outline.svg';
+        case "gallery":
           return '/icons/image-outline.svg';
         case "divider":
           return '/icons/divider-solid.svg';

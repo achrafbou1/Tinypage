@@ -164,6 +164,7 @@ interface DbLink {
     hidden: boolean,
     custom_css: string | null,
     metadata: any,
+    items: { url: "" }[],
     created_on: string
 }
 
