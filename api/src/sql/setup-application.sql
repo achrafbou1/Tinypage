@@ -272,3 +272,16 @@ alter table app.profiles
 -- Update v3.1 - add hidden column in links --
 alter table app.links
     add column if not exists hidden boolean default 'false' not null;
+
+-- Update v3.2 - add hidden column in links --
+alter table app.themes
+    add column if not exists profile_id bigint;
+do
+$$
+    begin
+        alter table app.themes
+            add constraint fk_themes_profile_id foreign key (profile_id) references app.profiles (id) on update cascade on delete set null deferrable initially deferred;
+    exception
+        when duplicate_object then raise notice 'table constraint foo.bar already exists';
+    end;
+$$;

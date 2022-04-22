@@ -297,7 +297,7 @@
             style="top:0;left:0;border-radius: 50px; overflow:hidden;box-shadow:0 10px 15px -3px rgb(0 0 0), 0 4px 6px -2px rgb(0 0 0), inset 0 0 5px 0 rgba(0,0,0,.1);"
         >
           <div
-              class="relative text-center rounded flex items-center justify-ceneter p-6"
+              class="relative text-center rounded flex items-center justify-center p-6"
               style="border-radius: 40px;width: 262px;height:568px;overflow:hidden;"
           >
             <iframe

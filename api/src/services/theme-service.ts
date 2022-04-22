@@ -33,14 +33,15 @@ export class ThemeService extends DatabaseService {
      *
      * @param userId
      * @param includeGlobal Should global themes be included in the results?
+     * @param profileId
      */
-    async listUserThemes(userId: string, includeGlobal: boolean = true): Promise<Theme[]> {
+    async listUserThemes(userId: string, includeGlobal: boolean = true, profileId: number = -1): Promise<Theme[]> {
         let queryResult: QueryResult<DbTheme>;
 
         if (includeGlobal) {
             queryResult = await this.pool.query<DbTheme>("select * from app.themes where user_id=$1 or global=true", [userId]);
         } else {
-            queryResult = await this.pool.query<DbTheme>("select * from app.themes where user_id=$1 and global=false", [userId]);
+            queryResult = await this.pool.query<DbTheme>("select * from app.themes where user_id=$1 and (profile_id = $2 or profile_id IS NULL) or global=true", [userId, profileId]);
         }
 
         return queryResult.rowCount < 1 ? [] : queryResult.rows.map(x => DbTypeConverter.toTheme(x));
@@ -60,18 +61,24 @@ export class ThemeService extends DatabaseService {
      *
      * @param userId
      * @param label
+     * @param global
+     * @param profileId
      * @param customCss
      * @param customHtml
      */
     async createTheme(
         userId: string,
         label: string,
+        global: boolean,
+        profileId: number,
         customCss?: string,
         customHtml?: string
     ): Promise<Theme> {
-        let queryResult = await this.pool.query<DbTheme>("insert into app.themes(label, custom_css, custom_html, user_id) values ($1, $2, $3, $4) returning *",
+        let queryResult = await this.pool.query<DbTheme>("insert into app.themes(label, global, profile_id, custom_css, custom_html, user_id) values ($1, $2, $3, $4, $5, $6) returning *",
             [
                 label,
+                global,
+                profileId,
                 customCss,
                 customHtml,
                 userId
@@ -89,6 +96,7 @@ export class ThemeService extends DatabaseService {
      * @param themeId
      * @param userId
      * @param label
+     * @param global
      * @param customCss
      * @param customHtml
      */
@@ -96,12 +104,14 @@ export class ThemeService extends DatabaseService {
         themeId: string,
         userId: string,
         label: string,
+        global: boolean,
         customCss?: string,
         customHtml?: string
     ): Promise<Theme> {
-        let queryResult = await this.pool.query<DbTheme>("update app.themes set label=$1, custom_css=$2, custom_html=$3 where id=$4 and user_id=$5 returning *",
+        let queryResult = await this.pool.query<DbTheme>("update app.themes set label=$1, global=$2, custom_css=$3, custom_html=$4 where id=$5 and user_id=$6 returning *",
             [
                 label,
+                global,
                 customCss,
                 customHtml,
                 themeId,
