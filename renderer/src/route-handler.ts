@@ -594,7 +594,7 @@ function changeSlide(next = true, index) {
                             <style>
                                 ${customCss}
                             </style>
-                            <img id="sl-item-${link.id}" src="${link.url}" class="w-full h-auto"
+                            <img id="sl-item-${link.id}" src="${link.url}" class="w-full h-auto mt-4"
                                  style="border-radius:4px;${style}" alt="link image"
                             />
                         `;
