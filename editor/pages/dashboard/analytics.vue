@@ -90,6 +90,14 @@
           >{{ link.link.url }}</span>
         </div>
         <div
+            v-if="link.subLinkVisits && Object.keys(link.subLinkVisits).length > 0"
+            class="py-2 px-4 text-sm rounded-lg border bg-gdp text-white font-medium text-center hover:bg-blue-300 cursor-pointer"
+            @click="expand(link.subLinkVisits)"
+        >
+          <span v-show="!drawer">Expand</span><span v-show="drawer">Collapse</span>
+        </div>
+
+        <div
             class="lg:ml-auto flex flex-row lg:flex-col justify-start lg:justify-end items-center mt-2 lg:mt-0 w-full lg:w-auto"
         >
           <span class="uppercase text-gray-800 font-bold mr-1 lg:mr-0 lg:mb-1">Total clicks</span>
@@ -97,6 +105,17 @@
           <h4 class="lg:ml-auto text-blue-600 text-2xl font-bold">
             {{ link.views.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
           </h4>
+
+          <span v-if="Object.keys(subLinkVisits).length > 0 && drawer">
+            <span v-for="[type, count] in Object.entries(subLinkVisits)" :key="type">
+              <span class="uppercase text-gray-800 font-bold mr-1 lg:mr-0 lg:mb-1">{{ type }}</span>
+              <span class="lg:hidden text-sm uppercase text-gray-700 font-semibold mr-2 lg:mr-0 lg:mb-1">:</span>
+              <h4 class="lg:ml-auto text-blue-600 text-2xl font-bold">
+                {{ count }}
+              </h4>
+            </span>
+
+          </span>
         </div>
       </div>
 
@@ -115,8 +134,9 @@ export default Vue.extend({
 
   data() {
     return {
+      drawer: false,
       dayRange: 30,
-
+      subLinkVisits: [],
       analytics: {
         totalProfileViews: 0,
         linkVisits: new Array<LinkVisit>(),
@@ -195,17 +215,22 @@ export default Vue.extend({
     }
 
     const token = this.$store.getters['auth/getToken'];
+    if (process.env.NODE_ENV === 'production') {
+      this.subInfo = await this.$axios.$post('/payments/sub-info', {
+        token
+      });
 
-    this.subInfo = await this.$axios.$post('/payments/sub-info', {
-      token
-    });
+      const permLevel = Permission.PRO.permLevel;
 
-    const permLevel = Permission.PRO.permLevel;
-
-    this.hasPerms = permLevel <= Permission.parse(this.subInfo.tier).permLevel;
+      this.hasPerms = permLevel <= Permission.parse(this.subInfo.tier).permLevel;
+    }
   },
 
   methods: {
+    expand(subLinkVisits: []) {
+      this.drawer = !this.drawer;
+      this.subLinkVisits = subLinkVisits;
+    },
     onDayRangeChange(evt: Event) {
       const target = evt.target as HTMLInputElement;
       const value = target.value;

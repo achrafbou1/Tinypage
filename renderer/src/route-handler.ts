@@ -487,8 +487,13 @@ function changeSlide(next = true, index) {
                                        style="color:${siSettings.color};"
                                        onclick="{
                                          let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                         fetch(recordUrl, {method: 'POST'});
-                                       }"
+                                         fetch(recordUrl, {
+                                           method: 'POST', 
+                                           headers: {
+                                          'Content-Type': 'application/json'
+                                        }, 
+                                        body: JSON.stringify({socialIconId: ${i}})
+                                       })}"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                             ${svgData}

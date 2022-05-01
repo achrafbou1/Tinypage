@@ -17,6 +17,9 @@ import {Permission, PermissionUtils} from "../utils/permission-utils";
 interface LinkAnalyticsRequest extends RequestGenericInterface {
     Params: {
         id?: string
+    },
+    Body: {
+        socialIconId?: number;
     };
 }
 
@@ -104,7 +107,9 @@ export class AnalyticsController extends Controller {
     async LinkAnalytics(request: FastifyRequest<LinkAnalyticsRequest>, reply: FastifyReply) {
         try {
             let params = request.params;
+            let body = request.body;
             let id = params.id;
+            let socialIconId = body.socialIconId || null;
 
             if (!id) {
                 reply.code(StatusCodes.NOT_FOUND);
@@ -117,7 +122,7 @@ export class AnalyticsController extends Controller {
 
             if (profile.visibility !== "unpublished") {
                 if (!profile.metadata?.privacyMode) {
-                    await this.analyticsService.createVisit(id, "link");
+                    await this.analyticsService.createVisit(id, socialIconId, "link");
 
                     if (this.mixpanel) {
                         let ip = IpUtils.GetFirstIp(IpUtils.GrabIps(request));
@@ -181,7 +186,7 @@ export class AnalyticsController extends Controller {
 
             if (profile.visibility !== "unpublished") {
                 if (!profile.metadata?.privacyMode) {
-                    await this.analyticsService.createVisit(id, "page");
+                    await this.analyticsService.createVisit(id, null, "page");
 
                     if (this.mixpanel) {
                         let ip = IpUtils.GetFirstIp(IpUtils.GrabIps(request));
