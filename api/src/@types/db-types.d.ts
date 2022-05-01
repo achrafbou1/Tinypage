@@ -198,6 +198,7 @@ interface DbPermissionGroup {
  created_on timestamp not null default current_timestamp
  */
 interface DbAnalyticsVisit {
+    social_icon_id: string | null;
     type: visit_t,
     referral_id: string,
     created_on: string
