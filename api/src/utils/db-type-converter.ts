@@ -111,7 +111,8 @@ export class DbTypeConverter {
             hidden: link.hidden,
             customCss: link.custom_css,
             metadata: link.metadata,
-            createdOn: link.created_on
+            createdOn: link.created_on,
+            items: link.items
         };
     }
 
@@ -129,7 +130,8 @@ export class DbTypeConverter {
             hidden: link.hidden,
             metadata: link.metadata,
             privateMetadata: link.private_metadata,
-            createdOn: link.created_on
+            createdOn: link.created_on,
+            items: link.items
         };
     }
 

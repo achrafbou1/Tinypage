@@ -1,9 +1,9 @@
 <template>
   <div class="relative flex min-h-screen w-screen bg-gray-100 justify-center w-full sl-bg">
     <UserProfileView
-      v-if="addon.resource"
-      :preview="true"
-      :profile-data="addon.resource"
+        v-if="addon.resource"
+        :preview="true"
+        :profile-data="addon.resource"
     />
   </div>
 </template>
@@ -19,6 +19,15 @@ export default Vue.extend({
 
   middleware: 'authenticated',
 
+  data() {
+    return {
+      id: null,
+      addon: {
+        resource: null
+      }
+    };
+  },
+
   head() {
     return {
       title: 'Marketplace theme preview - ' + this.$customSettings.productName,
@@ -29,15 +38,6 @@ export default Vue.extend({
           content: 'noindex'
         }
       ]
-    };
-  },
-
-  data() {
-    return {
-      id: null,
-      addon: {
-        resource: null
-      }
     };
   },
 

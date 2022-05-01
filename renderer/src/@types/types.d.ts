@@ -114,6 +114,7 @@ interface SensitiveProfile extends Profile {
 }
 
 interface Link {
+    items: { url: '' }[];
     id: string,
     profileId: string,
     type: LinkType,

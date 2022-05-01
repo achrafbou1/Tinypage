@@ -24,10 +24,10 @@ export default Vue.extend({
       switch (service) {
         case "Google": {
           const response = await this.$axios.post<{ activeProfile: Profile, token: string, user: { id: string, email: string } }>(
-            '/auth/google/login',
-            {
-              requestToken
-            });
+              '/auth/google/login',
+              {
+                requestToken
+              });
 
           const message = response.data;
 

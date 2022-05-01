@@ -34,7 +34,7 @@ type AddonType = 'theme' | 'preset' | 'plugin';
 /**
  * Link type
  */
-type LinkType = "link" | "social" | "vcard" | "image" | "divider" | "text" | "html" | "youtube" | string;
+type LinkType = "link" | "social" | "vcard" | "image" | "divider" | "text" | "html" | "youtube" | "gallery" | string;
 
 interface User {
     id: string,
@@ -127,6 +127,7 @@ interface Link {
     label: string,
     subtitle: string | null,
     style: string | null,
+    items: { url: '' }[],
     customCss: string | null
     metadata: any,
     hidden: boolean,

@@ -2,21 +2,23 @@
   <div>
     <transition name="fade">
       <div
-        v-if="consentBannerActive"
-        class="consent-banner"
+          v-if="consentBannerActive"
+          class="consent-banner"
       >
         <p class="text-black font-bold">
-          <span class="opacity-70">By using {{ app_name }}, you agree to our </span><a class="text-gdp hover:underline"
-                                                                                       href="/privacy-policy"
-                                                                                       target="_blank">Privacy
+          <span class="opacity-70">By using {{ app_name }}, you agree to our </span><a
+            class="text-gdp hover:underline"
+            href="/privacy-policy"
+            target="_blank"
+        >Privacy
           Policy</a>.
         </p>
         <br>
 
         <button
-          class="flex px-3 py-1 text-sm ml-auto text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-auto max-w-xs justify-center align-center"
-          type="button"
-          @click="consentToPolicy"
+            class="flex px-3 py-1 text-sm ml-auto text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-auto max-w-xs justify-center align-center"
+            type="button"
+            @click="consentToPolicy"
         >
           I accept
         </button>

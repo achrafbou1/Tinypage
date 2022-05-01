@@ -1,4 +1,4 @@
-import Vue from 'vue';
-import {VueEditor} from 'vue2-editor';
+import Vue from 'vue'
+import { VueEditor } from 'vue2-editor'
 
-Vue.component('VueEditor', VueEditor);
+Vue.component('VueEditor', VueEditor)
