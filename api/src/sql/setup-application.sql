@@ -122,12 +122,13 @@ create table if not exists app.links
     url              text               default '#' not null,
     sort_order       int       not null,
     label            text      not null,
-    subtitle         text,
-    style            text,
-    custom_css       text,
-    hidden           boolean,
-    metadata         jsonb     not null default '{}',
-    private_metadata jsonb     not null default '{}',
+    subtitle text,
+    style text,
+    custom_css text,
+    hidden boolean,
+    items jsonb,
+    metadata jsonb not null default '{}',
+    private_metadata jsonb not null default '{}',
     created_on       timestamp not null default current_timestamp
 );
 
@@ -264,7 +265,8 @@ alter table app.users
     drop column if exists payment_id;
 
 alter table app.links
-    alter column type type text;
+    alter
+        column type type text;
 
 alter table app.profiles
     drop constraint if exists profiles_custom_domain_key;
@@ -272,3 +274,23 @@ alter table app.profiles
 -- Update v3.1 - add hidden column in links --
 alter table app.links
     add column if not exists hidden boolean default 'false' not null;
+
+-- Update v3.2 - add hidden column in links --
+alter table app.themes
+    add column if not exists profile_id bigint;
+do
+$$
+    begin
+        alter table app.themes
+            add constraint fk_themes_profile_id foreign key (profile_id) references app.profiles (id) on update cascade on delete set null deferrable initially deferred;
+    exception
+        when duplicate_object then raise notice 'table constraint foo.bar already exists';
+    end;
+$$;
+-- Update v3.2 - add custom items for other types of links --
+alter table app.links
+    add column if not exists items jsonb default '[
+      {
+        "url": ""
+      }
+    ]'::jsonb not null;

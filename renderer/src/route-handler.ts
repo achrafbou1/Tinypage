@@ -261,7 +261,7 @@ export class RouteHandler {
             // language=HTML
             let linkHtml = '';
 
-            // Define links & filter out hidden & sort by order
+            // Define links & sort by order
             const links = response.data.links.sort(function (a: Link, b: Link) {
                 return a.sortOrder - b.sortOrder;
             });
@@ -270,7 +270,6 @@ export class RouteHandler {
 
             // Add link html to html block link-by-link
             for (let index = 0; index < links.length; index++) {
-
                 let link = links[index];
                 switch (link.type) {
                     case 'link': {
@@ -328,10 +327,48 @@ export class RouteHandler {
                         }
                         break;
                     }
+                    case 'gallery': {
+                        if (link.items) {
+                            linkHtml += `<div class="carousel">
+  <div class="slides-${index}">
+    
+    ${(function fun() {
+                                let html = '';
+                                for (const item of link.items) {
+                                    html += `<img src="${item.url}" alt="slide image" class="slide">`;
+                                }
+                                return html;
+                            })()
+                            }
+  </div>
+  <div class="controls">
+    <div class="control prev-slide-${index}">&#9668;</div>
+    <div class="control next-slide-${index}">&#9658;</div>
+  </div>
+</div>
+<script>
+let current_${index} = 0; 
+function changeSlide(next = true, index) { 
+  const slides = document.querySelector(".slides-" + index); 
+  const slidesCount = slides.childElementCount; 
+  const maxLeft = (slidesCount - 1) * 100 * -1; 
+  if (next) { 
+    current_${index} += current_${index} > maxLeft ? -100 : current_${index} * -1; 
+  } 
+  else { 
+    current_${index} = current_${index} < 0 ? current_${index} + 100 : maxLeft; 
+  } 
+  slides.style.left = current_${index} + "%"; } 
+  document.querySelector(".prev-slide-${index}").addEventListener("click", function () { changeSlide(false, ${index}); }); 
+  document.querySelector(".next-slide-${index}").addEventListener("click", function () { changeSlide(true, ${index}) });
+</script>       
+`;
+                        }
+                        break;
+                    }
                     case 'social': {
                         if (!link.metadata?.socialIcons || link.hidden)
                             break;
-
                         try {
                             let socialIcons: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }[] = link.metadata?.socialIcons ?? [];
 
@@ -535,7 +572,7 @@ export class RouteHandler {
                                     onclick="{
                                            let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
                                            fetch(recordUrl, {method: 'POST'});
-                                           
+
                                            window.open('${dataUrl}');
                                            return false;
                                        }"
@@ -562,7 +599,7 @@ export class RouteHandler {
                             <style>
                                 ${customCss}
                             </style>
-                            <img id="sl-item-${link.id}" src="${link.url}" class="w-full h-auto"
+                            <img id="sl-item-${link.id}" src="${link.url}" class="w-full h-auto mt-4"
                                  style="border-radius:4px;${style}" alt="link image"
                             />
                         `;
@@ -949,6 +986,8 @@ export class RouteHandler {
                     <link rel="icon" type="image/png" href="/tinypage-logo.svg"/>
 
                     <link rel="stylesheet" href="/css/quill.core.min.css"/>
+
+                    ${links.some(element => element.type == 'gallery') ? '<style>.carousel { aspect-ratio: 1/1; width: 100%; border-radius: 3px; overflow: hidden; position: relative; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); } .carousel:hover .controls { opacity: 1; } .carousel .controls { opacity: 0; display: flex; position: absolute; top: 50%; left: 0; justify-content: space-between; width: 100%; z-index: 99999; transition: all ease 0.5s; } .carousel .controls .control { margin: 0 5px; display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.7); opacity: 0.5; transition: ease 0.3s; cursor: pointer; } .carousel .controls .control:hover { opacity: 1; } .carousel [class^="slides"] { position: absolute; top: 50%; left: 0; transform: translateY(-50%); display: flex; width: 100%; transition: 1s ease-in-out all; } .carousel [class^="slides"] .slide { min-width: 100%; min-height: 250px; height: auto; }</style>' : '\n'}
 
                     <!-- Tailwind CSS Embedded Styles -->
                     <style>

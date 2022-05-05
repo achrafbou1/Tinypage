@@ -16,8 +16,8 @@
           Customization
         </h2>
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -69,17 +69,18 @@
               {{ showHTML ? 'Close Editor' : 'Open Editor' }}
             </h6>
             <transition name="fade">
-              <img :src="showHTML ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
-                   style="width: 20px; height: 20px;"
-                   alt="show hide HTML editor"
-              />
+              <img
+                  :src="showHTML ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
+                  alt="show hide HTML editor"
+                  style="width: 20px; height: 20px;"
+              >
             </transition>
           </div>
         </div>
 
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our
           documentation</a>
@@ -89,8 +90,8 @@
         <textarea
             v-model="customHtml"
             class="border border-2 text-white p-2"
-            style="font-family: monospace; background-color: #1E1E1E"
             rows="12"
+            style="font-family: monospace; background-color: #1E1E1E"
         />
       </client-only>
       <button
@@ -120,17 +121,18 @@
               {{ showCSS ? 'Close Editor' : 'Open Editor' }}
             </h6>
             <transition name="fade">
-              <img :src="showCSS ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
-                   style="width: 20px; height: 20px;"
-                   alt="show hide CSS editor"
-              />
+              <img
+                  :src="showCSS ? '/caret-up-outline.svg' : '/caret-down-outline.svg'"
+                  alt="show hide CSS editor"
+                  style="width: 20px; height: 20px;"
+              >
             </transition>
           </div>
         </div>
 
         <a
-            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             :href="rendererUrl + '/help'"
+            class="text-gray-500 text-xs hover:underline hover:text-gray-600"
             target="_blank"
         >Need help? Read our
           documentation</a>
@@ -140,8 +142,8 @@
         <textarea
             v-model="editorCss"
             class="border border-2 text-white p-2"
-            style="font-family: monospace; background-color: #1E1E1E"
             rows="12"
+            style="font-family: monospace; background-color: #1E1E1E"
         />
       </client-only>
       <button
@@ -200,6 +202,7 @@ export default Vue.extend({
 
   data() {
     return {
+      activeProfileId: "-1",
       showHTML: false,
       showCSS: false,
       rendererUrl: process.env.RENDERER_URL,
@@ -255,9 +258,9 @@ export default Vue.extend({
     };
   },
 
-  beforeMount() {
-    this.getUserData();
-    this.loadThemes();
+  async beforeMount() {
+    await this.getUserData();
+    await this.loadThemes();
   },
 
   methods: {
@@ -267,6 +270,7 @@ export default Vue.extend({
         const profileResponse = await this.$axios.$post<Profile>('/profile/active-profile', {
           token
         });
+        this.activeProfileId = profileResponse.id;
         this.activeThemeId = profileResponse.themeId ?? null;
         this.customCss = profileResponse.customCss ?? '';
         const strings = this.customCss.split('/* SL-NO-CODE */');
@@ -288,7 +292,7 @@ export default Vue.extend({
     async loadThemes() {
       try {
         // Grab themes from response
-        this.themes = (await this.$axios.$post<EditorTheme[]>('/themes', {
+        this.themes = (await this.$axios.$post<EditorTheme[]>('/themes/' + this.activeProfileId, {
           token: this.$store.getters['auth/getToken'],
           includeGlobal: false
         }));
