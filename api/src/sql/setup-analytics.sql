@@ -66,5 +66,5 @@ $$ language plpgsql;
 
 -- Update v3.2 - add social icons column to track individual social icons stats --
 alter table analytics.visits
-    add column if not exists social_icon_id bigint default NULL;
+    add column if not exists social_icon_url text default NULL;
 

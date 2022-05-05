@@ -492,7 +492,7 @@ function changeSlide(next = true, index) {
                                            headers: {
                                           'Content-Type': 'application/json'
                                         }, 
-                                        body: JSON.stringify({socialIconId: ${i}})
+                                        body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })}"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
