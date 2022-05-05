@@ -46,11 +46,11 @@ export class AnalyticsService extends DatabaseService {
      * Creates a visit analytics record in the database.
      *
      * @param referralId The id of the VisitType that is being visited
-     * @param socialIconId the social icon id if its a social icon
+     * @param socialIconUrl the social icon url if its a social icon
      * @param visitType The type of the visit
      */
-    async createVisit(referralId: string, socialIconId: number | null = null, visitType: VisitType) {
-        await this.pool.query("insert into analytics.visits(type, social_icon_id, referral_id) values ($1, $2, $3)", [visitType, socialIconId, referralId]);
+    async createVisit(referralId: string, socialIconUrl: string | null = null, visitType: VisitType) {
+        await this.pool.query("insert into analytics.visits(type, social_icon_url, referral_id) values ($1, $2, $3)", [visitType, socialIconUrl, referralId]);
     }
 
     /**
@@ -128,8 +128,8 @@ export class AnalyticsService extends DatabaseService {
             let subLinkVisits = [];
             for (const visit of linkVisitQuery.rows) {
                 linkVisitCount++;
-                if (link.type === 'social' && visit.social_icon_id) {
-                    subLinkVisits.push(link.metadata.socialIcons[parseInt(visit.social_icon_id)].type);
+                if (link.type === 'social' && visit.social_icon_url) {
+                    subLinkVisits.push(link.metadata.socialIcons.find((x: { url: string }) => x.url === visit.social_icon_url).type);
                 }
             }
 

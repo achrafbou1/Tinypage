@@ -19,7 +19,7 @@ interface LinkAnalyticsRequest extends RequestGenericInterface {
         id?: string
     },
     Body: {
-        socialIconId?: number;
+        socialIconUrl?: string;
     };
 }
 
@@ -109,7 +109,7 @@ export class AnalyticsController extends Controller {
             let params = request.params;
             let body = request.body;
             let id = params.id;
-            let socialIconId = body.socialIconId || null;
+            let socialIconUrl = body.socialIconUrl || null;
 
             if (!id) {
                 reply.code(StatusCodes.NOT_FOUND);
@@ -122,7 +122,7 @@ export class AnalyticsController extends Controller {
 
             if (profile.visibility !== "unpublished") {
                 if (!profile.metadata?.privacyMode) {
-                    await this.analyticsService.createVisit(id, socialIconId, "link");
+                    await this.analyticsService.createVisit(id, socialIconUrl, "link");
 
                     if (this.mixpanel) {
                         let ip = IpUtils.GetFirstIp(IpUtils.GrabIps(request));
