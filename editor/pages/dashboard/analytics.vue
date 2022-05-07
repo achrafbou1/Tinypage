@@ -73,7 +73,7 @@
 
       <div
           v-for="link in analytics.linkVisits"
-          :key="link.id"
+          :key="link.link.id"
           class="rounded-2xl shadow bg-white p-4 w-full font-medium mb-4 flex items-center justify-center lg:flex-row flex-col"
       >
         <div class="text-left mr-4 flex flex-col justify-start w-full lg:w-auto pt-1 px-2 lg:pt-0 lg:px-0">
@@ -83,7 +83,7 @@
           <span
               v-if="link.link.url && link.link.url.length > 41"
               class="text-black opacity-70 font-bold overflow-x-hidden max-w-full"
-          >{{ link.link.url.substr(0, 42) }}...</span>
+          >{{ link.link.url.substring(0, 42) }}...</span>
           <span
               v-if="link.link.url && link.link.url.length < 42"
               class="text-black opacity-70 font-bold overflow-x-hidden max-w-full"
@@ -92,9 +92,9 @@
         <div
             v-if="link.subLinkVisits && Object.keys(link.subLinkVisits).length > 0"
             class="py-2 px-4 text-sm rounded-lg border bg-gdp text-white font-medium text-center hover:bg-blue-300 cursor-pointer"
-            @click="expand(link.subLinkVisits)"
+            @click="drawer[link.link.id] = !drawer[link.link.id]"
         >
-          <span v-show="!drawer">Expand</span><span v-show="drawer">Collapse</span>
+          <span v-show="!drawer[link.link.id]">Expand</span><span v-show="drawer[link.link.id]">Collapse</span>
         </div>
 
         <div
@@ -105,18 +105,19 @@
           <h4 class="lg:ml-auto text-blue-600 text-2xl font-bold">
             {{ link.views.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
           </h4>
-
-          <span v-if="Object.keys(subLinkVisits).length > 0 && drawer">
-            <span v-for="[type, count] in Object.entries(subLinkVisits)" :key="type">
-              <span class="uppercase text-gray-800 font-bold mr-1 lg:mr-0 lg:mb-1">{{ type }}</span>
-              <span class="lg:hidden text-sm uppercase text-gray-700 font-semibold mr-2 lg:mr-0 lg:mb-1">:</span>
-              <h4 class="lg:ml-auto text-blue-600 text-2xl font-bold">
-                {{ count }}
-              </h4>
-            </span>
-
-          </span>
         </div>
+        <Accordion v-if="link.subLinkVisits && Object.keys(link.subLinkVisits).length > 0" class="ml-4">
+          <template #content>
+            <span v-for="[type, count] in Object.entries(link.subLinkVisits)" :key="type">
+            <span class="uppercase text-gray-800 font-bold mr-1 lg:mr-0 lg:mb-1">{{ type }} <h4
+                class="lg:ml-auto text-blue-600 text-2xl font-bold"
+            >
+              {{ count }}
+            </h4></span>
+            <span class="lg:hidden text-sm uppercase text-gray-700 font-semibold mr-2 lg:mr-0 lg:mb-1">:</span>
+          </span>
+          </template>
+        </Accordion>
       </div>
 
     </div>
@@ -126,15 +127,18 @@
 <script lang="ts">
 import Vue from "vue";
 import {Permission} from "~/plugins/permission-utils";
+import Accordion from "~/components/utilities/Accordion.vue";
 
 export default Vue.extend({
   name: 'DashboardAnalytics',
+  components: {
+    Accordion
+  },
   layout: 'dashboard',
   middleware: 'authenticated',
-
   data() {
     return {
-      drawer: false,
+      drawer: {},
       dayRange: 30,
       subLinkVisits: [],
       analytics: {
@@ -202,55 +206,64 @@ export default Vue.extend({
   },
 
   async mounted() {
+    // @ts-ignore
     await this.getUserData();
 
+    // @ts-ignore
     if (this.user.activeProfile.metadata.privacyMode) {
       return;
     }
 
+    // @ts-ignore
     await this.getProfileAnalytics();
-
+    // @ts-ignore
     for (let i = 0; i < this.analytics.linkVisits.length; i++) {
+      // @ts-ignore
       this.visitSum += this.analytics.linkVisits[i].views;
     }
 
     const token = this.$store.getters['auth/getToken'];
     if (process.env.NODE_ENV === 'production') {
+      // @ts-ignore
       this.subInfo = await this.$axios.$post('/payments/sub-info', {
         token
       });
 
       const permLevel = Permission.PRO.permLevel;
-
+      // @ts-ignore
       this.hasPerms = permLevel <= Permission.parse(this.subInfo.tier).permLevel;
     }
   },
-
   methods: {
-    expand(subLinkVisits: []) {
-      this.drawer = !this.drawer;
+    expand(subLinkVisits: [], id: number) {
+      // @ts-ignore-start
+      this.drawer[id] = !this.drawer[id];
+      // @ts-ignore-end
       this.subLinkVisits = subLinkVisits;
     },
     onDayRangeChange(evt: Event) {
       const target = evt.target as HTMLInputElement;
       const value = target.value;
-
+      // @ts-ignore
       this.dayRange = Number.parseInt(value);
-
+      // @ts-ignore
       this.getProfileAnalytics().catch(() => {
       });
     },
 
     async getProfileAnalytics() {
       try {
+        // @ts-ignore
         this.analytics = await this.$axios.$post('/analytics/profile', {
           token: this.$store.getters['auth/getToken'],
+          // @ts-ignore
           dayRange: this.dayRange
         });
-
+        // @ts-ignore
         const linkVisits = this.analytics.linkVisits;
 
         if (linkVisits.length > 0) {
+          // @ts-ignore
           this.analytics.linkVisits = linkVisits.filter(value => {
             const type = value.link.type;
             return type !== 'image' &&
@@ -276,19 +289,20 @@ export default Vue.extend({
         const siteResponse = await this.$axios.$post('/profile/active-profile', {
           token
         });
-
+        // @ts-ignore
         this.user.name = userResponse.name;
+        // @ts-ignore
         this.user.emailHash = userResponse.emailHash;
-
+        // @ts-ignore
         this.user.activeProfile = siteResponse;
-
+        // @ts-ignore
         this.originalHandle = this.user.activeProfile.handle;
       } catch (err) {
         console.log('Error getting user data');
         console.log(err);
       }
     },
-  }
+  },
 });
 </script>
 

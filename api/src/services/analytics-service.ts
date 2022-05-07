@@ -50,6 +50,8 @@ export class AnalyticsService extends DatabaseService {
      * @param visitType The type of the visit
      */
     async createVisit(referralId: string, socialIconUrl: string | null = null, visitType: VisitType) {
+        console.log(`insert into anayltics
+                     values (${referralId}, ${socialIconUrl}, ${visitType}) type, social_icon_url, referral_id`);
         await this.pool.query("insert into analytics.visits(type, social_icon_url, referral_id) values ($1, $2, $3)", [visitType, socialIconUrl, referralId]);
     }
 
