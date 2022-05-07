@@ -1,7 +1,6 @@
 import {DatabaseManager} from "../data/database-manager";
 import {DatabaseService} from "./database-service";
 import {DbTypeConverter} from "../utils/db-type-converter";
-import {FastifyRequest} from "fastify";
 
 interface AnalyticsProfileData {
     totalProfileViews: number,
@@ -50,10 +49,8 @@ export class AnalyticsService extends DatabaseService {
      * @param socialIconUrl the social icon url if its a social icon
      * @param visitType The type of the visit
      */
-    async createVisit(request: FastifyRequest, referralId: string, socialIconUrl: string | null = null, visitType: VisitType) {
-        request.log.info(`insert into anayltics
-                          values (${referralId}, ${socialIconUrl}, ${visitType}) type, social_icon_url, referral_id`);
-        await this.pool.query("insert into analytics.visits(type, social_icon_url, referral_id) values ($1, $2, $3)", [visitType, socialIconUrl, referralId]);
+    async createVisit(referralId: string, socialIconUrl: string | null = null, visitType: VisitType) {
+        return await this.pool.query("insert into analytics.visits(type, social_icon_url, referral_id) values ($1, $2, $3)", [visitType, socialIconUrl, referralId]);
     }
 
     /**
