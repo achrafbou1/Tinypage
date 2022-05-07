@@ -119,10 +119,10 @@ export class AnalyticsController extends Controller {
             let link = await this.linkService.getLink(id);
             const profileId = link.profileId;
             const profile = await this.profileService.getProfile(profileId);
-            let response = null;
+
             if (profile.visibility !== "unpublished") {
                 if (!profile.metadata?.privacyMode) {
-                    response = await this.analyticsService.createVisit(id, socialIconUrl, "link");
+                    await this.analyticsService.createVisit(id, socialIconUrl, "link");
 
                     if (this.mixpanel) {
                         let ip = IpUtils.GetFirstIp(IpUtils.GrabIps(request));
@@ -152,7 +152,7 @@ export class AnalyticsController extends Controller {
                 }
             }
 
-            reply.send(response);
+            reply.redirect(link?.url);
         } catch (e) {
             if (e instanceof HttpError) {
                 reply.code(e.statusCode);
