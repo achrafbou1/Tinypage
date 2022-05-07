@@ -122,7 +122,7 @@ export class AnalyticsController extends Controller {
 
             if (profile.visibility !== "unpublished") {
                 if (!profile.metadata?.privacyMode) {
-                    await this.analyticsService.createVisit(id, socialIconUrl, "link");
+                    await this.analyticsService.createVisit(request, id, socialIconUrl, "link");
 
                     if (this.mixpanel) {
                         let ip = IpUtils.GetFirstIp(IpUtils.GrabIps(request));
