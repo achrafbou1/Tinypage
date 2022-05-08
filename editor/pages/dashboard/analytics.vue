@@ -108,7 +108,7 @@
         </div>
         <Accordion v-if="link.subLinkVisits && Object.keys(link.subLinkVisits).length > 0" class="ml-4">
           <template #content>
-            <span v-for="[type, count] in Object.entries(link.subLinkVisits)" :key="type">
+            <span v-for="[type, count] in Object.entries(link.subLinkVisits)" :key="type" class="ml-1">
             <span class="uppercase text-gray-800 font-bold mr-1 lg:mr-0 lg:mb-1">{{ type }} <h4
                 class="lg:ml-auto text-blue-600 text-2xl font-bold"
             >
