@@ -693,7 +693,6 @@ export default Vue.extend({
         //     filename = matches[1].replace(/['"]/g, '');
         //   }
         // }
-        console.log(this.user.activeProfile);
         const blob = new Blob([JSON.stringify(response.data)], {type: 'application/json'});
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
