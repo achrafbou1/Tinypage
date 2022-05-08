@@ -42,13 +42,13 @@
 export default {
   data () {
     return {
-      isOpen: false,
-    }
+      isOpen: true,
+    };
   },
 
   methods: {
     toggleAccordion () {
-      this.isOpen = !this.isOpen
+      this.isOpen = !this.isOpen;
     },
   },
 };
