@@ -28,7 +28,11 @@
       </svg>
     </button>
 
-    <div v-show="isOpen" :id="`collapse${_uid}`">
+    <div
+        v-show="isOpen"
+        :id="`collapse${_uid}`"
+        class="rounded-2xl shadow bg-white p-4 w-full font-medium mb-4 flex items-center justify-center lg:flex-row flex-col"
+    >
       <slot name="content"/>
     </div>
   </div>
@@ -47,5 +51,5 @@ export default {
       this.isOpen = !this.isOpen
     },
   },
-}
+};
 </script>
