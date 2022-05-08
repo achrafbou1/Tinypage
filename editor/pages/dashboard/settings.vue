@@ -684,17 +684,16 @@ export default Vue.extend({
           token
         });
 
-        let filename = "data.json";
-        const disposition = response.headers['content-disposition'];
-        if (disposition && disposition.includes('filename')) {
-          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-          const matches = filenameRegex.exec(disposition);
-          if (matches != null && matches[1]) {
-            filename = matches[1].replace(/['"]/g, '');
-          }
-        }
-
-        const blob = new Blob([JSON.stringify(response.data)], {type: 'application/pdf'});
+        const filename = this.user.activeProfile.handle + '.json';
+        // const disposition = response.headers['content-disposition'];
+        // if (disposition && disposition.includes('filename')) {
+        //   const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        //   const matches = filenameRegex.exec(disposition);
+        //   if (matches != null && matches[1]) {
+        //     filename = matches[1].replace(/['"]/g, '');
+        //   }
+        // }
+        const blob = new Blob([JSON.stringify(response.data)], {type: 'application/json'});
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = filename;
