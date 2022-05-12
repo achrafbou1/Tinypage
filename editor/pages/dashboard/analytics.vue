@@ -89,19 +89,14 @@
               class="text-black opacity-70 font-bold overflow-x-hidden max-w-full"
           >{{ link.link.url }}</span>
         </div>
-        <div
-            v-if="link.subLinkVisits && Object.keys(link.subLinkVisits).length > 0"
-            class="py-2 px-4 text-sm rounded-lg border bg-gdp text-white font-medium text-center hover:bg-blue-300 cursor-pointer"
-            @click="drawer[link.link.id] = !drawer[link.link.id]"
-        >
-          <span v-show="!drawer[link.link.id]">Expand</span><span v-show="drawer[link.link.id]">Collapse</span>
-        </div>
 
         <span
             class="lg:ml-auto flex flex-row lg:flex-col justify-start lg:justify-end items-center mt-2 lg:mt-0 w-full lg:w-auto"
->
-            <Accordion v-if="link.subLinkVisits && Object.keys(link.subLinkVisits).length > 0" class="ml-auto">
-              <template #content>
+        >
+            <div
+                v-if="link.subLinkVisits && Object.keys(link.subLinkVisits).length > 0"
+                class="flex flex-col lg:flex-row justify-start lg:justify-end items-center mt-2 lg:mt-0 w-full lg:w-auto"
+            >
             <span v-for="[type, count] in Object.entries(link.subLinkVisits)" :key="type" class="ml-2 text-center">
             <span class="uppercase text-gray-800 font-bold mr-1 lg:mr-0 lg:mb-1">{{ type }} </span>
               <span><h4
@@ -111,14 +106,13 @@
             </h4></span>
             <span class="lg:hidden text-sm uppercase text-gray-700 font-semibold mr-2 lg:mr-0 lg:mb-1">:</span>
           </span>
-              </template>
-            </Accordion>
+            </div>
           </span>
 
         <div
             class="flex flex-row lg:flex-col justify-start lg:justify-end items-center mt-2 lg:mt-0 w-full lg:w-auto"
         >
-          <span class="uppercase text-gray-800 font-bold mr-1 lg:mr-0 lg:mb-1">Total clicks</span>
+          <span class="uppercase text-gray-800 font-bold mr-1 ml-2 lg:mr-0">Total clicks</span>
           <span class="lg:hidden text-sm uppercase text-gray-700 font-semibold mr-2 lg:mr-0 lg:mb-1">:</span>
           <h4 class="text-blue-600 text-2xl font-bold">
             {{ link.views.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
@@ -133,13 +127,9 @@
 <script lang="ts">
 import Vue from "vue";
 import {Permission} from "~/plugins/permission-utils";
-import Accordion from "~/components/utilities/Accordion.vue";
 
 export default Vue.extend({
   name: 'DashboardAnalytics',
-  components: {
-    Accordion
-  },
   layout: 'dashboard',
   middleware: 'authenticated',
   data() {
@@ -241,12 +231,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    expand(subLinkVisits: [], id: number) {
-      // @ts-ignore-start
-      this.drawer[id] = !this.drawer[id];
-      // @ts-ignore-end
-      this.subLinkVisits = subLinkVisits;
-    },
     onDayRangeChange(evt: Event) {
       const target = evt.target as HTMLInputElement;
       const value = target.value;
