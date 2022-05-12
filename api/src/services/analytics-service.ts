@@ -6,8 +6,7 @@ interface AnalyticsProfileData {
     totalProfileViews: number,
     linkVisits: {
         link: Link,
-        views: number,
-        subLinkVisits: LinkVisit[]
+        views: number
     }[],
     clickThroughRate: number
 }
@@ -46,11 +45,10 @@ export class AnalyticsService extends DatabaseService {
      * Creates a visit analytics record in the database.
      *
      * @param referralId The id of the VisitType that is being visited
-     * @param socialIconUrl the social icon url if its a social icon
      * @param visitType The type of the visit
      */
-    async createVisit(referralId: string, socialIconUrl: string | null = null, visitType: VisitType) {
-        return await this.pool.query("insert into analytics.visits(type, social_icon_url, referral_id) values ($1, $2, $3)", [visitType, socialIconUrl, referralId]);
+    async createVisit(referralId: string, visitType: VisitType) {
+        await this.pool.query("insert into analytics.visits(type, referral_id) values ($1, $2)", [visitType, referralId]);
     }
 
     /**
@@ -107,7 +105,7 @@ export class AnalyticsService extends DatabaseService {
             };
         }
 
-        let linkVisits: { link: Link, views: number, subLinkVisits: LinkVisit[] }[] = [];
+        let linkVisits: { link: Link, views: number }[] = [];
         let totalLinks = 0;
 
         for (let i = 0; i < linksQuery.rowCount; i++) {
@@ -125,33 +123,15 @@ export class AnalyticsService extends DatabaseService {
             totalLinks++;
 
             let linkVisitCount = 0;
-            let subLinkVisits = [];
+
             for (const visit of linkVisitQuery.rows) {
                 linkVisitCount++;
-                if (link.type === 'social' && visit.social_icon_url) {
-                    subLinkVisits.push(link.metadata.socialIcons.find((x: { url: string }) => x.url === visit.social_icon_url).type);
-                }
             }
 
-            const subLinkCounts = subLinkVisits.reduce(function (r, a) {
-                r[a] = r[a] || [];
-                r[a].push(1);
-                return r;
-            }, Object.create(null));
-            for (let [key, value] of Object.entries(subLinkCounts)) {
-                // @ts-ignore
-                subLinkCounts[key] = value.reduce(
-                    (previousValue: number, currentValue: number) => previousValue + currentValue,
-                    0
-                );
-            }
-
-            const linkVisit = {
+            linkVisits.push({
                 link: DbTypeConverter.toLink(link),
-                views: linkVisitCount,
-                subLinkVisits: subLinkCounts
-            };
-            linkVisits.push(linkVisit);
+                views: linkVisitCount
+            });
         }
 
         let totalProfileViews = profileViews;

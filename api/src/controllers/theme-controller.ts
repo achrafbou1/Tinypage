@@ -12,9 +12,6 @@ import {MarketplaceService} from "../services/marketplace-service";
 import {IpUtils} from "../utils/ip-utils";
 
 interface GetThemesRequest extends AuthenticatedRequest {
-    Params: {
-        profileId: string
-    },
     Body: {
         includeGlobal: boolean,
         onlyGlobal: boolean
@@ -30,8 +27,6 @@ interface GetThemeRequest extends AuthenticatedRequest {
 interface CreateThemeRequest extends AuthenticatedRequest {
     Body: {
         label: string,
-        global: boolean,
-        profileId: string,
         customCss: string,
         customHtml: string
     } & AuthenticatedRequest["Body"]
@@ -41,7 +36,6 @@ interface UpdateThemeRequest extends AuthenticatedRequest {
     Body: {
         id: string,
         label: string,
-        global: boolean,
         customCss: string,
         customHtml: string
     } & AuthenticatedRequest["Body"]
@@ -86,7 +80,7 @@ export class ThemeController extends Controller {
 
     registerRoutes(): void {
         // Authenticated
-        this.fastify.post<GetThemesRequest>('/themes/:profileId', Auth.ValidateWithData, this.GetThemes.bind(this));
+        this.fastify.post<GetThemesRequest>('/themes', Auth.ValidateWithData, this.GetThemes.bind(this));
         this.fastify.post<GetThemeRequest>('/theme/:id', Auth.ValidateWithData, this.GetTheme.bind(this));
         this.fastify.post<CreateThemeRequest>('/theme/create', Auth.ValidateWithData, this.CreateTheme.bind(this));
         this.fastify.post<UpdateThemeRequest>('/theme/update', Auth.ValidateWithData, this.UpdateTheme.bind(this));
@@ -107,13 +101,11 @@ export class ThemeController extends Controller {
     async GetThemes(request: FastifyRequest<GetThemesRequest>, reply: FastifyReply) {
         try {
             let body = request.body;
-            let params = request.params;
-            const profileId = parseInt(params.profileId) || -1;
 
             if (body.onlyGlobal) {
                 return this.themeService.listGlobalThemes();
             } else {
-                return this.themeService.listUserThemes(body.authUser.id, body.includeGlobal, profileId);
+                return this.themeService.listUserThemes(body.authUser.id, body.includeGlobal);
             }
         } catch (e) {
             if (e instanceof HttpError) {
@@ -167,9 +159,8 @@ export class ThemeController extends Controller {
                 reply.status(StatusCodes.BAD_REQUEST).send(ReplyUtils.error("No label was provided."));
                 return;
             }
-            const profileId = parseInt(body.profileId);
 
-            let theme = await this.themeService.createTheme(body.authUser.id, body.label, body.global, profileId, body.customCss, body.customHtml);
+            let theme = await this.themeService.createTheme(body.authUser.id, body.label, body.customCss, body.customHtml);
 
             if (this.mixpanel) {
                 let ip = IpUtils.GetFirstIp(IpUtils.GrabIps(request));
@@ -207,7 +198,7 @@ export class ThemeController extends Controller {
                 return;
             }
 
-            let theme = await this.themeService.updateUserTheme(body.id, body.authUser.id, body.label, body.global, body.customCss, body.customHtml);
+            let theme = await this.themeService.updateUserTheme(body.id, body.authUser.id, body.label, body.customCss, body.customHtml);
 
             if (this.mixpanel) {
                 let ip = IpUtils.GetFirstIp(IpUtils.GrabIps(request));

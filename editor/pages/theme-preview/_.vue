@@ -1,7 +1,7 @@
 <template>
   <div class="relative flex min-h-screen w-screen bg-gray-100 justify-center w-full sl-bg">
     <UserProfileView
-        :theme-preview="true"
+      :themePreview="true"
     />
   </div>
 </template>

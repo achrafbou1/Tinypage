@@ -1,11 +1,10 @@
 <template>
   <div class="flex flex-col items-center justify-center bg-gray-50 min-h-screen">
     <div class="privacy-container">
-      <a href="https://neutroncreative.com" target="_blank"><img
-          class="w-48 mb-8 opacity-75 lg:mt-16"
-          src="https://neutroncreative.com/Sidebar-brandmark.svg"
-          style="filter:invert(1);"
-      ></a>
+      <a href="https://neutroncreative.com" target="_blank"><img class="w-48 mb-8 opacity-75 lg:mt-16"
+                                                                 src="https://neutroncreative.com/Sidebar-brandmark.svg"
+                                                                 style="filter:invert(1);"
+      /></a>
       <div class="privacy-policy">
         <h1>Privacy Policy for {{ organization }}</h1>
         <br>
@@ -84,7 +83,7 @@
           and/or other information.</p>
 
         <p>For more general information on cookies, please read <a
-            href="https://www.cookieconsent.com/what-are-cookies/"
+          href="https://www.cookieconsent.com/what-are-cookies/"
         >"What
           Are Cookies" from Cookie Consent</a>.</p>
 
@@ -173,19 +172,18 @@
       </div>
       <div class="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-8 items-center jusitfy-center">
         <a
-            class="w-full text-center lg:w-auto text-lg bg-blue-600 hover:bg-blue-400 py-4 px-8 rounded-lg font-semibold"
-            href="/"
-            style="color:#FFF !important;"
+          class="w-full text-center lg:w-auto text-lg bg-blue-600 hover:bg-blue-400 py-4 px-8 rounded-lg font-semibold"
+          href="/" style="color:#FFF !important;"
         >Return to {{ app_name }}</a>
         <a class="inline" href="https://neutroncreative.com" target="_blank">Or, learn more about
           {{ $customSettings.company }}</a>
       </div>
     </div>
     <section
-        class="flex text-center items-center justify-center lg:justify-start lg:text-left text-gray-600 text-xs lg:text-sm mt-auto mb-4 pt-20 w-full max-w-2xl px-8"
+      class="flex text-center items-center justify-center lg:justify-start lg:text-left text-gray-600 text-xs lg:text-sm mt-auto mb-4 pt-20 w-full max-w-2xl px-8"
     >Copyright ©2021
       {{ $customSettings.company }}<span
-          class="lg:flex hidden mr-2"
+        class="lg:flex hidden mr-2"
       >,</span> <br class="flex lg:hidden">All rights reserved.
     </section>
   </div>
@@ -196,13 +194,6 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "PrivacyPolicy",
-
-  data() {
-    return {
-      organization: this.$customSettings.company,
-      app_name: this.$customSettings.productName
-    };
-  },
 
   head() {
     return {
@@ -239,6 +230,13 @@ export default Vue.extend({
           content: 'View our privacy policy here at ' + this.$customSettings.productName + '.' + this.$customSettings.productName + ' account.'
         },
       ],
+    };
+  },
+
+  data() {
+    return {
+      organization: this.$customSettings.company,
+      app_name: this.$customSettings.productName
     };
   }
 });

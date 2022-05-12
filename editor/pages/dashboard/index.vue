@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col items-center h-full  flex-shrink-0">
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
-      <img :src="`${$customSettings.icons.mainIcon}`" alt="House icon" class="w-8" style="width:65px;height:65px;">
+      <img alt="House icon" class="w-8" :src="`${$customSettings.icons.mainIcon}`" style="width:65px;height:65px;">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
         Tinypage
       </h1>
@@ -32,10 +32,10 @@
             v-for="link in sortedLinks"
             :key="link.id"
             :to="'/dashboard/link/' + link.id"
-            :class="getLinkClasses(link.hidden)"
+            class="flex flex-col flex-shrink-0 p-4 bg-white text-center font-medium items-center justify-center rounded-2xl w-full mb-2 opacity-90 hover:opacity-100 cursor-pointer"
             style="box-shadow: inset 0 0 0 3px rgba(0,0,0,.05), 0 10px 25px rgba(81,173,255,0.1);"
         >
-          <img :src="getLinkTypeIcon(link.type)" alt="link type icon" class="sl-editor-link-icon">
+          <img class="sl-editor-link-icon" :src="getLinkTypeIcon(link.type)" alt="link type icon">
           <span class="text-lg font-bold">
             {{ link.label.length > 30 ? link.label.substring(0, 30) + '...' : link.label }}
           </span>
@@ -249,13 +249,6 @@ export default Vue.extend({
   },
 
   methods: {
-    getLinkClasses(hidden: boolean) {
-      let classes = "flex flex-col flex-shrink-0 p-4 bg-white text-center font-medium items-center justify-center rounded-2xl w-full mb-2 opacity-90 hover:opacity-100 cursor-pointer";
-      if (hidden) {
-        classes += ' bg-gray-400 text-gray-600';
-      }
-      return classes;
-    },
     async getUserData() {
       try {
         this.user = await this.$axios.$post('/user', {

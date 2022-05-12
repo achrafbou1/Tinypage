@@ -23,13 +23,10 @@
           v-if="icon && getActiveThemeId === theme.id"
           :key="theme.id"
           class="flex flex-col p-3 flex-1 hover:bg-blue-200 bg-blue-200 border border-blue-600 rounded-xl"
+
       >
-        <theme
-            :id="theme.id"
-            :label="theme.label"
-            :theme="true"
-            icon="icon"
-            @click.native="selectTheme(theme.id)"
+        <theme :id="theme.id" icon="icon" :label="theme.label" :theme="true"
+               @click.native="selectTheme(theme.id)"
         />
 
         <div class="font-bold text-black mb-1 mt-2 flex flex-col items-center justify-center">
@@ -39,18 +36,12 @@
               v-if="theme && icon"
               :href="'/dashboard/appearance/theme/' + theme.id"
           >
-            <div
-                class="bg-gray-700 hover:bg-blue-300"
-                style="color: #FFF; text-shadow: 0 1px 2px #000; border-radius: 5px; height: 30px; width: 30px;"
+            <div class="bg-gray-700 hover:bg-blue-300"
+                 style="color: #FFF; text-shadow: 0 1px 2px #000; border-radius: 5px; height: 30px; width: 30px;"
             >
-              <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="32"
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"
+                      d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"
                 />
               </svg>
             </div>
@@ -74,12 +65,8 @@
           :key="theme.id"
           class="cursor-pointer flex flex-col p-3 flex-1 hover:bg-opaqueIndigo rounded-xl"
       >
-        <theme
-            :id="theme.id"
-            :icon="icon"
-            :label="theme.label"
-            :theme="true"
-            @click.native="selectTheme(theme.id)"
+        <theme :id="theme.id" :icon="icon" :label="theme.label" :theme="true"
+               @click.native="selectTheme(theme.id)"
         />
 
         <div class="font-bold text-black mb-1 mt-2 flex flex-col items-center justify-center">
@@ -89,18 +76,12 @@
               v-if="theme && icon"
               :href="'/dashboard/appearance/theme/' + theme.id"
           >
-            <div
-                class="bg-gray-700 hover:bg-blue-300"
-                style="color: #FFF; text-shadow: 0 1px 2px #000; border-radius: 5px; height: 30px; width: 30px;"
+            <div class="bg-gray-700 hover:bg-blue-300"
+                 style="color: #FFF; text-shadow: 0 1px 2px #000; border-radius: 5px; height: 30px; width: 30px;"
             >
-              <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="32"
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"
+                      d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"
                 />
               </svg>
             </div>
@@ -145,18 +126,12 @@
               v-if="theme && icon"
               :href="'/dashboard/appearance/theme/' + theme.id"
           >
-            <div
-                class="bg-gray-700 hover:bg-blue-300"
-                style="color: #FFF; text-shadow: 0 1px 2px #000; border-radius: 5px; height: 30px; width: 30px;"
+            <div class="bg-gray-700 hover:bg-blue-300"
+                 style="color: #FFF; text-shadow: 0 1px 2px #000; border-radius: 5px; height: 30px; width: 30px;"
             >
-              <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="32"
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"
+                      d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"
                 />
               </svg>
             </div>
@@ -199,18 +174,12 @@
               v-if="theme && icon"
               :href="'/dashboard/appearance/theme/' + theme.id"
           >
-            <div
-                class="bg-gray-700 hover:bg-blue-300"
-                style="color: #FFF; text-shadow: 0 1px 2px #000; border-radius: 5px; height: 30px; width: 30px;"
+            <div class="bg-gray-700 hover:bg-blue-300"
+                 style="color: #FFF; text-shadow: 0 1px 2px #000; border-radius: 5px; height: 30px; width: 30px;"
             >
-              <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="32"
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"
+                      d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"
                 />
               </svg>
             </div>
