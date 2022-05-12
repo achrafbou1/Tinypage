@@ -17,13 +17,6 @@
           placeholder="e.g. My beautiful theme"
           type="text"
       >
-      <label class="font-semibold mt-2">Available to all pages</label>
-      <input
-          id="checkbox-available"
-          v-model="theme.global"
-          class="p-3 p-2 mt-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-          type="checkbox"
-      >
     </div>
     <div class="hidden lg:flex flex-col p-6 bg-white shadow rounded-lg w-full mb-6">
       <div
@@ -33,8 +26,8 @@
           Customization
         </h2>
         <a
-            :href="rendererUrl + '/help'"
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
@@ -48,16 +41,16 @@
           Custom HTML
         </h2>
         <a
-            :href="rendererUrl + '/help'"
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
       <textarea
           v-model="theme.customHtml"
           class="border border-2 text-white p-2"
-          rows="12"
           style="font-family: monospace; background-color: #1E1E1E"
+          rows="12"
       />
     </div>
     <div class="hidden lg:flex flex-col p-6 bg-white shadow rounded-lg w-full">
@@ -68,16 +61,16 @@
           Custom CSS
         </h2>
         <a
-            :href="rendererUrl + '/help'"
             class="text-gray-500 text-xs hover:underline hover:text-gray-600"
+            :href="rendererUrl + '/help'"
             target="_blank"
         >Need help? Read our documentation</a>
       </div>
       <textarea
           v-model="editorCss"
           class="border border-2 text-white p-2"
-          rows="12"
           style="font-family: monospace; background-color: #1E1E1E"
+          rows="12"
       />
     </div>
 
@@ -118,24 +111,22 @@ import Vue from "vue";
 import Builder from "~/components/no-code/builder.vue";
 
 export default Vue.extend({
+  layout: 'dashboard',
+  middleware: 'authenticated',
 
   components: {
     Builder
   },
-  layout: 'dashboard',
-  middleware: 'authenticated',
 
   data() {
     return {
       id: null as string | null,
       rendererUrl: process.env.RENDERER_URL,
       themes: [] as EditorTheme[],
-      activeProfileId: "-1",
       builderCss: '',
       editorCss: '',
       theme: {
         label: null,
-        global: false,
         customHtml: null,
         customCss: null
       } as unknown as EditorTheme,
@@ -158,8 +149,7 @@ export default Vue.extend({
     };
   },
 
-  async mounted() {
-    await this.getUserData();
+  mounted() {
     this.id = this.$route.path.replace('/dashboard/appearance/theme/', '');
     if (this.id !== 'create') {
       this.loadThemes();
@@ -168,10 +158,10 @@ export default Vue.extend({
       this.builderLoaded = true;
 
       if (process.client) {
-        const copyToNewThemeRaw = localStorage.getItem("copyToNewTheme");
+        let copyToNewThemeRaw = localStorage.getItem("copyToNewTheme");
 
         if (copyToNewThemeRaw) {
-          const copyToNewTheme: { builderCss: string } = JSON.parse(copyToNewThemeRaw);
+          let copyToNewTheme: { builderCss: string } = JSON.parse(copyToNewThemeRaw);
           this.builderCss = copyToNewTheme.builderCss;
 
           this.theme.label = "Appearance Theme (Cloned)";
@@ -182,21 +172,10 @@ export default Vue.extend({
   },
 
   methods: {
-    async getUserData() {
-      const token = this.$store.getters['auth/getToken'];
-      try {
-        const profileResponse = await this.$axios.$post('/profile/active-profile', {
-          token
-        });
-        this.activeProfileId = profileResponse.id;
-      } catch (err) {
-        console.log(err);
-      }
-    },
     async loadThemes() {
       try {
         // Grab themes from response
-        this.themes = await this.$axios.$post('/themes/' + this.activeProfileId, {
+        this.themes = await this.$axios.$post('/themes', {
           token: this.$store.getters['auth/getToken'],
           includeGlobal: false
         });
@@ -231,12 +210,9 @@ export default Vue.extend({
     },
     async saveCreateTheme() {
       try {
-
         const response = await this.$axios.$post('/theme/create', {
           token: this.$store.getters['auth/getToken'],
           label: this.theme.label,
-          global: this.theme.global,
-          profileId: this.activeProfileId,
           customCss: this.editorCss + '/* SL-NO-CODE */' + this.builderCss,
           customHtml: this.theme.customHtml,
         });
@@ -287,19 +263,17 @@ export default Vue.extend({
           const response = await this.$axios.$post('/theme/create', {
             token: this.$store.getters['auth/getToken'],
             label: this.theme.label,
-            global: this.theme.global,
             customCss: this.editorCss + '/* SL-NO-CODE */' + this.builderCss,
             customHtml: this.theme.customHtml,
           });
 
-          const href = window.location.href;
+          let href = window.location.href;
           window.location.replace(href.replace("/create", `/${response.id}`));
         } else {
           const response = await this.$axios.$post('/theme/update', {
             token: this.$store.getters['auth/getToken'],
             id: this.theme.id,
             label: this.theme.label,
-            global: this.theme.global,
             customCss: this.editorCss + '/* SL-NO-CODE */' + this.builderCss,
             customHtml: this.theme.customHtml,
           });

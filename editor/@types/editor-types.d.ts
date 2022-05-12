@@ -1,28 +1,28 @@
 type ModalIntent = "create" | "edit";
 
 interface LinkVisit {
-    link: any,
-    views: any
+  link: any,
+  views: any
 }
 
 type EditorProfile = Partial<Profile> & {
-    themeId: string,
-    customHtml: string,
-    customCss: string,
-    imageUrl: string,
-    headline: string,
-    handle: string,
-    subtitle: string,
-    visibility: string,
-    showWatermark: boolean
+  themeId: string,
+  customHtml: string,
+  customCss: string,
+  imageUrl: string,
+  headline: string,
+  handle: string,
+  subtitle: string,
+  visibility: string,
+  showWatermark: boolean
 };
 
 type EditorTheme = Partial<Theme> & {
-    id: string,
-    label: string,
-    global: boolean,
-    customHtml: string | undefined,
-    customCss: string | undefined
+  id: string,
+  label: string,
+  global: boolean,
+  customHtml: string | undefined,
+  customCss: string | undefined
 };
 
 type EditorLink = Partial<Link> & {
@@ -35,25 +35,25 @@ type EditorLink = Partial<Link> & {
 };
 
 type EditorAddon = Partial<Addon> & {
-    id: string,
-    userId: string,
-    resourceId: string,
-    type: AddonType,
-    description: string,
-    author: string,
-    tags: string[],
-    featuredSorting: number,
-    price: number,
-    paymentFrequency: string,
-    global: boolean,
-    version: string,
-    createdOn: string,
-    lastUpdated: string
+  id: string,
+  userId: string,
+  resourceId: string,
+  type: AddonType,
+  description: string,
+  author: string,
+  tags: string[],
+  featuredSorting: number,
+  price: number,
+  paymentFrequency: string,
+  global: boolean,
+  version: string,
+  createdOn: string,
+  lastUpdated: string
 }
 
 type EditorAddonInstall = Partial<Addon> & {
-    id: string,
-    profileId: string,
-    addonId: string,
-    createdOn: string
+  id: string,
+  profileId: string,
+  addonId: string,
+  createdOn: string
 }

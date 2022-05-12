@@ -5,24 +5,24 @@
         Submission details
       </h1>
       <h1
-          v-if="intent==='view' && addon && addon.displayName"
-          class="text-gray-800 font-extrabold tracking-tight text-3xl"
+        v-if="intent==='view' && addon && addon.displayName"
+        class="text-gray-800 font-extrabold tracking-tight text-3xl"
       >{{ addon.displayName }}</h1>
     </div>
     <div class="flex flex-col lg:flex-row w-full items-start mb-4">
       <div
-          class="p-3 bg-white"
-          style="border-radius: 50px; overflow:hidden;box-shadow:0 10px 15px -3px rgb(0 0 0), 0 4px 6px -2px rgb(0 0 0), inset 0 0 5px 0 rgba(0,0,0,.1);"
+        class="p-3 bg-white"
+        style="border-radius: 50px; overflow:hidden;box-shadow:0 10px 15px -3px rgb(0 0 0), 0 4px 6px -2px rgb(0 0 0), inset 0 0 5px 0 rgba(0,0,0,.1);"
       >
         <div
-            class="relative text-center rounded flex items-center justify-ceneter p-6 bg-blue-200"
-            style="border-radius: 40px;width: 262px;height:568px;overflow:hidden;"
+          class="relative text-center rounded flex items-center justify-ceneter p-6 bg-blue-200"
+          style="border-radius: 40px;width: 262px;height:568px;overflow:hidden;"
         >
           <span class="text-sm text-blue-500 font-medium mx-auto">Save addon for preview</span>
           <iframe
-              v-if="addon.id"
-              :src="'/dashboard/marketplace/preview/' + addon.id"
-              style="z-index:2;pointer-events: none;width: 376px;height: 813px;transform: scale(0.7) translate(-82px, -175px);top:0;left:0;position:absolute;"
+            v-if="addon.id"
+            :src="'/dashboard/marketplace/preview/' + addon.id"
+            style="z-index:2;pointer-events: none;width: 376px;height: 813px;transform: scale(0.7) translate(-82px, -175px);top:0;left:0;position:absolute;"
           />
         </div>
       </div>
@@ -30,10 +30,10 @@
         <div v-if="intent!=='view'" class="flex flex-col mb-4 justify-start">
           <label class="font-semibold mb-2">Display name</label>
           <input
-              v-model="addon.displayName"
-              class="p-3 rounded-xl bg-white text-sm text-gray-700"
-              placeholder="e.g. My beautiful theme"
-              type="text"
+            v-model="addon.displayName"
+            class="p-3 rounded-xl bg-white text-sm text-gray-700"
+            placeholder="e.g. My beautiful theme"
+            type="text"
           >
         </div>
         <div v-if="intent!=='view'" class="flex flex-col mb-4 justify-start w-full">
@@ -47,11 +47,11 @@
         <div class="flex flex-col mb-4 justify-start">
           <label class="font-semibold mb-2">Description</label>
           <textarea
-              v-if="intent !== 'view'"
-              v-model="addon.description"
-              :placeholder="`e.g. Your favorite beautiful theme for ${$customSettings.productName}.`"
-              class="p-3 rounded-xl bg-white text-sm text-gray-700"
-              rows="6"
+            v-if="intent !== 'view'"
+            v-model="addon.description"
+            :placeholder="`e.g. Your favorite beautiful theme for ${$customSettings.productName}.`"
+            class="p-3 rounded-xl bg-white text-sm text-gray-700"
+            rows="6"
           />
           <p v-if="intent === 'view'" class="text-gray-600 text-lg leading-relaxed">
             {{ addon.description }}
@@ -60,20 +60,20 @@
         <div class="flex flex-col mb-4 justify-start w-full">
           <label class="font-semibold mb-2">Tags/keywords</label>
           <input
-              v-if="intent !== 'view'"
-              v-model="pendingTag"
-              class="p-3 rounded-xl bg-white text-sm text-gray-700"
-              placeholder="e.g. colorful"
-              type="text"
+            v-if="intent !== 'view'"
+            v-model="pendingTag"
+            class="p-3 rounded-xl bg-white text-sm text-gray-700"
+            placeholder="e.g. colorful"
+            type="text"
           >
           <ul
-              v-if="addon && addon.tags && addon.tags.length>=1"
-              class="mt-3 flex flew-rox flex-wrap justify-start items-start"
+            v-if="addon && addon.tags && addon.tags.length>=1"
+            class="mt-3 flex flew-rox flex-wrap justify-start items-start"
           >
             <li
-                v-for="tag in addon.tags"
-                :key="tag[0]"
-                class="hover:bg-blue-300 flex flex-row items-center justify-center p-1 text-sm px-3 text-blue-500 mr-2 rounded bg-blue-200 bg-blue-200 font-medium"
+              v-for="tag in addon.tags"
+              :key="tag[0]"
+              class="hover:bg-blue-300 flex flex-row items-center justify-center p-1 text-sm px-3 text-blue-500 mr-2 rounded bg-blue-200 bg-blue-200 font-medium"
             >
               {{ tag }}
               <div class="ml-2 cursor-pointer leading-none" @click="pluck(tag)">
@@ -95,45 +95,45 @@
         </div>
         <div class="flex flex-col lg:flex-row items-center justify-start mt-4">
           <div
-              v-if="intent==='view' && installed.indexOf(Number(addon.id)) < 0"
-              class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
-              @click="installAddon"
+            v-if="intent==='view' && installed.indexOf(Number(addon.id)) < 0"
+            class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
+            @click="installAddon"
           >Install addon
           </div>
           <div
-              v-if="intent==='view' && installed.indexOf(Number(addon.id)) >= 0"
-              class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
-              @click="uninstallAddon"
+            v-if="intent==='view' && installed.indexOf(Number(addon.id)) >= 0"
+            class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
+            @click="uninstallAddon"
           >Uninstall addon
           </div>
           <div
-              v-if="intent==='view' && favorites.indexOf(Number(addon.id)) < 0"
-              class="px-6 py-3 font-semibold text-gray-700 border border-gray-700 rounded-xl hover:bg-gray-50 lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
-              @click="toggleFavoriteAddon"
+            v-if="intent==='view' && favorites.indexOf(Number(addon.id)) < 0"
+            class="px-6 py-3 font-semibold text-gray-700 border border-gray-700 rounded-xl hover:bg-gray-50 lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
+            @click="toggleFavoriteAddon"
           >Add to favorites
           </div>
           <div
-              v-if="intent==='view' && favorites.indexOf(Number(addon.id)) >= 0"
-              class="px-6 py-3 font-semibold text-gray-700 border border-gray-700 rounded-xl hover:bg-gray-50 lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
-              @click="toggleFavoriteAddon"
+            v-if="intent==='view' && favorites.indexOf(Number(addon.id)) >= 0"
+            class="px-6 py-3 font-semibold text-gray-700 border border-gray-700 rounded-xl hover:bg-gray-50 lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
+            @click="toggleFavoriteAddon"
           >Remove from favorites
           </div>
           <div
-              v-if="intent==='submit'"
-              class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
-              @click="attemptSubmit"
+            v-if="intent==='submit'"
+            class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
+            @click="attemptSubmit"
           >Create addon
           </div>
           <div
-              v-if="intent==='edit'"
-              class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
-              @click="updateAddon"
+            v-if="intent==='edit'"
+            class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-blue-400 bg-gdp lg:mr-4 mb-4 lg:mb-0 cursor-pointer"
+            @click="updateAddon"
           >Save changes
           </div>
           <div
-              v-if="intent==='edit'"
-              class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-red-500 bg-red-600 cursor-pointer"
-              @click="deleteAddon"
+            v-if="intent==='edit'"
+            class="px-6 py-3 font-semibold text-white rounded-xl hover:bg-red-500 bg-red-600 cursor-pointer"
+            @click="deleteAddon"
           >Delete addon
           </div>
         </div>

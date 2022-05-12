@@ -1,16 +1,16 @@
 import {Context} from "@nuxt/types";
 
 export default async function (context: Context) {
-    let singlelinkToken = context.store.getters["auth/getToken"];
+  let singlelinkToken = context.store.getters["auth/getToken"];
 
-    if (!singlelinkToken) {
-        const token = context.app.$cookies.get('auth_token');
-        await context.store.commit("auth/setToken", token);
+  if (!singlelinkToken) {
+    const token = context.app.$cookies.get('auth_token');
+    await context.store.commit("auth/setToken", token);
 
-        singlelinkToken = token;
-    }
+    singlelinkToken = token;
+  }
 
-    if (!singlelinkToken) {
-        context.redirect('/');
-    }
+  if (!singlelinkToken) {
+    context.redirect('/');
+  }
 }

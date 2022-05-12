@@ -261,7 +261,7 @@ export class RouteHandler {
             // language=HTML
             let linkHtml = '';
 
-            // Define links & sort by order
+            // Define links & filter out hidden & sort by order
             const links = response.data.links.sort(function (a: Link, b: Link) {
                 return a.sortOrder - b.sortOrder;
             });
@@ -270,6 +270,7 @@ export class RouteHandler {
 
             // Add link html to html block link-by-link
             for (let index = 0; index < links.length; index++) {
+
                 let link = links[index];
                 switch (link.type) {
                     case 'link': {
@@ -369,6 +370,7 @@ function changeSlide(next = true, index) {
                     case 'social': {
                         if (!link.metadata?.socialIcons || link.hidden)
                             break;
+
                         try {
                             let socialIcons: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }[] = link.metadata?.socialIcons ?? [];
 
@@ -487,13 +489,8 @@ function changeSlide(next = true, index) {
                                        style="color:${siSettings.color};"
                                        onclick="{
                                          let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                         fetch(recordUrl, {
-                                           method: 'POST', 
-                                           headers: {
-                                          'Content-Type': 'application/json'
-                                        }, 
-                                        body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
-                                       })}"
+                                         fetch(recordUrl, {method: 'POST'});
+                                       }"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                             ${svgData}

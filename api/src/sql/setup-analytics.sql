@@ -63,8 +63,3 @@ $$
         when duplicate_table then raise notice 'analytics.analytics_view already added.';
     end;
 $$ language plpgsql;
-
--- Update v3.2 - add social icons column to track individual social icons stats --
-alter table analytics.visits
-    add column if not exists social_icon_url text default NULL;
-

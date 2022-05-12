@@ -11,15 +11,15 @@
       {{ error }}
     </div>
 
+
     <!-- Global Stats -->
     <div class="flex flex-col py-6 bg-white shadow rounded-2xl justify-center items-start w-full mb-8">
       <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
         Global Statistics
       </h2>
 
-      <div
-          v-for="(value, name) in globalStats"
-          class="flex flex-col py-2 px-8 cursor-pointer w-full items-start justify-start border border-gray-200 border-t-0 border-l-0 border-r-0"
+      <div v-for="(value, name) in globalStats"
+           class="flex flex-col py-2 px-8 cursor-pointer w-full items-start justify-start border border-gray-200 border-t-0 border-l-0 border-r-0"
       >
         {{ name }}: {{ value }}
       </div>
@@ -219,6 +219,19 @@ export default Vue.extend({
   layout: 'dashboard',
   middleware: 'authenticated',
 
+  head() {
+    return {
+      title: 'Admin Settings - ' + this.$customSettings.productName,
+      meta: [
+        {
+          hid: 'robots',
+          name: 'robots',
+          content: 'noindex'
+        }
+      ]
+    };
+  },
+
   data() {
     return {
       godModeEmail: '',
@@ -237,19 +250,6 @@ export default Vue.extend({
       isAdmin: false,
 
       globalStats: {}
-    };
-  },
-
-  head() {
-    return {
-      title: 'Admin Settings - ' + this.$customSettings.productName,
-      meta: [
-        {
-          hid: 'robots',
-          name: 'robots',
-          content: 'noindex'
-        }
-      ]
     };
   },
 
@@ -306,7 +306,7 @@ export default Vue.extend({
     },
 
     async refreshBannedUsers() {
-      const token = this.$store.getters['auth/getToken'];
+      let token = this.$store.getters['auth/getToken'];
 
       this.bannedUsers = (await this.$axios.post('/admin/bans', {
         token
@@ -314,13 +314,13 @@ export default Vue.extend({
     },
 
     async banUser(email: string, reason?: string) {
-      const token = this.$store.getters['auth/getToken'];
+      let token = this.$store.getters['auth/getToken'];
 
       try {
         await this.$axios.post('/admin/set-banned', {
           token,
-          email,
-          reason,
+          email: email,
+          reason: reason,
           banned: true
         });
 
@@ -330,20 +330,19 @@ export default Vue.extend({
       } catch (err) {
         this.error = err.response.data.error;
 
-        if (this.errorIntervalHandler !== undefined) {
+        if (this.errorIntervalHandler !== undefined)
           clearInterval(this.errorIntervalHandler);
-        }
 
         this.errorIntervalHandler = setInterval(() => this.error = '', 5000);
       }
     },
 
     async unbanUser(email: string) {
-      const token = this.$store.getters['auth/getToken'];
+      let token = this.$store.getters['auth/getToken'];
 
       await this.$axios.post('/admin/set-banned', {
         token,
-        email,
+        email: email,
         banned: false
       });
 

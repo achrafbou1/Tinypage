@@ -22,11 +22,11 @@
           <select
               id="tierSelect"
               v-model="selectedProductId"
-              :disabled="godmode"
               class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl font-bold border w-full lg:w-auto flex-grow lg:max-w-md"
+              :disabled="godmode"
           >
             <option v-if="subInfo.purchase_type === 'free'" :value="null">None</option>
-            <option v-for="subInfo of availableSubscriptions" v-if="availableSubscriptions" :key="subInfo.id"
+            <option v-if="availableSubscriptions" :key="subInfo.id" v-for="subInfo of availableSubscriptions"
                     :value="subInfo.id"
             >
               {{ subInfo.name }}
@@ -37,10 +37,10 @@
           <button
               v-if="loaded"
               v-show="(subInfo.purchase_type === 'free' || (subInfo.purchase_type === 'one_time' && selectedPurchaseType === 'recurring')) && selectedProductId && selectedProductId !== subInfo.product_id"
-              :disabled="godmode"
               class="w-full lg:w-auto flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
               type="button"
               @click="initCheckout"
+              :disabled="godmode"
           >
             Checkout
           </button>
@@ -94,7 +94,7 @@
               style="min-width: 120px; max-width: 161px;"
               @change="onMemberRoleUpdate(member.email, member.role)"
           >
-            <option selected value="editor">Editor</option>
+            <option value="editor" selected>Editor</option>
           </select>
         </div>
       </div>
@@ -117,11 +117,11 @@
           <label class="ml-4 mr-4 font-normal">Role</label>
           <select
               v-model="teamMemberRole"
-              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
               style="min-width: 120px; max-width: 220px;"
+              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
           >
             <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
-            <option selected value="editor">Editor</option>
+            <option value="editor" selected>Editor</option>
           </select>
         </div>
 

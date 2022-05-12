@@ -136,9 +136,9 @@
                 <div class="relative">
                   <input
                       v-model="meta.page_styles.avatar_border_color"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -196,10 +196,10 @@
                 <div class="relative w-full">
                   <input
                       v-model="meta.page_styles.background_color"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -305,10 +305,10 @@
                 <div class="relative w-full">
                   <input
                       v-model="meta.page_styles.background_gradient_start"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -317,10 +317,10 @@
                 <div class="relative w-full">
                   <input
                       v-model="meta.page_styles.background_gradient_end"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -489,10 +489,10 @@
                 <div class="relative">
                   <input
                       v-model="meta.typography.headline_color"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -613,10 +613,10 @@
                 <div class="relative">
                   <input
                       v-model="meta.typography.subtitle_color"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -719,10 +719,10 @@
                 <div class="relative">
                   <input
                       v-model="meta.link_styles.border_color"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -775,10 +775,10 @@
                 <div class="relative w-full">
                   <input
                       v-model="meta.link_styles.background_color"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -884,10 +884,10 @@
                 <div class="relative w-full">
                   <input
                       v-model="meta.link_styles.background_gradient_start"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -896,10 +896,10 @@
                 <div class="relative w-full">
                   <input
                       v-model="meta.link_styles.background_gradient_end"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -1066,10 +1066,10 @@
                 <div class="relative">
                   <input
                       v-model="meta.link_styles.headline_color"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -1190,10 +1190,10 @@
                 <div class="relative">
                   <input
                       v-model="meta.link_styles.subtitle_color"
-                      :data-jscolor="jsColorOptions"
                       class="p-3 w-full rounded-lg bg-white text-sm text-gray-700"
                       placeholder="e.g. #FFF"
                       type="text"
+                      :data-jscolor="jsColorOptions"
                   >
                 </div>
               </div>
@@ -1372,6 +1372,360 @@ export default Vue.extend({
         }
       }
     };
+  },
+
+  beforeMount(): void {
+    if (this.importedCSS) {
+      this.jsonPackage = this.$transform.toJSON(this.importedCSS);
+
+      // Safety
+      if (!this.jsonPackage.children['div#user-profile-view section']) {
+        this.jsonPackage.children['div#user-profile-view section'] = {
+          attributes: {
+            'max-width': null,
+            padding: null
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['img.nc-avatar']) {
+        this.jsonPackage.children['img.nc-avatar'] = {
+          attributes: {
+            width: null,
+            height: null,
+            border: null,
+            'box-shadow': null,
+            'border-radius': null
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['div.sl-bg']) {
+        this.jsonPackage.children['div.sl-bg'] = {
+          attributes: {
+            background: null
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['body']) {
+        this.jsonPackage.children['body'] = {
+          attributes: {
+            background: null,
+            'background-position': null,
+            'background-repeat': null,
+            'background-size': null
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['h1.sl-headline']) {
+        this.jsonPackage.children['h1.sl-headline'] = {
+          attributes: {
+            'line-height': null,
+            'letter-spacing': null,
+            'font-size': null,
+            'font-weight': null,
+            'font-family': null,
+            color: null,
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['h3.sl-subtitle']) {
+        this.jsonPackage.children['h3.sl-subtitle'] = {
+          attributes: {
+            'line-height': null,
+            'letter-spacing': null,
+            'font-size': null,
+            'font-weight': null,
+            'font-family': null,
+            color: null,
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['span.sl-label']) {
+        this.jsonPackage.children['span.sl-label'] = {
+          attributes: {
+            'line-height': null,
+            'letter-spacing': null,
+            'font-size': null,
+            'font-weight': null,
+            'font-family': null,
+            color: null,
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['span.sl-link-subtitle']) {
+        this.jsonPackage.children['span.sl-link-subtitle'] = {
+          attributes: {
+            'line-height': null,
+            'letter-spacing': null,
+            'font-size': null,
+            'font-weight': null,
+            'font-family': null,
+            color: null,
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['a div.sl-item.nc-link']) {
+        this.jsonPackage.children['a div.sl-item.nc-link'] = {
+          attributes: {
+            'border-radius': null,
+            border: null,
+            background: null,
+            padding: null
+          }
+        };
+      }
+
+      if (!this.jsonPackage.children['div#user-profile-view section']) {
+        this.jsonPackage.children['div#user-profile-view section'] = {
+          attributes: {
+            'max-width': null,
+            padding: null
+          }
+        };
+      }
+
+      // Avatar height
+      if (this.jsonPackage.children["img.nc-avatar"].attributes.width) {
+        this.meta.page_styles.avatar_size = this.jsonPackage.children["img.nc-avatar"].attributes.width.split('px')[0];
+      }
+      // Avatar border radius
+      if (this.jsonPackage.children["img.nc-avatar"].attributes['border-radius']) {
+        this.meta.page_styles.avatar_radius = this.jsonPackage.children["img.nc-avatar"].attributes['border-radius'].split('px')[0];
+      }
+      // Avatar border
+      if (this.jsonPackage.children["img.nc-avatar"].attributes.border && this.jsonPackage.children["img.nc-avatar"].attributes.border !== 'none' && this.jsonPackage.children["img.nc-avatar"].attributes.border.split(' ').length > 2) {
+        const border = this.jsonPackage.children["img.nc-avatar"].attributes.border.split(' ');
+        // Avatar border style
+        this.meta.page_styles.avatar_border_type = border[0];
+        // Avatar border width
+        this.meta.page_styles.avatar_border_width = border[1].split('px')[0];
+        // Avatar border color
+        this.meta.page_styles.avatar_border_color = border[2];
+      } else if (!this.jsonPackage.children["img.nc-avatar"].attributes.border) {
+        this.meta.page_styles.avatar_border_type = 'none';
+      }
+      // Avatar box-shadow
+      if (this.jsonPackage.children["img.nc-avatar"].attributes['box-shadow']) {
+        this.meta.page_styles.avatar_shadow = this.jsonPackage.children["img.nc-avatar"].attributes['box-shadow'];
+      }
+
+      // Page background
+      let backgroundAttribute = this.jsonPackage.children['body'].attributes['background'];
+
+      if (backgroundAttribute) {
+        if (backgroundAttribute.includes('linear-gradient')) {
+          // Is linear gradient
+          this.meta.page_styles.background_type = 'gradient';
+          const gradient = backgroundAttribute.substring(backgroundAttribute.indexOf('(') + 1, backgroundAttribute.lastIndexOf(')')).split(/,(?![^(]*\))(?![^"']*["'](?:[^"']*["'][^"']*["'])*[^"']*$)/);
+          if (gradient.length === 3) {
+            this.meta.page_styles.background_gradient_direction = gradient[0];
+            this.meta.page_styles.background_gradient_start = gradient[1];
+            this.meta.page_styles.background_gradient_end = gradient[2];
+          } else {
+            delete this.jsonPackage.children['body'].attributes['background'];
+          }
+        } else if (backgroundAttribute.includes('url')) {
+          // Is image
+          this.meta.page_styles.background_type = 'image';
+          this.meta.page_styles.background_image = backgroundAttribute.replace('url(', '').replace(')', '');
+          // Image size
+          if (this.jsonPackage.children['body'].attributes['background-size']) {
+            this.meta.page_styles.background_size = this.jsonPackage.children['body'].attributes['background-size'];
+          }
+          // Image position
+          if (this.jsonPackage.children['body'].attributes['background-position']) {
+            this.meta.page_styles.background_position = this.jsonPackage.children['body'].attributes['background-position'];
+          }
+          // Image repeat
+          if (this.jsonPackage.children['body'].attributes['background-repeat']) {
+            this.meta.page_styles.background_repeat = this.jsonPackage.children['body'].attributes['background-repeat'];
+          }
+        } else {
+          // Is solid color
+          this.meta.page_styles.background_type = 'solid';
+          this.meta.page_styles.background_color = backgroundAttribute;
+        }
+      }
+      // Typography
+      if (this.jsonPackage.children['h1.sl-headline'].attributes['font-size']) {
+        this.meta.typography.headline_size = this.jsonPackage.children['h1.sl-headline'].attributes['font-size'].replace('px', '');
+      }
+      if (this.jsonPackage.children['h1.sl-headline'].attributes['font-weight']) {
+        this.meta.typography.headline_weight = this.jsonPackage.children['h1.sl-headline'].attributes['font-weight'];
+      }
+      if (this.jsonPackage.children['h1.sl-headline'].attributes['font-family']) {
+        this.meta.typography.headline_family = this.jsonPackage.children['h1.sl-headline'].attributes['font-family'];
+      }
+      if (this.jsonPackage.children['h1.sl-headline'].attributes['line-height']) {
+        this.meta.typography.headline_height = this.jsonPackage.children['h1.sl-headline'].attributes['line-height'].replace('%', '');
+      }
+      if (this.jsonPackage.children['h1.sl-headline'].attributes['letter-spacing']) {
+        this.meta.typography.headline_spacing = this.jsonPackage.children['h1.sl-headline'].attributes['letter-spacing'].replace('px', '');
+      }
+      if (this.jsonPackage.children['h1.sl-headline'].attributes['color']) {
+        this.meta.typography.headline_color = this.jsonPackage.children['h1.sl-headline'].attributes['color'];
+      }
+
+      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['font-size']) {
+        this.meta.typography.subtitle_size = this.jsonPackage.children['h3.sl-subtitle'].attributes['font-size'].replace('px', '');
+      }
+      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['font-weight']) {
+        this.meta.typography.subtitle_weight = this.jsonPackage.children['h3.sl-subtitle'].attributes['font-weight'];
+      }
+      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['font-family']) {
+        this.meta.typography.subtitle_family = this.jsonPackage.children['h3.sl-subtitle'].attributes['font-family'];
+      }
+      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['line-height']) {
+        this.meta.typography.subtitle_height = this.jsonPackage.children['h3.sl-subtitle'].attributes['line-height'].replace('%', '');
+      }
+      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['letter-spacing']) {
+        this.meta.typography.subtitle_spacing = this.jsonPackage.children['h3.sl-subtitle'].attributes['letter-spacing'].replace('px', '');
+      }
+      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['color']) {
+        this.meta.typography.subtitle_color = this.jsonPackage.children['h3.sl-subtitle'].attributes['color'];
+      }
+
+      // Link border
+      if (this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border && this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border !== 'none' && this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border.split(' ').length > 2) {
+        const border = this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border.split(' ');
+        // Avatar border style
+        this.meta.link_styles.border_type = border[0];
+        // Avatar border width
+        this.meta.link_styles.border_width = border[1].split('px')[0];
+        // Avatar border color
+        this.meta.link_styles.border_color = border[2];
+      } else if (this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border === 'none') {
+        this.meta.link_styles.border_type = 'none';
+      }
+
+      // Link box-shadow
+      if (this.jsonPackage.children["a div.sl-item.nc-link"].attributes['box-shadow']) {
+        this.meta.link_styles.box_shadow = this.jsonPackage.children["a div.sl-item.nc-link"].attributes['box-shadow'];
+      }
+
+      // Link border radius
+      if (this.jsonPackage.children["a div.sl-item.nc-link"].attributes['border-radius']) {
+        this.meta.link_styles.border_radius = this.jsonPackage.children["a div.sl-item.nc-link"].attributes['border-radius'].replace('px', '');
+      }
+
+      // Link background
+      let linkBackground = this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background'];
+
+      if (linkBackground) {
+        if (linkBackground.includes('linear-gradient')) {
+          // Is linear gradient
+          this.meta.link_styles.background_type = 'gradient';
+          const gradient = linkBackground.substring(linkBackground.indexOf('(') + 1, linkBackground.lastIndexOf(')')).split(/,(?![^(]*\))(?![^"']*["'](?:[^"']*["'][^"']*["'])*[^"']*$)/);
+          if (gradient.length === 3) {
+            this.meta.link_styles.background_gradient_direction = gradient[0];
+            this.meta.link_styles.background_gradient_start = gradient[1];
+            this.meta.link_styles.background_gradient_end = gradient[2];
+          } else {
+            delete this.jsonPackage.children['a div.sl-item.nc-link']?.attributes['background'];
+          }
+        } else if (linkBackground.includes('url')) {
+          // Is image
+          this.meta.link_styles.background_type = 'image';
+          this.meta.link_styles.background_image = linkBackground.replace('url(', '').replace(')', '');
+          // Image size
+          if (this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-size']) {
+            this.meta.link_styles.background_size = this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-size'];
+          }
+          // Image position
+          if (this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-position']) {
+            this.meta.link_styles.background_position = this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-position'];
+          }
+          // Image repeat
+          if (this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-repeat']) {
+            this.meta.link_styles.background_repeat = this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-repeat'];
+          }
+        } else {
+          // Is solid color
+          this.meta.link_styles.background_type = 'solid';
+          this.meta.link_styles.background_color = linkBackground;
+        }
+      }
+
+      // Link Typography
+      if (this.jsonPackage.children['span.sl-label'].attributes['font-size']) {
+        this.meta.link_styles.headline_size = this.jsonPackage.children['span.sl-label'].attributes['font-size'].replace('px', '');
+      }
+      if (this.jsonPackage.children['span.sl-label'].attributes['font-weight']) {
+        this.meta.link_styles.headline_weight = this.jsonPackage.children['span.sl-label'].attributes['font-weight'];
+      }
+      if (this.jsonPackage.children['span.sl-label'].attributes['font-family']) {
+        this.meta.link_styles.headline_family = this.jsonPackage.children['span.sl-label'].attributes['font-family'];
+      }
+      if (this.jsonPackage.children['span.sl-label'].attributes['line-height']) {
+        this.meta.link_styles.headline_height = this.jsonPackage.children['span.sl-label'].attributes['line-height'].replace('%', '');
+      }
+      if (this.jsonPackage.children['span.sl-label'].attributes['letter-spacing']) {
+        this.meta.link_styles.headline_spacing = this.jsonPackage.children['span.sl-label'].attributes['letter-spacing'].replace('px', '');
+      }
+      if (this.jsonPackage.children['span.sl-label'].attributes['color']) {
+        this.meta.link_styles.headline_color = this.jsonPackage.children['span.sl-label'].attributes['color'];
+      }
+
+      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-size']) {
+        this.meta.link_styles.subtitle_size = this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-size'].replace('px', '');
+      }
+      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-weight']) {
+        this.meta.link_styles.subtitle_weight = this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-weight'];
+      }
+      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-family']) {
+        this.meta.link_styles.subtitle_family = this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-family'];
+      }
+      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['line-height']) {
+        this.meta.link_styles.subtitle_height = this.jsonPackage.children['span.sl-link-subtitle'].attributes['line-height'].replace('%', '');
+      }
+      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['letter-spacing']) {
+        this.meta.link_styles.subtitle_spacing = this.jsonPackage.children['span.sl-link-subtitle'].attributes['letter-spacing'].replace('px', '');
+      }
+      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['color']) {
+        this.meta.link_styles.subtitle_color = this.jsonPackage.children['span.sl-link-subtitle'].attributes['color'];
+      }
+
+      // Link styles
+      if (this.jsonPackage.children['a div.sl-item.nc-link']) {
+        // something in the future
+      }
+
+      // Page styles, section
+      if (this.jsonPackage.children['div#user-profile-view section']) {
+        if (this.jsonPackage.children['div#user-profile-view section'].attributes['max-width']) {
+          this.meta.page_styles.max_width = this.jsonPackage.children['div#user-profile-view section'].attributes['max-width'].replace('px', '');
+        }
+        if (this.jsonPackage.children['div#user-profile-view section'].attributes['padding']) {
+          this.meta.page_styles.padding = this.jsonPackage.children['div#user-profile-view section'].attributes['padding'].replace('px', '');
+        }
+      }
+
+      // End imported CSS
+    }
+  },
+
+  async mounted() {
+    if (process.client) {
+      await new Promise(res => setTimeout(res, 1000));
+
+      this.$nextTick(() => {
+        this.initColorPickers();
+      });
+    }
+  },
+
+  methods: {
+    initColorPickers() {
+      let jscolor = ((window as any).jscolor) as any;
+      jscolor.install();
+    }
   },
 
   watch: {
@@ -1658,360 +2012,6 @@ export default Vue.extend({
 
         this.$emit('input', this.$transform.toCSS(this.jsonPackage));
       }
-    }
-  },
-
-  beforeMount(): void {
-    if (this.importedCSS) {
-      this.jsonPackage = this.$transform.toJSON(this.importedCSS);
-
-      // Safety
-      if (!this.jsonPackage.children['div#user-profile-view section']) {
-        this.jsonPackage.children['div#user-profile-view section'] = {
-          attributes: {
-            'max-width': null,
-            padding: null
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['img.nc-avatar']) {
-        this.jsonPackage.children['img.nc-avatar'] = {
-          attributes: {
-            width: null,
-            height: null,
-            border: null,
-            'box-shadow': null,
-            'border-radius': null
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['div.sl-bg']) {
-        this.jsonPackage.children['div.sl-bg'] = {
-          attributes: {
-            background: null
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['body']) {
-        this.jsonPackage.children['body'] = {
-          attributes: {
-            background: null,
-            'background-position': null,
-            'background-repeat': null,
-            'background-size': null
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['h1.sl-headline']) {
-        this.jsonPackage.children['h1.sl-headline'] = {
-          attributes: {
-            'line-height': null,
-            'letter-spacing': null,
-            'font-size': null,
-            'font-weight': null,
-            'font-family': null,
-            color: null,
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['h3.sl-subtitle']) {
-        this.jsonPackage.children['h3.sl-subtitle'] = {
-          attributes: {
-            'line-height': null,
-            'letter-spacing': null,
-            'font-size': null,
-            'font-weight': null,
-            'font-family': null,
-            color: null,
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['span.sl-label']) {
-        this.jsonPackage.children['span.sl-label'] = {
-          attributes: {
-            'line-height': null,
-            'letter-spacing': null,
-            'font-size': null,
-            'font-weight': null,
-            'font-family': null,
-            color: null,
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['span.sl-link-subtitle']) {
-        this.jsonPackage.children['span.sl-link-subtitle'] = {
-          attributes: {
-            'line-height': null,
-            'letter-spacing': null,
-            'font-size': null,
-            'font-weight': null,
-            'font-family': null,
-            color: null,
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['a div.sl-item.nc-link']) {
-        this.jsonPackage.children['a div.sl-item.nc-link'] = {
-          attributes: {
-            'border-radius': null,
-            border: null,
-            background: null,
-            padding: null
-          }
-        };
-      }
-
-      if (!this.jsonPackage.children['div#user-profile-view section']) {
-        this.jsonPackage.children['div#user-profile-view section'] = {
-          attributes: {
-            'max-width': null,
-            padding: null
-          }
-        };
-      }
-
-      // Avatar height
-      if (this.jsonPackage.children["img.nc-avatar"].attributes.width) {
-        this.meta.page_styles.avatar_size = this.jsonPackage.children["img.nc-avatar"].attributes.width.split('px')[0];
-      }
-      // Avatar border radius
-      if (this.jsonPackage.children["img.nc-avatar"].attributes['border-radius']) {
-        this.meta.page_styles.avatar_radius = this.jsonPackage.children["img.nc-avatar"].attributes['border-radius'].split('px')[0];
-      }
-      // Avatar border
-      if (this.jsonPackage.children["img.nc-avatar"].attributes.border && this.jsonPackage.children["img.nc-avatar"].attributes.border !== 'none' && this.jsonPackage.children["img.nc-avatar"].attributes.border.split(' ').length > 2) {
-        const border = this.jsonPackage.children["img.nc-avatar"].attributes.border.split(' ');
-        // Avatar border style
-        this.meta.page_styles.avatar_border_type = border[0];
-        // Avatar border width
-        this.meta.page_styles.avatar_border_width = border[1].split('px')[0];
-        // Avatar border color
-        this.meta.page_styles.avatar_border_color = border[2];
-      } else if (!this.jsonPackage.children["img.nc-avatar"].attributes.border) {
-        this.meta.page_styles.avatar_border_type = 'none';
-      }
-      // Avatar box-shadow
-      if (this.jsonPackage.children["img.nc-avatar"].attributes['box-shadow']) {
-        this.meta.page_styles.avatar_shadow = this.jsonPackage.children["img.nc-avatar"].attributes['box-shadow'];
-      }
-
-      // Page background
-      const backgroundAttribute = this.jsonPackage.children['body'].attributes['background'];
-
-      if (backgroundAttribute) {
-        if (backgroundAttribute.includes('linear-gradient')) {
-          // Is linear gradient
-          this.meta.page_styles.background_type = 'gradient';
-          const gradient = backgroundAttribute.substring(backgroundAttribute.indexOf('(') + 1, backgroundAttribute.lastIndexOf(')')).split(/,(?![^(]*\))(?![^"']*["'](?:[^"']*["'][^"']*["'])*[^"']*$)/);
-          if (gradient.length === 3) {
-            this.meta.page_styles.background_gradient_direction = gradient[0];
-            this.meta.page_styles.background_gradient_start = gradient[1];
-            this.meta.page_styles.background_gradient_end = gradient[2];
-          } else {
-            delete this.jsonPackage.children['body'].attributes['background'];
-          }
-        } else if (backgroundAttribute.includes('url')) {
-          // Is image
-          this.meta.page_styles.background_type = 'image';
-          this.meta.page_styles.background_image = backgroundAttribute.replace('url(', '').replace(')', '');
-          // Image size
-          if (this.jsonPackage.children['body'].attributes['background-size']) {
-            this.meta.page_styles.background_size = this.jsonPackage.children['body'].attributes['background-size'];
-          }
-          // Image position
-          if (this.jsonPackage.children['body'].attributes['background-position']) {
-            this.meta.page_styles.background_position = this.jsonPackage.children['body'].attributes['background-position'];
-          }
-          // Image repeat
-          if (this.jsonPackage.children['body'].attributes['background-repeat']) {
-            this.meta.page_styles.background_repeat = this.jsonPackage.children['body'].attributes['background-repeat'];
-          }
-        } else {
-          // Is solid color
-          this.meta.page_styles.background_type = 'solid';
-          this.meta.page_styles.background_color = backgroundAttribute;
-        }
-      }
-      // Typography
-      if (this.jsonPackage.children['h1.sl-headline'].attributes['font-size']) {
-        this.meta.typography.headline_size = this.jsonPackage.children['h1.sl-headline'].attributes['font-size'].replace('px', '');
-      }
-      if (this.jsonPackage.children['h1.sl-headline'].attributes['font-weight']) {
-        this.meta.typography.headline_weight = this.jsonPackage.children['h1.sl-headline'].attributes['font-weight'];
-      }
-      if (this.jsonPackage.children['h1.sl-headline'].attributes['font-family']) {
-        this.meta.typography.headline_family = this.jsonPackage.children['h1.sl-headline'].attributes['font-family'];
-      }
-      if (this.jsonPackage.children['h1.sl-headline'].attributes['line-height']) {
-        this.meta.typography.headline_height = this.jsonPackage.children['h1.sl-headline'].attributes['line-height'].replace('%', '');
-      }
-      if (this.jsonPackage.children['h1.sl-headline'].attributes['letter-spacing']) {
-        this.meta.typography.headline_spacing = this.jsonPackage.children['h1.sl-headline'].attributes['letter-spacing'].replace('px', '');
-      }
-      if (this.jsonPackage.children['h1.sl-headline'].attributes['color']) {
-        this.meta.typography.headline_color = this.jsonPackage.children['h1.sl-headline'].attributes['color'];
-      }
-
-      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['font-size']) {
-        this.meta.typography.subtitle_size = this.jsonPackage.children['h3.sl-subtitle'].attributes['font-size'].replace('px', '');
-      }
-      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['font-weight']) {
-        this.meta.typography.subtitle_weight = this.jsonPackage.children['h3.sl-subtitle'].attributes['font-weight'];
-      }
-      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['font-family']) {
-        this.meta.typography.subtitle_family = this.jsonPackage.children['h3.sl-subtitle'].attributes['font-family'];
-      }
-      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['line-height']) {
-        this.meta.typography.subtitle_height = this.jsonPackage.children['h3.sl-subtitle'].attributes['line-height'].replace('%', '');
-      }
-      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['letter-spacing']) {
-        this.meta.typography.subtitle_spacing = this.jsonPackage.children['h3.sl-subtitle'].attributes['letter-spacing'].replace('px', '');
-      }
-      if (this.jsonPackage.children['h3.sl-subtitle'].attributes['color']) {
-        this.meta.typography.subtitle_color = this.jsonPackage.children['h3.sl-subtitle'].attributes['color'];
-      }
-
-      // Link border
-      if (this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border && this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border !== 'none' && this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border.split(' ').length > 2) {
-        const border = this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border.split(' ');
-        // Avatar border style
-        this.meta.link_styles.border_type = border[0];
-        // Avatar border width
-        this.meta.link_styles.border_width = border[1].split('px')[0];
-        // Avatar border color
-        this.meta.link_styles.border_color = border[2];
-      } else if (this.jsonPackage.children["a div.sl-item.nc-link"].attributes.border === 'none') {
-        this.meta.link_styles.border_type = 'none';
-      }
-
-      // Link box-shadow
-      if (this.jsonPackage.children["a div.sl-item.nc-link"].attributes['box-shadow']) {
-        this.meta.link_styles.box_shadow = this.jsonPackage.children["a div.sl-item.nc-link"].attributes['box-shadow'];
-      }
-
-      // Link border radius
-      if (this.jsonPackage.children["a div.sl-item.nc-link"].attributes['border-radius']) {
-        this.meta.link_styles.border_radius = this.jsonPackage.children["a div.sl-item.nc-link"].attributes['border-radius'].replace('px', '');
-      }
-
-      // Link background
-      const linkBackground = this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background'];
-
-      if (linkBackground) {
-        if (linkBackground.includes('linear-gradient')) {
-          // Is linear gradient
-          this.meta.link_styles.background_type = 'gradient';
-          const gradient = linkBackground.substring(linkBackground.indexOf('(') + 1, linkBackground.lastIndexOf(')')).split(/,(?![^(]*\))(?![^"']*["'](?:[^"']*["'][^"']*["'])*[^"']*$)/);
-          if (gradient.length === 3) {
-            this.meta.link_styles.background_gradient_direction = gradient[0];
-            this.meta.link_styles.background_gradient_start = gradient[1];
-            this.meta.link_styles.background_gradient_end = gradient[2];
-          } else {
-            delete this.jsonPackage.children['a div.sl-item.nc-link']?.attributes['background'];
-          }
-        } else if (linkBackground.includes('url')) {
-          // Is image
-          this.meta.link_styles.background_type = 'image';
-          this.meta.link_styles.background_image = linkBackground.replace('url(', '').replace(')', '');
-          // Image size
-          if (this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-size']) {
-            this.meta.link_styles.background_size = this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-size'];
-          }
-          // Image position
-          if (this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-position']) {
-            this.meta.link_styles.background_position = this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-position'];
-          }
-          // Image repeat
-          if (this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-repeat']) {
-            this.meta.link_styles.background_repeat = this.jsonPackage.children['a div.sl-item.nc-link'].attributes['background-repeat'];
-          }
-        } else {
-          // Is solid color
-          this.meta.link_styles.background_type = 'solid';
-          this.meta.link_styles.background_color = linkBackground;
-        }
-      }
-
-      // Link Typography
-      if (this.jsonPackage.children['span.sl-label'].attributes['font-size']) {
-        this.meta.link_styles.headline_size = this.jsonPackage.children['span.sl-label'].attributes['font-size'].replace('px', '');
-      }
-      if (this.jsonPackage.children['span.sl-label'].attributes['font-weight']) {
-        this.meta.link_styles.headline_weight = this.jsonPackage.children['span.sl-label'].attributes['font-weight'];
-      }
-      if (this.jsonPackage.children['span.sl-label'].attributes['font-family']) {
-        this.meta.link_styles.headline_family = this.jsonPackage.children['span.sl-label'].attributes['font-family'];
-      }
-      if (this.jsonPackage.children['span.sl-label'].attributes['line-height']) {
-        this.meta.link_styles.headline_height = this.jsonPackage.children['span.sl-label'].attributes['line-height'].replace('%', '');
-      }
-      if (this.jsonPackage.children['span.sl-label'].attributes['letter-spacing']) {
-        this.meta.link_styles.headline_spacing = this.jsonPackage.children['span.sl-label'].attributes['letter-spacing'].replace('px', '');
-      }
-      if (this.jsonPackage.children['span.sl-label'].attributes['color']) {
-        this.meta.link_styles.headline_color = this.jsonPackage.children['span.sl-label'].attributes['color'];
-      }
-
-      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-size']) {
-        this.meta.link_styles.subtitle_size = this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-size'].replace('px', '');
-      }
-      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-weight']) {
-        this.meta.link_styles.subtitle_weight = this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-weight'];
-      }
-      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-family']) {
-        this.meta.link_styles.subtitle_family = this.jsonPackage.children['span.sl-link-subtitle'].attributes['font-family'];
-      }
-      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['line-height']) {
-        this.meta.link_styles.subtitle_height = this.jsonPackage.children['span.sl-link-subtitle'].attributes['line-height'].replace('%', '');
-      }
-      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['letter-spacing']) {
-        this.meta.link_styles.subtitle_spacing = this.jsonPackage.children['span.sl-link-subtitle'].attributes['letter-spacing'].replace('px', '');
-      }
-      if (this.jsonPackage.children['span.sl-link-subtitle'].attributes['color']) {
-        this.meta.link_styles.subtitle_color = this.jsonPackage.children['span.sl-link-subtitle'].attributes['color'];
-      }
-
-      // Link styles
-      if (this.jsonPackage.children['a div.sl-item.nc-link']) {
-        // something in the future
-      }
-
-      // Page styles, section
-      if (this.jsonPackage.children['div#user-profile-view section']) {
-        if (this.jsonPackage.children['div#user-profile-view section'].attributes['max-width']) {
-          this.meta.page_styles.max_width = this.jsonPackage.children['div#user-profile-view section'].attributes['max-width'].replace('px', '');
-        }
-        if (this.jsonPackage.children['div#user-profile-view section'].attributes['padding']) {
-          this.meta.page_styles.padding = this.jsonPackage.children['div#user-profile-view section'].attributes['padding'].replace('px', '');
-        }
-      }
-
-      // End imported CSS
-    }
-  },
-
-  async mounted() {
-    if (process.client) {
-      await new Promise(res => setTimeout(res, 1000));
-
-      this.$nextTick(() => {
-        this.initColorPickers();
-      });
-    }
-  },
-
-  methods: {
-    initColorPickers() {
-      const jscolor = ((window as any).jscolor) as any;
-      jscolor.install();
     }
   },
 });
