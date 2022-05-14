@@ -245,8 +245,8 @@
           <label class="font-normal mb-2 text-sm">Use for this HTML snippets like Facebook Pixel.</label>
 
           <a
-              class="text-gray-500 text-xs hover:underline hover:text-gray-600 mb-1"
               :href="rendererUrl + '/help'"
+              class="text-gray-500 text-xs hover:underline hover:text-gray-600 mb-1"
               target="_blank"
           >Need help? Read our
             documentation</a>
@@ -255,8 +255,8 @@
             <textarea
                 v-model="user.activeProfile.metadata.pageHtml"
                 class="border border-2 text-white p-2"
-                style="font-family: monospace; background-color: #1E1E1E"
                 rows="12"
+                style="font-family: monospace; background-color: #1E1E1E"
             />
           </client-only>
         </div>
@@ -357,8 +357,8 @@
 
           <input
               id="importProfileButton"
-              type="file"
               hidden
+              type="file"
               @change="importProfile"
           >
         </div>
