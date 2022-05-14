@@ -274,7 +274,6 @@ export class RouteHandler {
                 switch (link.type) {
                     case 'link': {
                         let subtitleHtml = '';
-                        // language=HTML
                         if (link.subtitle) {
                             subtitleHtml = `<span
                                     class="text-sm text-gray-700 sl-link-subtitle mt-1"
