@@ -27,7 +27,8 @@
     // Only copied if config.json exists in src dir
     "src/config.json",
     "src/config.template.json",
-    "src"
+    "src",
+    "../editor/@types/editor-types.d.ts"
   ],
   "exclude": [
     "node_modules"

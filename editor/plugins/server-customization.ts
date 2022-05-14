@@ -1,5 +1,5 @@
-import {Context, Plugin} from '@nuxt/types';
 import * as process from "process";
+import {Context, Plugin} from '@nuxt/types';
 
 const defaultSettings: Partial<DbServerCustomization> = {
     title: "Tinypage",

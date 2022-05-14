@@ -6,12 +6,12 @@
         Request a password reset
       </h1>
       <p class="text-gray-700 text-sm">Remember your password? <a
-        class="text-blue-600 hover:text-blue-700"
-        href="/create-account"
+          class="text-blue-600 hover:text-blue-700"
+          href="/create-account"
       >Login</a></p>
       <div
-        v-if="error"
-        class="flex flex-row p-2 mt-4 mb-2 bg-orange-200 text-orange-600 rounded w-11/12 max-w-sm justify-center items-center text-sm border border-orange-300 shadow-sm"
+          v-if="error"
+          class="flex flex-row p-2 mt-4 mb-2 bg-orange-200 text-orange-600 rounded w-11/12 max-w-sm justify-center items-center text-sm border border-orange-300 shadow-sm"
       >
         <img alt="caution" src="/icons/caution.svg" style="width: 12px;">
         <div class="flex flex-col ml-2">
@@ -19,8 +19,8 @@
         </div>
       </div>
       <div
-        v-if="message"
-        class="flex flex-row p-2 mt-4 mb-2 bg-green-200 text-green-600 rounded w-11/12 max-w-sm justify-center items-center text-sm text-center border border-green-300 shadow-sm"
+          v-if="message"
+          class="flex flex-row p-2 mt-4 mb-2 bg-green-200 text-green-600 rounded w-11/12 max-w-sm justify-center items-center text-sm text-center border border-green-300 shadow-sm"
       >
         <div class="flex flex-col ml-2">
           {{ message }}
@@ -30,18 +30,18 @@
         <div class="flex flex-col mb-4">
           <label class="font-medium text-sm">Email Address</label>
           <input
-            v-model="email"
-            aria-label="email"
-            class="p-2 mt-2 text-sm border-solid border-gray-300 rounded border"
-            placeholder="e.g. jane@gmail.com"
-            type="email"
-            @keyup.enter="requestReset"
+              v-model="email"
+              aria-label="email"
+              class="p-2 mt-2 text-sm border-solid border-gray-300 rounded border"
+              placeholder="e.g. jane@gmail.com"
+              type="email"
+              @keyup.enter="requestReset"
           >
         </div>
         <button
-          class="mt-2 w-full p-3 text-center text-sm text-white bg-blue-600 hover:bg-blue-400 rounded font-semibold"
-          type="button"
-          @click="requestReset"
+            class="mt-2 w-full p-3 text-center text-sm text-white bg-blue-600 hover:bg-blue-400 rounded font-semibold"
+            type="button"
+            @click="requestReset"
         >
           Request reset link
         </button>
@@ -59,6 +59,15 @@ import {StatusCodes} from "http-status-codes";
 
 export default Vue.extend({
   name: 'ForgotPassword',
+
+  data: () => {
+    return {
+      email: '',
+      password: '',
+      error: '',
+      message: '',
+    };
+  },
 
   head() {
     return {
@@ -95,15 +104,6 @@ export default Vue.extend({
           content: 'Request a password rest for your ' + this.$customSettings.productName + ' account.'
         },
       ],
-    };
-  },
-
-  data: () => {
-    return {
-      email: '',
-      password: '',
-      error: '',
-      message: '',
     };
   },
 

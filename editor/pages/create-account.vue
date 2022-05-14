@@ -52,7 +52,9 @@
             </label>
           </div>
         </div>
-        <div class="button cursor-pointer" @click="attemptEmailRegister">Get started free</div>
+        <div class="button cursor-pointer" @click="attemptEmailRegister">
+          Get started free
+        </div>
         <div v-if="error" class="error">
           {{ error }}
         </div>
