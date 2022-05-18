@@ -289,6 +289,23 @@
       </p>
     </div>
 
+    <!-- Leave page -->
+    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
+      <div class="flex flex-col mr-auto w-full lg:w-1/2">
+        <h2 class="text-black font-bold text-lg w-full">
+          Leave this page
+        </h2>
+        <p class="text-black opacity-70 font-semibold">Leave this page (only works for pages you've been invited to).</p>
+      </div>
+      <button
+          class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700rounded-2xl font-bold w-1/3 justify-center align-center"
+          type="button"
+          @click="leavePageModalActive = true; setDeleteProfileModalActive(false);"
+      >
+        Leave this page
+      </button>
+    </div>
+
     <!-- Delete site -->
     <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
       <div class="flex flex-col mr-auto w-full lg:w-1/2">
@@ -301,7 +318,7 @@
       <button
           class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
           type="button"
-          @click="setDeleteProfileModalActive(true)"
+          @click="setDeleteProfileModalActive(true); leavePageModalActive = false;"
       >
         Delete this page
       </button>
@@ -459,6 +476,29 @@
     </transition>
 
     <transition name="fade">
+      <!-- Confirm site deletion modal -->
+      <div
+          v-if="leavePageModalActive"
+          class="h-screen absolute top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
+          style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
+          @click="leavePageModalActive = false"
+      >
+        <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
+          <h2 class="text-black font-semibold text-xl">
+            Are you sure?
+          </h2>
+          <button
+              class="mt-4 w-full p-4 text-center text-md text-black bg-red-600 hover:bg-red-700 rounded-2xl font-semibold"
+              type="button"
+              @click="leavePage"
+          >
+            Yes, leave this page
+          </button>
+        </div>
+      </div>
+    </transition>
+
+    <transition name="fade">
       <!-- Password reset confirmation modal -->
       <div
           v-if="resetPasswordModalActive"
@@ -504,12 +544,11 @@ export default Vue.extend({
   data() {
     return {
       showHTML: false,
-
+      leavePageModalActive: false,
       loaded: false,
       resetPasswordModalActive: false,
       deleteProfileModalActive: false,
       originalHandle: '',
-
       user: {
         name: '',
         emailHash: '',
@@ -615,6 +654,15 @@ export default Vue.extend({
   },
 
   methods: {
+    async leavePage() {
+      const profileId = this.user.activeProfile.id;
+      const token = this.$store.getters['auth/getToken'];
+
+      await this.$axios.post('/team/remove', {
+        token,
+        profileId
+      });
+    },
     async updateProfileUsage() {
       const token = this.$store.getters['auth/getToken'];
 
