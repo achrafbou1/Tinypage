@@ -682,7 +682,7 @@ export default Vue.extend({
         random: true,
         newProfileId: -1
       });
-      await this.$nuxt.refresh();
+      this.$router.go();
     },
     async updateProfileUsage() {
       const token = this.$store.getters['auth/getToken'];
