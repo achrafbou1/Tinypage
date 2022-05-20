@@ -298,7 +298,7 @@
         <p class="text-black opacity-70 font-semibold">Leave this page (only works for pages you've been invited to).</p>
       </div>
       <button
-          class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700rounded-2xl font-bold w-1/3 justify-center align-center"
+          class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 rounded-2xl flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700rounded-2xl font-bold w-1/3 justify-center align-center"
           type="button"
           @click="leavePageModalActive = true; setDeleteProfileModalActive(false);"
       >
@@ -453,7 +453,7 @@
       <!-- Confirm site deletion modal -->
       <div
           v-if="deleteProfileModalActive"
-          class="h-screen absolute top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
+          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
           style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
           @click="setDeleteProfileModalActive(false)"
       >
@@ -471,6 +471,13 @@
           >
             Yes, delete this site
           </button>
+          <button
+              class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 hover:bg-gray-700 rounded-2xl font-semibold"
+              type="button"
+              @click="deleteProfileModalActive = false"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </transition>
@@ -479,7 +486,7 @@
       <!-- Confirm site deletion modal -->
       <div
           v-if="leavePageModalActive"
-          class="h-screen absolute top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
+          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
           style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
           @click="leavePageModalActive = false"
       >
@@ -494,6 +501,13 @@
           >
             Yes, leave this page
           </button>
+          <button
+              class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 hover:bg-gray-700 rounded-2xl font-semibold"
+              type="button"
+              @click="leavePageModalActive = false"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </transition>
@@ -502,7 +516,7 @@
       <!-- Password reset confirmation modal -->
       <div
           v-if="resetPasswordModalActive"
-          class="h-screen absolute top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
+          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
           style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
           @click="resetPasswordModalActive = false"
       >
@@ -641,8 +655,8 @@ export default Vue.extend({
   },
 
   async mounted() {
+    await this.getUserData();
     if (process.env.NODE_ENV === 'production') {
-      await this.getUserData();
 
       if (this.$route.query.googleLinked) {
         this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
@@ -662,6 +676,13 @@ export default Vue.extend({
         token,
         profileId
       });
+
+      await this.$axios.post('/user/set-active-profile', {
+        token,
+        random: true,
+        newProfileId: -1
+      });
+      await this.$nuxt.refresh();
     },
     async updateProfileUsage() {
       const token = this.$store.getters['auth/getToken'];

@@ -41,7 +41,8 @@ interface DeleteUserRequest extends SensitiveAuthenticatedRequest {
 
 interface SetActiveProfileRequest extends AuthenticatedRequest {
     Body: {
-        newProfileId?: string
+        newProfileId?: string,
+        random?: boolean
     } & AuthenticatedRequest["Body"];
 }
 
@@ -328,13 +329,22 @@ export class UserController extends Controller {
             let body = request.body;
             let user = body.authUser;
             let newProfileId = body.newProfileId;
+            let random = body.random;
+
+            let newProfile;
+
 
             if (!newProfileId) {
                 reply.status(StatusCodes.BAD_REQUEST).send(ReplyUtils.error("No email was provided."));
                 return;
             }
-
-            let newProfile = await this.profileService.getProfile(newProfileId);
+            if (random) {
+                const profiles = await this.profileService.listProfiles(user.id);
+                newProfile = profiles[Math.floor(Math.random()*profiles.length)];
+                newProfileId = newProfile.id;
+            } else {
+                newProfile = await this.profileService.getProfile(newProfileId);
+            }
 
             if (!await Auth.checkProfileOwnership(this.userService, newProfile.id, user.id, true)) {
                 reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("The user is not a member of the profile."));
