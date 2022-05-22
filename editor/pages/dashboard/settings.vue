@@ -290,15 +290,15 @@
     </div>
 
     <!-- Leave page -->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
+    <div v-if="user.activeProfile.userId !== user.id" class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8" >
+      <div class="flex flex-col mr-auto w-full lg:w-full">
         <h2 class="text-black font-bold text-lg w-full">
           Leave this page
         </h2>
         <p class="text-black opacity-70 font-semibold">Leave this page (only works for pages you've been invited to).</p>
       </div>
       <button
-          class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 rounded-2xl flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700rounded-2xl font-bold w-1/3 justify-center align-center"
+          class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
           type="button"
           @click="leavePageModalActive = true; setDeleteProfileModalActive(false);"
       >
@@ -307,8 +307,8 @@
     </div>
 
     <!-- Delete site -->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
+    <div v-if="user.activeProfile.userId === user.id" class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8">
+      <div class="flex flex-col mr-auto w-full lg:w-full">
         <h2 class="text-black font-bold text-lg w-full">
           Delete this page
         </h2>
@@ -316,7 +316,7 @@
           this page and all related content.</p>
       </div>
       <button
-          class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
+          class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
           type="button"
           @click="setDeleteProfileModalActive(true); leavePageModalActive = false;"
       >
@@ -465,14 +465,14 @@
             Deleting this site is irreversible, please confirm to continue.
           </p>
           <button
-              class="mt-4 w-full p-4 text-center text-md text-black bg-red-600 hover:bg-red-700 rounded-2xl font-semibold"
+              class="mt-4 w-full p-4 text-center text-md text-black bg-red-600 hover:bg-red-700 text-white rounded-2xl font-semibold"
               type="button"
               @click="deleteProfile"
           >
             Yes, delete this site
           </button>
           <button
-              class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 hover:bg-gray-700 rounded-2xl font-semibold"
+              class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 text-white hover:bg-gray-700 rounded-2xl font-semibold"
               type="button"
               @click="deleteProfileModalActive = false"
           >
@@ -495,14 +495,14 @@
             Are you sure?
           </h2>
           <button
-              class="mt-4 w-full p-4 text-center text-md text-black bg-red-600 hover:bg-red-700 rounded-2xl font-semibold"
+              class="mt-4 w-full p-4 text-center text-md text-black bg-red-600 hover:bg-red-700 text-white rounded-2xl font-semibold"
               type="button"
               @click="leavePage"
           >
             Yes, leave this page
           </button>
           <button
-              class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 hover:bg-gray-700 rounded-2xl font-semibold"
+              class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 hover:bg-gray-700 text-white rounded-2xl font-semibold"
               type="button"
               @click="leavePageModalActive = false"
           >
@@ -564,6 +564,7 @@ export default Vue.extend({
       deleteProfileModalActive: false,
       originalHandle: '',
       user: {
+        id: '',
         name: '',
         emailHash: '',
         activeProfile: {
@@ -576,6 +577,7 @@ export default Vue.extend({
           visibility: '',
           showWatermark: false,
           rendererUrl: process.env.RENDERER_URL,
+          userId: '',
           metadata: {
             privacyMode: false as boolean | null | undefined,
             unlisted: false as boolean | null | undefined,
@@ -708,6 +710,7 @@ export default Vue.extend({
           token
         });
 
+        this.user.id = userResponse.id;
         this.user.name = userResponse.name;
         this.user.emailHash = userResponse.emailHash;
 
