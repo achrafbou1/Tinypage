@@ -109,7 +109,7 @@ export class AnalyticsController extends Controller {
             let params = request.params;
             let body = request.body;
             let id = params.id;
-            let socialIconUrl = body.socialIconUrl || null;
+            let socialIconUrl = body?.socialIconUrl || null;
 
             if (!id) {
                 reply.code(StatusCodes.NOT_FOUND);

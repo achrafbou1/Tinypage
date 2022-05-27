@@ -967,11 +967,11 @@ function changeSlide(next = true, index) {
                     >
 
                     <!-- Open Graph-->
-                    <meta property="og:title" content="${profile.headline} - ${config.appName}">
+                    <meta property="og:title" content="${profile.metadata.preview?.title ?? profile.headline + ' - ' + config.appName}">
                     <meta property="og:description"
-                          content="${profile.subtitle} | Powered by ${config.appName}"
+                          content="${profile.metadata.preview?.description ?? profile.subtitle} | Powered by ${config.appName}"
                     >
-                    <meta property="og:image" content="${config.apiUrl}/profile/thumbnail/${handle}">
+                    <meta property="og:image" content="${profile.metadata.preview?.imageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}}">
                     <meta property="og:type" content="website">
 
                     <!-- Twitter Cards -->
