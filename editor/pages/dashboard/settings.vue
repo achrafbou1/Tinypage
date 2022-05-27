@@ -226,7 +226,7 @@
           <label class="font-bold opacity-70 text-sm text-black" for="image_url_2">Image URL</label>
           <input
               id="image_url"
-              v-model="user.activeProfile.metadata.preview.imageUrl"
+              v-model="user.activeProfile.metadata.previewImageUrl"
               class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
               placeholder="e.g. https://uifaces.co/our-content/donated/rSuiu_Hr.jpg"
               type="text"
@@ -236,7 +236,7 @@
           <label class="font-bold opacity-70 text-sm text-black" for="title">Title of your link</label>
           <input
               id="image_url"
-              v-model="user.activeProfile.metadata.preview.title"
+              v-model="user.activeProfile.metadata.previewTitle"
               class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
               placeholder="e.g. Tinypage"
               type="text"
@@ -246,7 +246,7 @@
           <label class="font-bold opacity-70 text-sm text-black" for="title">Description of your link</label>
           <input
               id="image_url"
-              v-model="user.activeProfile.metadata.preview.description"
+              v-model="user.activeProfile.metadata.previewDescription"
               class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
               placeholder="e.g. The simple micro-site platform."
               type="text"
@@ -619,11 +619,9 @@ export default Vue.extend({
             pageHtml: null as boolean | null | undefined,
             shareMenu: true as boolean | null | undefined,
             showAvatar: true as boolean | null | undefined,
-            preview: {
-              imageUrl: null as string | null,
-              title: null as string | null,
-              description: null as string | null
-            }
+            previewImageUrl: '',
+            previewTitle: '',
+            previewDescription: ''
           },
         }
       },
