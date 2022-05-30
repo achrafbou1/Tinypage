@@ -365,7 +365,7 @@
         v-show="intent!=='view' && showOption(pendingLink.type, 'url')"
         class="flex flex-col mb-8 justify-start w-full"
     >
-      <label v-if="pendingLink.type === 'link'" class="font-semibold mb-2">Link URL</label>
+      <label v-if="pendingLink.type === 'link'" class="font-semibold mb-2">Link URL (HTTPS only)</label>
       <label v-else-if="pendingLink.type === 'image'" class="font-semibold mb-2">Image URL</label>
       <label v-else-if="pendingLink.type === 'youtube'" class="font-semibold mb-2">Video URL</label>
       <label v-else class="font-semibold mb-2">URL</label>
