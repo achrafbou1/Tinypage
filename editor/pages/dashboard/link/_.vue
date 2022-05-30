@@ -624,7 +624,7 @@ export default Vue.extend({
       type: "link",
       subtitle: "",
       customCss: "",
-      url: "",
+      url: "https://",
       hidden: false,
       metadata: {},
       items: [{url: ''}]
@@ -820,11 +820,27 @@ export default Vue.extend({
     },
 
     async saveLinkChanges() {
+
       await this.applyLinkChanges();
       this.$router.push('/dashboard/');
     },
 
     async applyLinkChanges() {
+      if (!this.pendingLink.label) {
+        this.error = 'Link label required';
+        return false;
+      }
+
+      if (!this.pendingLink.url) {
+        this.error = 'Link URL required';
+        return false;
+      }
+
+      if (!this.pendingLink.url.toLowerCase().startsWith('https://')) {
+        this.error = 'Link URL should start with https://';
+        return false;
+      }
+
       try {
         this.addMetadata();
 
@@ -884,6 +900,16 @@ export default Vue.extend({
     async addNewLink(): Promise<boolean> {
       if (!this.pendingLink.label) {
         this.error = 'Link label required';
+        return false;
+      }
+
+      if (!this.pendingLink.url) {
+        this.error = 'Link URL required';
+        return false;
+      }
+
+      if (!this.pendingLink.url.toLowerCase().startsWith('https://')) {
+        this.error = 'Link URL should start with https://';
         return false;
       }
 
