@@ -101,15 +101,22 @@ export class TeamController extends Controller {
     }
 
     async RemoveTeamUser(request: FastifyRequest<RemoveTeamMemberRequest>, reply: FastifyReply) {
+        let user;
         try {
-            let user = await this.userService.getUserByEmail(request.body.email);
+            if (request.body.email) {
+                 user = await this.userService.getUserByEmail(request.body.email);
 
-            if (user.id === request.body.authUser.id) {
-                reply.status(StatusCodes.BAD_REQUEST);
-                return ReplyUtils.error("You can't remove yourself from your own team!");
+                if (user.id === request.body.authUser.id) {
+                    if (await Auth.checkProfileOwnership(this.profileService, request.body.profileId, request.body.authUser.id, false)) {
+                        reply.status(StatusCodes.BAD_REQUEST);
+                        return ReplyUtils.error("You can't remove yourself from your own team!");
+                    }
+                }
+            } else {
+                user = {id: request.body.authUser.id};
             }
 
-            if (!await Auth.checkProfileOwnership(this.profileService, request.body.profileId, request.body.authUser.id, false)) {
+            if (!await Auth.checkProfileOwnership(this.profileService, request.body.profileId, request.body.authUser.id, true)) {
                 reply.status(StatusCodes.UNAUTHORIZED);
                 return ReplyUtils.error("The user doesn't own this profile.");
             }
