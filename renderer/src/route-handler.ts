@@ -313,7 +313,7 @@ export class RouteHandler {
                             linkHtml += `<a
                                 id="sl-item-${link.id}"
                                 href="${config.apiUrl}/analytics/link/record/${link.id}"
-                                class="w-full sl-item-parent"
+                                class="w-full sl-item-parent mt-4"
                                 target="_blank"
                                 >
                                 <div
@@ -343,7 +343,7 @@ export class RouteHandler {
                                 <style>
                                     ${customCss}
                                 </style>
-                                 <div class="social-button-list" style="margin-top: -1rem;${style}">`;
+                                 <div class="social-button-list mt-4" style="${style}">`;
                             }
 
                             for (let i = 0; i < socialIcons.length; i++) {
@@ -526,7 +526,7 @@ export class RouteHandler {
                             <a
                                     id="sl-item-${link.id}"
                                     href="${config.apiUrl}/analytics/link/record/${link.id}"
-                                    class="w-full sl-item-parent"
+                                    class="w-full sl-item-parent mt-4"
                                     onclick="{
                                            let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
                                            fetch(recordUrl, {method: 'POST'});
@@ -617,7 +617,7 @@ export class RouteHandler {
                                     ${customCss}
                                 </style>
                                 <div style="overflow: hidden; ${style}"
-                                     class="rounded-2xl w-full font-medium mb-3"
+                                     class="rounded-2xl w-full font-medium mt-4"
                                 >
                                     <div class="ql-editor">
                                         ${text}
@@ -640,7 +640,7 @@ export class RouteHandler {
                                     ${customCss}
                                 </style>
                                 <div style="overflow: hidden; ${style}"
-                                     class="rounded-2xl w-full mb-3"
+                                     class="rounded-2xl w-full mt-4"
                                 >
                                     ${text}
                                 </div>
@@ -678,7 +678,7 @@ export class RouteHandler {
                                             width: 100%;
                                             height: 100%;
                                         }</style>
-                                    <div class="embed-container" style="margin-bottom:.75rem;${style}">
+                                    <div class="embed-container mt-4" style="margin-bottom:.75rem;${style}">
                                         <iframe title="youtube"
                                                 src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
                                                 frameborder="0" allowfullscreen
