@@ -223,7 +223,7 @@
           Customize your preview link
         </h2>
         <div class="flex flex-col w-full lg:w-1/2 mr-3 mb-3 lg:mb-0">
-          <label class="font-bold opacity-70 text-sm text-black" for="image_url_2">Image URL</label>
+          <label class="font-bold opacity-70 text-sm text-black" for="image_url_2">Image URL (We recommend using a 16:9 image)</label>
           <input
               id="image_url"
               v-model="user.activeProfile.metadata.previewImageUrl"
