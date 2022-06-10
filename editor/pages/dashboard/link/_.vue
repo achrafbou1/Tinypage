@@ -903,14 +903,17 @@ export default Vue.extend({
         return false;
       }
 
-      if (!this.pendingLink.url) {
-        this.error = 'Link URL required';
-        return false;
-      }
+      if (this.pendingLink.type === "link") {
 
-      if (!this.pendingLink.url.toLowerCase().startsWith('https://')) {
-        this.error = 'Link URL should start with https://';
-        return false;
+        if (!this.pendingLink.url) {
+          this.error = 'Link URL required';
+          return false;
+        }
+
+        if (!this.pendingLink.url.toLowerCase().startsWith('https://')) {
+          this.error = 'Link URL should start with https://';
+          return false;
+        }
       }
 
       try {
