@@ -219,8 +219,42 @@
           </label>
         </div>
 
+        <h2 class="text-black font-bold text-xl w-full mb-2">
+          Customize your preview link
+        </h2>
+        <div class="flex flex-col w-full lg:w-1/2 mr-3 mb-3 lg:mb-0">
+          <label class="font-bold opacity-70 text-sm text-black" for="image_url_2">Image URL (We recommend using a 16:9 image)</label>
+          <input
+              id="image_url"
+              v-model="user.activeProfile.metadata.previewImageUrl"
+              class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+              placeholder="e.g. https://uifaces.co/our-content/donated/rSuiu_Hr.jpg"
+              type="text"
+          >
+        </div>
+        <div class="flex flex-col w-full lg:w-1/2 mr-3 mb-3 lg:mb-0 mt-2">
+          <label class="font-bold opacity-70 text-sm text-black" for="title">Title of your link</label>
+          <input
+              id="image_url"
+              v-model="user.activeProfile.metadata.previewTitle"
+              class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+              placeholder="e.g. Tinypage"
+              type="text"
+          >
+        </div>
+        <div class="flex flex-col w-full lg:w-1/2 mr-3 mb-3 lg:mb-0 mt-2">
+          <label class="font-bold opacity-70 text-sm text-black" for="title">Description of your link</label>
+          <input
+              id="image_url"
+              v-model="user.activeProfile.metadata.previewDescription"
+              class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
+              placeholder="e.g. The simple micro-site platform."
+              type="text"
+          >
+        </div>
+
         <!-- Page HTML -->
-        <div class="flex flex-col mb-4 justify-start w-full">
+        <div class="flex flex-col mt-2 mb-4 justify-start w-full">
 
           <div class="flex flex-row justify-start items-center">
             <label class="font-semibold mb-2 mr-4">Page HTML</label>
@@ -584,7 +618,10 @@ export default Vue.extend({
             coverImage: null as boolean | null | undefined,
             pageHtml: null as boolean | null | undefined,
             shareMenu: true as boolean | null | undefined,
-            showAvatar: true as boolean | null | undefined
+            showAvatar: true as boolean | null | undefined,
+            previewImageUrl: '',
+            previewTitle: '',
+            previewDescription: ''
           },
         }
       },

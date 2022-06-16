@@ -13,6 +13,10 @@ kubernetes/beta
 
 dist
 
+privkey.pem
+server.crt
+server.req
+
 renderer/node_modules
 
 # Global dependencies

@@ -365,7 +365,7 @@
         v-show="intent!=='view' && showOption(pendingLink.type, 'url')"
         class="flex flex-col mb-8 justify-start w-full"
     >
-      <label v-if="pendingLink.type === 'link'" class="font-semibold mb-2">Link URL</label>
+      <label v-if="pendingLink.type === 'link'" class="font-semibold mb-2">Link URL (https only)</label>
       <label v-else-if="pendingLink.type === 'image'" class="font-semibold mb-2">Image URL</label>
       <label v-else-if="pendingLink.type === 'youtube'" class="font-semibold mb-2">Video URL</label>
       <label v-else class="font-semibold mb-2">URL</label>
@@ -624,7 +624,7 @@ export default Vue.extend({
       type: "link",
       subtitle: "",
       customCss: "",
-      url: "",
+      url: "https://",
       hidden: false,
       metadata: {},
       items: [{url: ''}]
@@ -820,11 +820,27 @@ export default Vue.extend({
     },
 
     async saveLinkChanges() {
+
       await this.applyLinkChanges();
       this.$router.push('/dashboard/');
     },
 
     async applyLinkChanges() {
+      if (!this.pendingLink.label) {
+        this.error = 'Link label required';
+        return false;
+      }
+
+      if (!this.pendingLink.url) {
+        this.error = 'Link URL required';
+        return false;
+      }
+
+      if (!this.pendingLink.url.toLowerCase().startsWith('https://')) {
+        this.error = 'Link URL should start with https://';
+        return false;
+      }
+
       try {
         this.addMetadata();
 
@@ -885,6 +901,19 @@ export default Vue.extend({
       if (!this.pendingLink.label) {
         this.error = 'Link label required';
         return false;
+      }
+
+      if (this.pendingLink.type === "link") {
+
+        if (!this.pendingLink.url) {
+          this.error = 'Link URL required';
+          return false;
+        }
+
+        if (!this.pendingLink.url.toLowerCase().startsWith('https://')) {
+          this.error = 'Link URL should start with https://';
+          return false;
+        }
       }
 
       try {
