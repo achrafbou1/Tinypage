@@ -971,7 +971,7 @@ function changeSlide(next = true, index) {
                     <meta property="og:description"
                           content="${profile.metadata.previewDescription ?? profile.subtitle} | Powered by ${config.appName}"
                     >
-                    <meta property="og:image" content="${profile.metadata.previewImageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}}">
+                    <meta property="og:image" content="${profile.metadata.previewImageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}">
                     <meta property="og:type" content="website">
 
                     <!-- Twitter Cards -->
