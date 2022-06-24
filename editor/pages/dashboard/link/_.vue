@@ -74,10 +74,23 @@
         v-show="intent !=='view'"
         class="flex flex-col mb-4 justify-start w-full"
     >
-      <label class="font-semibold mb-2">Hide from display</label>
+      <label class="font-semibold mb-2">Hide element</label>
       <input
           id="checkbox-1"
           v-model="pendingLink.hidden"
+          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          type="checkbox"
+      >
+    </div>
+
+    <div
+        v-show="intent !=='view' && pendingLink.type === 'link'"
+        class="flex flex-col mb-4 justify-start w-full"
+    >
+      <label class="font-semibold mb-2">Hide label</label>
+      <input
+          id="checkbox-1"
+          v-model="pendingLink.metadata.hiddenLabel"
           class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           type="checkbox"
       >
@@ -626,7 +639,7 @@ export default Vue.extend({
       customCss: "",
       url: "https://",
       hidden: false,
-      metadata: {},
+      metadata: {hiddenLabel: false},
       items: [{url: ''}]
     };
 

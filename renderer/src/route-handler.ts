@@ -284,6 +284,7 @@ export class RouteHandler {
                         let customCss = link.customCss ?? '';
 
                         let buttonImage = link.metadata?.buttonImageUrl;
+                        const hiddenLabel = link.metadata?.hiddenLabel;
                         let buttonImageFullWidth = link.metadata?.buttonImageFullWidth;
 
                         let buttonImageHtml = '';
@@ -291,6 +292,7 @@ export class RouteHandler {
                         let buttonImageSupportCss = '';
 
                         if (buttonImage) {
+
                             if (!buttonImageFullWidth) {
                                 // language=HTML
                                 buttonImageHtml = `<img src="${buttonImage}" class="button-image" alt="button image">`;
@@ -321,7 +323,7 @@ export class RouteHandler {
                                 >
                                 ${buttonImageHtml}
                                 <span class="font-medium text-gray-900 sl-label"
-                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${hiddenLabel ? '' : link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                     </div>
                             </a>`;
                         }
