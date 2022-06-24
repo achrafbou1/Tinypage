@@ -590,7 +590,7 @@ export class RouteHandler {
                                     ${customCss}
                                 </style>
 
-                                <div class="flex flex-row items-center justify-center w-full"
+                                <div class="flex flex-row items-center justify-center w-full mt-4"
                                      style="margin-bottom:.75rem;${style}"
                                 >
                                     <div style="flex-grow:1;background:${color};height:1px;"></div>
