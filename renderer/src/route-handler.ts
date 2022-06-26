@@ -323,7 +323,7 @@ export class RouteHandler {
                                 >
                                 ${buttonImageHtml}
                                 <span class="font-medium text-gray-900 sl-label"
-                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${hiddenLabel ? '' : link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}"><span style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                     </div>
                             </a>`;
                         }
