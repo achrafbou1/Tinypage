@@ -1230,7 +1230,7 @@ function changeSlide(next = true, index) {
                         /*Override ql-editor settings*/
                         .ql-editor {
                             white-space: initial;
-                            padding: 12px 0;
+                            padding: 0px;
                         }
 
                         .page-width {
