@@ -635,7 +635,7 @@ function changeSlide(next = true, index) {
                                 </style>
 
                                 <div class="flex flex-row items-center justify-center w-full"
-                                     style="margin-bottom:.75rem;${style}"
+                                     style="${style}"
                                 >
                                     <div style="flex-grow:1;background:${color};height:1px;"></div>
                                     <div style="margin:0 8px; text-transform:uppercase;font-weight:600;color:${color};letter-spacing:1px;font-size:${dividerSettings.fontSize};">
