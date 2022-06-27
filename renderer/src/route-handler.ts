@@ -484,7 +484,7 @@ function changeSlide(next = true, index) {
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
                                        href="${siSettings.url}"
-                                       class="social-button"
+                                       class="social-button mt-4"
                                        target="_blank"
                                        style="color:${siSettings.color};"
                                        onclick="{
@@ -722,7 +722,7 @@ function changeSlide(next = true, index) {
                                             width: 100%;
                                             height: 100%;
                                         }</style>
-                                    <div class="embed-container mt-4" style="margin-bottom:.75rem;${style}">
+                                    <div class="embed-container mt-4" style="${style}">
                                         <iframe title="youtube"
                                                 src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
                                                 frameborder="0" allowfullscreen
@@ -1303,7 +1303,7 @@ function changeSlide(next = true, index) {
 
                         .social-button {
                             display: inline-block;
-                            padding: .85rem;
+                            padding: 0 .85rem;
                             cursor: pointer;
                             transition: all .15s ease-in-out;
                         }
