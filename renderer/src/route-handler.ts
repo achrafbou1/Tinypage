@@ -634,7 +634,7 @@ function changeSlide(next = true, index) {
                                     ${customCss}
                                 </style>
 
-                                <div class="flex flex-row items-center justify-center w-full"
+                                <div class="flex flex-row items-center justify-center w-full mt-4"
                                      style="${style}"
                                 >
                                     <div style="flex-grow:1;background:${color};height:1px;"></div>
