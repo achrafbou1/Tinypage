@@ -284,6 +284,7 @@ export class RouteHandler {
                         let customCss = link.customCss ?? '';
 
                         let buttonImage = link.metadata?.buttonImageUrl;
+                        const hiddenLabel = link.metadata?.hiddenLabel;
                         let buttonImageFullWidth = link.metadata?.buttonImageFullWidth;
 
                         let buttonImageHtml = '';
@@ -291,6 +292,7 @@ export class RouteHandler {
                         let buttonImageSupportCss = '';
 
                         if (buttonImage) {
+
                             if (!buttonImageFullWidth) {
                                 // language=HTML
                                 buttonImageHtml = `<img src="${buttonImage}" class="button-image" alt="button image">`;
@@ -321,7 +323,7 @@ export class RouteHandler {
                                 >
                                 ${buttonImageHtml}
                                 <span class="font-medium text-gray-900 sl-label"
-                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}"><span style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                     </div>
                             </a>`;
                         }
@@ -482,7 +484,7 @@ function changeSlide(next = true, index) {
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
                                        href="${siSettings.url}"
-                                       class="social-button"
+                                       class="social-button mt-4"
                                        target="_blank"
                                        style="color:${siSettings.color};"
                                        onclick="{
@@ -632,8 +634,8 @@ function changeSlide(next = true, index) {
                                     ${customCss}
                                 </style>
 
-                                <div class="flex flex-row items-center justify-center w-full"
-                                     style="margin-bottom:.75rem;${style}"
+                                <div class="flex flex-row items-center justify-center w-full mt-4"
+                                     style="${style}"
                                 >
                                     <div style="flex-grow:1;background:${color};height:1px;"></div>
                                     <div style="margin:0 8px; text-transform:uppercase;font-weight:600;color:${color};letter-spacing:1px;font-size:${dividerSettings.fontSize};">
@@ -720,7 +722,7 @@ function changeSlide(next = true, index) {
                                             width: 100%;
                                             height: 100%;
                                         }</style>
-                                    <div class="embed-container mt-4" style="margin-bottom:.75rem;${style}">
+                                    <div class="embed-container mt-4" style="${style}">
                                         <iframe title="youtube"
                                                 src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
                                                 frameborder="0" allowfullscreen
@@ -1228,7 +1230,7 @@ function changeSlide(next = true, index) {
                         /*Override ql-editor settings*/
                         .ql-editor {
                             white-space: initial;
-                            padding: 12px 0;
+                            padding: 0;
                         }
 
                         .page-width {
@@ -1301,7 +1303,7 @@ function changeSlide(next = true, index) {
 
                         .social-button {
                             display: inline-block;
-                            padding: .85rem;
+                            padding: 0 .85rem;
                             cursor: pointer;
                             transition: all .15s ease-in-out;
                         }
