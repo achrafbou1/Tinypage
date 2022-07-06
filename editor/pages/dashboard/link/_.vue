@@ -84,7 +84,7 @@
     </div>
 
     <div
-        v-show="intent !=='view' && pendingLink.type === 'link'"
+        v-show="intent !=='view' && (pendingLink.type === 'link' || pendingLink.type === 'vcard')"
         class="flex flex-col mb-4 justify-start w-full"
     >
       <label class="font-semibold mb-2">Hide label</label>
