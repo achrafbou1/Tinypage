@@ -849,8 +849,8 @@ export default Vue.extend({
           return false;
         }
 
-        if (!this.pendingLink.url.toLowerCase().startsWith('https://')) {
-          this.error = 'Link URL should start with https://';
+        if (!this.pendingLink.url.toLowerCase().startsWith('https://') && !this.pendingLink.url.toLowerCase().startsWith('emailto:') && !this.pendingLink.url.toLowerCase().startsWith('sms:') && !this.pendingLink.url.toLowerCase().startsWith('tel:')) {
+          this.error = 'Link URL should start with https://, emailto:, sms: or tel:';
           return false;
         }
       }
@@ -924,8 +924,8 @@ export default Vue.extend({
           return false;
         }
 
-        if (!this.pendingLink.url.toLowerCase().startsWith('https://')) {
-          this.error = 'Link URL should start with https://';
+        if (!this.pendingLink.url.toLowerCase().startsWith('https://') && !this.pendingLink.url.toLowerCase().startsWith('emailto:') && !this.pendingLink.url.toLowerCase().startsWith('sms:') && !this.pendingLink.url.toLowerCase().startsWith('tel:')) {
+          this.error = 'Link URL should start with https://, emailto:, sms: or tel:';
           return false;
         }
       }
