@@ -492,7 +492,8 @@ function changeSlide(next = true, index) {
                                          fetch(recordUrl, {
                                            method: 'POST', 
                                            headers: {
-                                          'Content-Type': 'application/json'
+                                          'Content-Type': 'application/json',
+                                          redirect: 'follow'
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })}"
@@ -573,7 +574,7 @@ function changeSlide(next = true, index) {
                                     class="w-full sl-item-parent mt-4"
                                     onclick="{
                                            let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                           fetch(recordUrl, {method: 'POST'});
+                                           fetch(recordUrl, {method: 'POST', redirect: 'follow'});
 
                                            window.open('${dataUrl}');
                                            return false;
