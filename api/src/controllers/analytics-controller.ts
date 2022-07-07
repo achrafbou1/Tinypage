@@ -151,8 +151,10 @@ export class AnalyticsController extends Controller {
                     }
                 }
             }
-
-            reply.redirect(link?.url);
+            reply
+                .code(200)
+                .header('Content-Type', 'application/json; charset=utf-8')
+                .send({ link: link?.url });
         } catch (e) {
             if (e instanceof HttpError) {
                 reply.code(e.statusCode);
