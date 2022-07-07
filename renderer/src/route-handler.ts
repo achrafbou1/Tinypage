@@ -271,6 +271,7 @@ export class RouteHandler {
             // Add link html to html block link-by-link
             for (let index = 0; index < links.length; index++) {
                 let link = links[index];
+                const hiddenLabel = link.metadata?.hiddenLabel;
                 switch (link.type) {
                     case 'link': {
                         let subtitleHtml = '';
@@ -283,8 +284,7 @@ export class RouteHandler {
                         let style = link.style ?? '';
                         let customCss = link.customCss ?? '';
 
-                        let buttonImage = link.metadata?.buttonImageUrl;
-                        const hiddenLabel = link.metadata?.hiddenLabel;
+                        let buttonImage = link.metadata?.buttonImageUrl
                         let buttonImageFullWidth = link.metadata?.buttonImageFullWidth;
 
                         let buttonImageHtml = '';
