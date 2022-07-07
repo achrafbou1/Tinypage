@@ -585,7 +585,7 @@ function changeSlide(next = true, index) {
                                 >
                                     ${buttonImageHtml}
                                     <span class="font-medium text-gray-900 sl-label"
-                                    ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                 </div>
                             </a>
                         `;
