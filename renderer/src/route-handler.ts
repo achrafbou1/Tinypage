@@ -487,16 +487,18 @@ function changeSlide(next = true, index) {
                                        class="social-button mt-4"
                                        target="_blank"
                                        style="color:${siSettings.color};"
-                                       onclick="{
+                                       onclick="{async () => {
                                          let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                         fetch(recordUrl, {
+                                         const response = await fetch(recordUrl, {
                                            method: 'POST', 
                                            headers: {
-                                          'Content-Type': 'application/json',
-                                          redirect: 'follow'
+                                          'Content-Type': 'application/json'
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
-                                       })}"
+                                       })
+                                       const link = response.json().link
+                                       window.open(link, '_blank').focus();
+                                       }();}"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                             ${svgData}
@@ -574,7 +576,7 @@ function changeSlide(next = true, index) {
                                     class="w-full sl-item-parent mt-4"
                                     onclick="{
                                            let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                           fetch(recordUrl, {method: 'POST', redirect: 'follow'});
+                                           fetch(recordUrl, {method: 'POST'});
 
                                            window.open('${dataUrl}');
                                            return false;
