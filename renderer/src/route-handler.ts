@@ -496,8 +496,9 @@ function changeSlide(next = true, index) {
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })
-                                       const link = response.json().link
-                                       window.open(link, '_blank').focus();
+                                       const link = response.json()
+                                       console.log(link)
+                                       window.open(link?.link, '_blank').focus();
                                        })()"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
