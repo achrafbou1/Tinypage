@@ -487,7 +487,7 @@ function changeSlide(next = true, index) {
                                        class="social-button mt-4"
                                        target="_blank"
                                        style="color:${siSettings.color};"
-                                       onclick="{async () => {
+                                       onclick="(async () => {
                                          let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
                                          const response = await fetch(recordUrl, {
                                            method: 'POST', 
@@ -498,7 +498,7 @@ function changeSlide(next = true, index) {
                                        })
                                        const link = response.json().link
                                        window.open(link, '_blank').focus();
-                                       }();}"
+                                       })()"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                             ${svgData}
