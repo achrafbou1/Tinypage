@@ -135,7 +135,7 @@
         v-if="pendingLink.type === 'gallery'"
         class="flex flex-col mb-8 justify-start w-full"
     >
-      <label class="font-semibold mb-2">Image Urls</label>
+      <label class="font-semibold mb-2">Image Urls (1:1 photos)</label>
       <button
           class="text-sm px-2 py-2 font-bold text-white rounded-2xl mb-4 bg-gdp hover:bg-blue-400 lg:mb-0 cursor-pointer"
           @click="pendingLink.items.push({url: ''})"
