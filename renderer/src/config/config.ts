@@ -8,7 +8,7 @@ let config = {
     host: process.env.HOST ?? "0.0.0.0",
 
     // Define port for launch
-    port: process.env.PORT ?? 80,
+    port: process.env.RENDERER_PORT ?? 80,
 
     // Define app name
     appName: process.env.APP_NAME ?? 'Tinypage',
@@ -20,7 +20,7 @@ let config = {
     watermarkUrl: process.env.WATERMARK_URL ?? "https://tinypage.app/home",
 
     // Define hostname
-    hostname: process.env.HOSTNAME ?? 'tinypage.app',
+    hostname: process.env.RENDERER_HOSTNAME ?? 'tinypage.app',
 
     // Define API URL
     apiUrl: process.env.API_URL ?? 'https://api.tinypage.app',
