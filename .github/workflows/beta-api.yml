@@ -24,6 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: beta
     steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: beta
+
       - name: Paths Changes Filter
         uses: dorny/paths-filter@v2.10.2
         id: changes
