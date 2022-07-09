@@ -47,13 +47,15 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN npm i -g modclean && npm i -g typescript
 
 
+WORKDIR /api
 
-COPY api/package*.json singlelink/
-WORKDIR /singlelink
-RUN npm install --only=prod
+COPY api/package*.json api/
+WORKDIR api/
 
-COPY editor/@types/editor-types.d.ts editor/@types/editor-types.d.ts
-COPY api/ singlelink/
+RUN npm ci --only=production
+
+COPY editor/@types/editor-types.d.ts ../editor/@types/editor-types.d.ts
+COPY api/ ./
 RUN npm run build
 RUN npm prune --production
 RUN modclean
