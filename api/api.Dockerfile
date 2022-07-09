@@ -1,4 +1,4 @@
-FROM node:16.3.0-slim as BUILD_TS
+FROM node:16.14-alpine3.15 as BUILD_TS
 
 COPY api/ singlelink/
 
@@ -11,7 +11,7 @@ RUN npm run build
 RUN npm prune --production
 RUN modclean
 
-FROM node:16.3.0-slim as FINAL
+FROM node:16.14-alpine3.15 as FINAL
 
 WORKDIR /singlelink
 
