@@ -1,26 +1,8 @@
-FROM node:16.14-alpine3.15 as BUILD_TS
-
-COPY api/ singlelink/
-
-WORKDIR /singlelink
-
-RUN npm i -g modclean
-RUN npm i -g typescript
-RUN npm i
-RUN npm run build
-RUN npm prune --production
-RUN modclean
-
-FROM node:16.14-alpine3.15 as FINAL
-
-WORKDIR /singlelink
-
-COPY --from=BUILD_TS /singlelink/dist ./dist
-COPY --from=BUILD_TS /singlelink/node_modules ./node_modules
-COPY --from=BUILD_TS /singlelink/package.json ./package.json
-
+FROM node:16.14-slim
+ENV NODE_ENV production
 # Well folks, we tried to make this small, but this can't be helped...
 # This is needed for the chromium instance for the internal screenshot api.
+
 RUN apt update && apt install -y ca-certificates \
                                  fonts-liberation \
                                  libappindicator3-1 \
@@ -59,7 +41,21 @@ RUN apt update && apt install -y ca-certificates \
                                  wget \
                                  xdg-utils
 
+
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN npm i -g modclean && npm i -g typescript
+
+
+
+COPY api/package*.json singlelink/
+WORKDIR /singlelink
+RUN npm install --only=prod
+
+COPY editor/@types/editor-types.d.ts editor/@types/editor-types.d.ts
+COPY api/ singlelink/
+RUN npm run build
+RUN npm prune --production
+RUN modclean
 
 CMD npm run start
