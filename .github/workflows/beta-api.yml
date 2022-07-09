@@ -4,9 +4,10 @@ name: BETA-API-CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push events but only for the beta branch
-  push:
-    branches:
+  pull_request:
+    branches: 
       - beta
+    types: [closed]
     paths:
       - api/**
 
@@ -24,6 +25,7 @@ env:
 #3
 jobs:
   build_and_push:
+    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     environment: beta
     steps:
