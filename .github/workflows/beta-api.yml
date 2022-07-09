@@ -8,8 +8,6 @@ on:
     branches: 
       - beta
     types: [closed]
-    paths:
-      - api/**
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -33,11 +31,21 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: beta
+      
+      - name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.10.2
+        id: changes
+        with:
+          filters: |
+            api: 'api/**'
+            editor: 'editor/**'
+            renderer: 'renderer/**'
 
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
 
       - name: Build container image
+        if: steps.changes.outputs.api == 'true'
         run: docker build -f $(echo $IMAGE_NAME)/$(echo $IMAGE_NAME).Dockerfile -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) .
 
       - name: Install doctl
