@@ -1,6 +1,6 @@
 FROM node:16.3.0-slim as BUILD_TS
 
-COPY ./ singlelink/
+COPY api/ singlelink/
 
 WORKDIR /singlelink
 
