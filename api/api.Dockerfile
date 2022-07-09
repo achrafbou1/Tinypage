@@ -4,7 +4,10 @@ COPY api/ singlelink/
 
 WORKDIR /singlelink
 
-RUN npm i -g modclean && npm i -g typescript && npm i && npm run build
+RUN npm i -g modclean
+RUN npm i -g typescript
+RUN npm i
+RUN npm run build
 RUN npm prune --production
 RUN modclean
 
