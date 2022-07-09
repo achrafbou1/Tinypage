@@ -32,6 +32,9 @@ jobs:
         with:
           ref: beta
 
+      - name: Docker Layer Caching
+        uses: satackey/action-docker-layer-caching@v0.0.11
+
       - name: Build container image
         run: docker build -f $(echo $IMAGE_NAME)/$(echo $IMAGE_NAME).Dockerfile -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) .
 
