@@ -27,9 +27,9 @@ jobs:
       - name: Paths Changes Filter
         uses: dorny/paths-filter@v2.10.2
         id: changes
-        ref:
-            beta
         with:
+          ref:
+            beta
           filters: |
             api: 'api/**'
             editor: 'editor/**'
