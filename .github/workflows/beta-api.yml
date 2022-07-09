@@ -25,7 +25,6 @@ jobs:
     environment: beta
     steps:
       - name: Checkout the repo
-        if: github.event.pull_request.merged == true
         uses: actions/checkout@v3
         with:
           ref: beta
