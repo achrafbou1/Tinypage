@@ -1,5 +1,4 @@
 FROM node:16.14-slim
-ENV NODE_ENV production
 # Well folks, we tried to make this small, but this can't be helped...
 # This is needed for the chromium instance for the internal screenshot api.
 
