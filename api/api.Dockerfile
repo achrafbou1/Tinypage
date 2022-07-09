@@ -52,7 +52,7 @@ WORKDIR /api
 COPY api/package*.json api/
 WORKDIR api/
 
-RUN npm ci --only=production
+RUN npm i
 
 COPY editor/@types/editor-types.d.ts ../editor/@types/editor-types.d.ts
 COPY api/ ./
