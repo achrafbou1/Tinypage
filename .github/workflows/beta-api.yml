@@ -40,10 +40,14 @@ jobs:
             renderer: 'renderer/**'
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
+        with:
+          key: tinypage-v1-cache-{hash}
+          restore-keys: |
+            tinypage-v1-cache-
 
       - name: Build container image
         if: steps.changes.outputs.api == 'true'
-        run: docker build -f $(echo $IMAGE_NAME)/$(echo $IMAGE_NAME).Dockerfile -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest .
+        run: docker build -f $IMAGE_NAME/$IMAGE_NAME.Dockerfile -t $REGISTRY/$IMAGE_NAME:latest .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -54,7 +58,7 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest
+        run: docker push $$REGISTRY/$IMAGE_NAME:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -88,24 +92,24 @@ jobs:
             -e HOST=${{ secrets.HOST }} \
             -e API_PORT=${{ secrets.API_PORT }} \
             -e CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL }} \
-            -e AWS_SENDER_EMAIL_ADDRESS=${{ secrets.AWS_SENDER_EMAIL_ADDRESS }}\
-            -e AWS_REGION=${{ secrets.AWS_REGION }}\
-            -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}\
-            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}\
+            -e AWS_SENDER_EMAIL_ADDRESS=${{ secrets.AWS_SENDER_EMAIL_ADDRESS }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
             -e S3_ENDPOINT=${{ secrets.S3_ENDPOINT }} \
-            -e S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }}\
-            -e S3_PORT=${{ secrets.S3_PORT }}\
-            -e S3_USE_SSL=${{ secrets.S3_USE_SSL }}\
-            -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}\
-            -e S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}\
-            -e ALLOW_X_FORWARD_HEADER=${{ secrets.ALLOW_X_FORWARD_HEADER }}\
-            -e VALIDATE_EMAILS=${{ secrets.VALIDATE_EMAILS }}\
-            -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}\
-            -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}\
-            -e GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }}\
-            -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }}\
-            -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }}\
-            -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }}\
+            -e S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }} \
+            -e S3_PORT=${{ secrets.S3_PORT }} \
+            -e S3_USE_SSL=${{ secrets.S3_USE_SSL }} \
+            -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
+            -e S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }} \
+            -e ALLOW_X_FORWARD_HEADER=${{ secrets.ALLOW_X_FORWARD_HEADER }} \
+            -e VALIDATE_EMAILS=${{ secrets.VALIDATE_EMAILS }} \
+            -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+            -e GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }} \
+            -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
+            -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
+            -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
             $REGISTRY/$IMAGE_NAME:latest || true
             #Debug
             echo $REGISTRY/$IMAGE_NAME:latest
