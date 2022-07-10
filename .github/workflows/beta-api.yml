@@ -1,7 +1,6 @@
 name: BETA-CI
 
 # 1
-# Controls when the workflow will run
 on:
   push:
     branches:
