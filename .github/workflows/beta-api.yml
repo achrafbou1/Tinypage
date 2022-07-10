@@ -44,7 +44,7 @@ jobs:
 
       - name: Build container image
         if: steps.changes.outputs.api == 'true'
-        run: docker build -f $(echo $IMAGE_NAME)/$(echo $IMAGE_NAME).Dockerfile -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) .
+        run: docker build -f $(echo $IMAGE_NAME)/$(echo $IMAGE_NAME).Dockerfile -t $(echo $REGISTRY)/$(echo $IMAGE_NAME) .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
