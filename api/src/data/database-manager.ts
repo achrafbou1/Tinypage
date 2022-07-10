@@ -20,8 +20,6 @@ export class DatabaseManager {
      * By default, this will be a PostgreSQL database.
      */
     async initialize() {
-        console.log('database');
-        console.log(config.database);
         this.pool.on("error", client => {
             console.error(`Database error! ${client.name}, ${client.message}, ${client.stack}`);
         });

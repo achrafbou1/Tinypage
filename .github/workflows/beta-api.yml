@@ -35,7 +35,9 @@ jobs:
           ref: beta
           base: beta
           filters: |
-            api: 'api/**'
+            api: 
+              - 'api/**'
+              - 'editor/@types/editor-types.d.ts'
             editor: 'editor/**'
             renderer: 'renderer/**'
       - name: Docker Layer Caching
