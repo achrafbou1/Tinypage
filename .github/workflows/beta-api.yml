@@ -58,7 +58,7 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $$REGISTRY/$IMAGE_NAME:latest
+        run: docker push $REGISTRY/$IMAGE_NAME:latest
 
   deploy:
     runs-on: ubuntu-latest
