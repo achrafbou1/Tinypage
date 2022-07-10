@@ -46,7 +46,7 @@ jobs:
             tinypage-v2-cache-
 
       - name: Build container image
-        # if: steps.changes.outputs.api == 'true'
+        if: steps.changes.outputs.api == 'true'
         run: docker build -f $IMAGE_NAME/$IMAGE_NAME.Dockerfile -t $REGISTRY/$IMAGE_NAME:latest .
 
       - name: Install doctl
@@ -110,6 +110,4 @@ jobs:
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
-            $REGISTRY/$IMAGE_NAME:latest || true
-            #Debug
-            echo $REGISTRY/$IMAGE_NAME:latest
+            $REGISTRY/$IMAGE_NAME:latest
