@@ -6,6 +6,7 @@ import {config} from "../config/config";
  * The DatabaseManager manages a connection to the PostgreSQL database.
  */
 export class DatabaseManager {
+
     pool = new Pool({
         connectionString: config.database,
         ssl: config.database.indexOf('@localhost') === -1 ? {
@@ -19,6 +20,8 @@ export class DatabaseManager {
      * By default, this will be a PostgreSQL database.
      */
     async initialize() {
+        console.log('database');
+        console.log(config.database);
         this.pool.on("error", client => {
             console.error(`Database error! ${client.name}, ${client.message}, ${client.stack}`);
         });
