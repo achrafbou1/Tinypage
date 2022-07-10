@@ -34,6 +34,8 @@ start().then(() => {
 });
 
 async function start() {
+    console.log('database');
+    console.log(config.database);
     await database.initialize();
 
     // Tinypage Utils
