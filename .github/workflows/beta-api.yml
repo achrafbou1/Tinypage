@@ -55,7 +55,7 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest
+        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)
 
   deploy:
     runs-on: ubuntu-latest
@@ -107,4 +107,4 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=$PAYMENTS_STRIPE_WEBHOOK_SECRET \
             -p $API_PORT:$API_PORT \
             --name $IMAGE_NAME \
-            $REGISTRY/$IMAGE_NAME:latest
+            $REGISTRY/$IMAGE_NAME
