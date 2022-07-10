@@ -73,9 +73,9 @@ jobs:
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running container
-            docker stop $IMAGE_NAME
+            docker stop $(echo $IMAGE_NAME)
             # Remove old container
-            docker rm $IMAGE_NAME
+            docker rm $(echo $IMAGE_NAME)
             # Run a new container from a new image
             docker run -d \
             --restart always \
@@ -105,7 +105,7 @@ jobs:
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }}\
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }}\
             -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }}\
-            --name $IMAGE_NAME \
-            $REGISTRY/$IMAGE_NAME:latest || true
+            --name $(echo $IMAGE_NAME) \
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest || true
             #Debug
             echo $REGISTRY/$IMAGE_NAME:latest
