@@ -105,7 +105,7 @@ jobs:
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }}\
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }}\
             -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }}\
-            --name $IMAGE_NAME \
+            --name $(echo $IMAGE_NAME) \
             -d \
             $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest || true
             #Debug
