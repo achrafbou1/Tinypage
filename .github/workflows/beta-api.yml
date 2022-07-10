@@ -58,7 +58,7 @@ jobs:
         run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }},GITHUB_SHA
+          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
@@ -110,4 +110,4 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=$PAYMENTS_STRIPE_WEBHOOK_SECRET \
             -p $API_PORT:$API_PORT \
             --name $IMAGE_NAME \
-            $REGISTRY/$IMAGE_NAME:(echo $GITHUB_SHA | head -c7)
+            $REGISTRY/$IMAGE_NAME:latest
