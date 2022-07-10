@@ -110,4 +110,4 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=$PAYMENTS_STRIPE_WEBHOOK_SECRET \
             -p $API_PORT:$API_PORT \
             --name $IMAGE_NAME \
-            $REGISTRY/$IMAGE_NAME:$($GITHUB_SHA | head -c7)
+            $REGISTRY/$IMAGE_NAME:($GITHUB_SHA | head -c7)
