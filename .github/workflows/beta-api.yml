@@ -41,9 +41,9 @@ jobs:
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
         with:
-          key: tinypage-v1-cache-{hash}
+          key: tinypage-v2-cache-{hash}
           restore-keys: |
-            tinypage-v1-cache-
+            tinypage-v2-cache-
 
       - name: Build container image
         if: steps.changes.outputs.api == 'true'
