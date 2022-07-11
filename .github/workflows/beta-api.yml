@@ -45,9 +45,13 @@ jobs:
           restore-keys: |
             tinypage-v2-cache-
 
-      - name: Build container image
+      - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
         run: docker build -f api/api.Dockerfile -t $REGISTRY/api:beta .
+
+      - name: Build RENDERER image
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
+        run: docker build -f renderer/renderer.Dockerfile -t $REGISTRY/renderer:beta .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -57,8 +61,13 @@ jobs:
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 600
 
-      - name: Push image to DigitalOcean Container Registry
+      - name: Push API image to Container Registry
+        if: ${{ steps.changes.outputs.api == 'true' }}
         run: docker push $REGISTRY/api:beta
+
+      - name: Push RENDERER image to Container Registry
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
+        run: docker push $REGISTRY/renderer:beta
 
   deploy:
     runs-on: ubuntu-latest
@@ -66,10 +75,6 @@ jobs:
     needs: build_and_push
 
     steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v3
-        with:
-          ref: beta
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
         with:
@@ -87,10 +92,11 @@ jobs:
             # Start dep containers
             docker start postgres
             docker start minio
-            # Run a new container from a new image
+            # Create network
             docker network create tinypage_net
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
+            # Start renderer
             docker run -d \
             --name api \
             --restart always \
@@ -123,3 +129,16 @@ jobs:
             -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
             $REGISTRY/api:beta
             docker network connect tinypage_net api
+            # Start renderer
+            docker run -d \
+            --name renderer \
+            --restart always \
+            --network=tinypage_net \
+            -e API_URL=${{ secrets.API_URL }} \
+            -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
+            -e RENDERER_HOSTNAME=${{ secrets.RENDERER_HOSTNAME }} \
+            -e APP_NAME=${{ secrets.APP_NAME }} \
+            -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
+            -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
+            -p ${{ secrets.RENDERER_PORT }}:${{ secrets.RENDERER_PORT }} \
+            $REGISTRY/renderer:beta
