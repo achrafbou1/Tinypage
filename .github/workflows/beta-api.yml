@@ -68,9 +68,9 @@ jobs:
 
     steps:
       - name: Checkout the repo
-          uses: actions/checkout@v3
-          with:
-            ref: $ENV
+        uses: actions/checkout@v3
+        with:
+          ref: $ENV
       - name: Create api env file
           run: |
             echo 'DATABASE=${{ secrets.DATABASE }}
