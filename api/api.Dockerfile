@@ -1,8 +1,8 @@
-FROM node:16.14-alpine
+FROM node:16.14-stretch-slim
 # Well folks, we tried to make this small, but this can't be helped...
 ## This is needed for the chromium instance for the internal screenshot api.
 
-RUN apk update && apk add --no-cache ca-certificates \
+RUN apt update && apt install -y ca-certificates \
                                  fonts-liberation \
                                  libappindicator3-1 \
                                  libasound2 \
