@@ -89,7 +89,6 @@ jobs:
             docker start minio
             # Run a new container from a new image
             docker network create tinypage_net
-            docker network connect tinypage_net api
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
             docker run -d \
@@ -122,3 +121,4 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
             $REGISTRY/api:beta
+            docker network connect tinypage_net api
