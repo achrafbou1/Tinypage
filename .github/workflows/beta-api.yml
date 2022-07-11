@@ -126,8 +126,7 @@ jobs:
             -e GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }} \
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
-            $REGISTRY/api:beta;
-            # Start renderer
+            $REGISTRY/api:beta
             docker run -d \
             --name renderer \
             --restart always \
@@ -138,4 +137,4 @@ jobs:
             -e APP_NAME=${{ secrets.APP_NAME }} \
             -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
-            $REGISTRY/renderer:beta;
+            $REGISTRY/renderer:beta
