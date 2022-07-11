@@ -1,4 +1,4 @@
-FROM node:16.14-stretch-slim
+FROM node:16.14-stretch
 # Well folks, we tried to make this small, but this can't be helped...
 # This is needed for the chromium instance for the internal screenshot api.
 
