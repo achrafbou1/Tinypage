@@ -15,24 +15,23 @@ on:
 #2
 env:
   REGISTRY: "registry.digitalocean.com/tinypage"
-  ENV: "beta"
 #3
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-    environment: $ENV
+    environment: beta
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
         with:
-          ref: $ENV
+          ref: beta
 
       - name: Paths Changes Filter
         uses: dorny/paths-filter@v2.10.2
         id: changes
         with:
-          ref: $ENV
-          base: $ENV
+          ref: beta
+          base: beta
           filters: |
             api: 
               - 'api/**'
@@ -48,7 +47,7 @@ jobs:
 
       - name: Build container image
         if: steps.changes.outputs.api == 'true'
-        run: docker build -f api/api.Dockerfile -t $REGISTRY/api:$ENV .
+        run: docker build -f api/api.Dockerfile -t $REGISTRY/api:beta .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -59,18 +58,18 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $REGISTRY/api:$ENV
+        run: docker push $REGISTRY/api:beta
 
   deploy:
     runs-on: ubuntu-latest
-    environment: $ENV
+    environment: beta
     needs: build_and_push
 
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
         with:
-          ref: $ENV
+          ref: beta
       - name: Create api env file
         run: |
           echo 'DATABASE=${{ secrets.DATABASE }}
@@ -104,18 +103,18 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          envs: ENV,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          envs: REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running container
-            docker-compose -f docker-compose-$ENV.yaml down api
+            docker-compose -f docker-compose-beta.yaml down api
             # Remove old container
             docker rm api
             # Run a new container from a new image
-            docker-compose -f docker-compose-$ENV.yaml up -d api 
+            docker-compose -f docker-compose-beta.yaml up -d api 
             docker run -d \
             --name api \
             --restart always \
             -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
-            $REGISTRY/api:$ENV
+            $REGISTRY/api:beta
