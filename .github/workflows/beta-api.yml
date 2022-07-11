@@ -108,14 +108,44 @@ jobs:
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running container
-            docker-compose -f docker-compose-beta.yaml down api
+            docker stop api
             # Remove old container
             docker rm api
-            ls
+            # Start dep containers
+            docker start postgres
+            docker start minio
             # Run a new container from a new image
-            docker-compose -f docker-compose-beta.yaml up -d api
-#            docker run -d \
-#            --name api \
-#            --restart always \
-#            -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
-#            $REGISTRY/api:beta
+            docker network create tinypage_net
+            docker network connect tinypage_net api
+            docker network connect tinypage_net minio
+            docker network connect tinypage_net postgres
+            docker run -d \
+            --name api \
+            --restart always \
+            -e DATABASE=${{ secrets.DATABASE }} \
+            -e API_URL=${{ secrets.API_URL }} \
+            -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
+            -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
+            -e SECRET=${{ secrets.SECRET }} \
+            -e HOST=${{ secrets.HOST }} \
+            -e API_PORT=${{ secrets.API_PORT }} \
+            -e CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL }} \
+            -e AWS_SENDER_EMAIL_ADDRESS=${{ secrets.AWS_SENDER_EMAIL_ADDRESS }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
+            -e S3_ENDPOINT=${{ secrets.S3_ENDPOINT }} \
+            -e S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }} \
+            -e S3_PORT=${{ secrets.S3_PORT }} \
+            -e S3_USE_SSL=${{ secrets.S3_USE_SSL }} \
+            -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
+            -e S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }} \
+            -e ALLOW_X_FORWARD_HEADER=${{ secrets.ALLOW_X_FORWARD_HEADER }} \
+            -e VALIDATE_EMAILS=${{ secrets.VALIDATE_EMAILS }} \
+            -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+            -e GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }} \
+            -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
+            -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
+            -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
+            $REGISTRY/api:beta
