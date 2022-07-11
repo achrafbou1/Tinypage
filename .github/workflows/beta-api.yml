@@ -41,9 +41,9 @@ jobs:
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
         with:
-          key: tinypage-v2-cache-{hash}
+          key: tinypage-v3-cache-{hash}
           restore-keys: |
-            tinypage-v2-cache-
+            tinypage-v3-cache-
 
       - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
@@ -126,9 +126,7 @@ jobs:
             -e GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }} \
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
-            -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
             $REGISTRY/api:beta
-            docker network connect tinypage_net api
             # Start renderer
             docker run -d \
             --name renderer \
