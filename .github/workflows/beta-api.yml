@@ -129,7 +129,6 @@ jobs:
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:beta
-            echo "API deployed"
             docker run -d \
             --name renderer \
             --restart always \
@@ -137,7 +136,7 @@ jobs:
             -e API_URL=${{ secrets.API_URL }} \
             -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
             -e RENDERER_HOSTNAME=${{ secrets.RENDERER_HOSTNAME }} \
-            -e APP_NAME=${{ secrets.APP_NAME }} \
+            -e APP_NAME="${{ secrets.APP_NAME }}" \
             -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:beta
