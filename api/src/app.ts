@@ -25,8 +25,6 @@ import {PermissionUtils} from "./utils/permission-utils";
 import {TeamController} from "./controllers/team-controller";
 
 console.log("Initializing Tinypage Enterprise");
-console.log('database');
-console.log(config.database);
 
 let server: SingleLinkServer = new SingleLinkServer();
 let database = new DatabaseManager();

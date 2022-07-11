@@ -8,6 +8,8 @@ services:
     build:
       context: api
       dockerfile: api.Dockerfile
+    env_file:
+      - api.env
     ports:
       - "${API_PORT}:${API_PORT}"
     networks:

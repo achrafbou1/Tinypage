@@ -1,10 +1,10 @@
-name: BETA-CI
+name: $ENV-CI
 
 # 1
 on:
   push:
     branches:
-      - beta
+      - $ENV
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,25 +15,24 @@ on:
 #2
 env:
   REGISTRY: "registry.digitalocean.com/tinypage"
-  IMAGE_NAME: "api"
-
+  ENV: "beta"
 #3
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-    environment: beta
+    environment: $ENV
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
         with:
-          ref: beta
+          ref: $ENV
 
       - name: Paths Changes Filter
         uses: dorny/paths-filter@v2.10.2
         id: changes
         with:
-          ref: beta
-          base: beta
+          ref: $ENV
+          base: $ENV
           filters: |
             api: 
               - 'api/**'
@@ -49,7 +48,7 @@ jobs:
 
       - name: Build container image
         if: steps.changes.outputs.api == 'true'
-        run: docker build -f $IMAGE_NAME/$IMAGE_NAME.Dockerfile -t $REGISTRY/$IMAGE_NAME:latest .
+        run: docker build -f api/api.Dockerfile -t $REGISTRY/api:$ENV .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -60,56 +59,63 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $REGISTRY/$IMAGE_NAME:latest
+        run: docker push $REGISTRY/api:$ENV
 
   deploy:
     runs-on: ubuntu-latest
-    environment: beta
+    environment: $ENV
     needs: build_and_push
 
     steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: $ENV
+      - name: Create api env file
+        run: |
+          echo 'DATABASE=${{ secrets.DATABASE }}
+          API_URL=${{ secrets.API_URL }}
+          EDITOR_URL=${{ secrets.EDITOR_URL }}
+          RENDERER_URL=${{ secrets.RENDERER_URL }}
+          SECRET=${{ secrets.SECRET }}
+          HOST=${{ secrets.HOST }}
+          API_PORT=${{ secrets.API_PORT }}
+          CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL }}
+          AWS_SENDER_EMAIL_ADDRESS=${{ secrets.AWS_SENDER_EMAIL_ADDRESS }}
+          AWS_REGION=${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}
+          S3_ENDPOINT=${{ secrets.S3_ENDPOINT }}
+          S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }}
+          S3_PORT=${{ secrets.S3_PORT }}
+          S3_USE_SSL=${{ secrets.S3_USE_SSL }}
+          S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}
+          S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}
+          ALLOW_X_FORWARD_HEADER=${{ secrets.ALLOW_X_FORWARD_HEADER }}
+          VALIDATE_EMAILS=${{ secrets.VALIDATE_EMAILS }}
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }}
+          PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }}
+          PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }}' > api.env
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          envs: REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running container
-            docker stop $IMAGE_NAME
+            docker-compose -f docker-compose-$ENV.yaml down api
             # Remove old container
-            docker rm $IMAGE_NAME
+            docker rm api
             # Run a new container from a new image
+            docker-compose -f docker-compose-$ENV.yaml up -d api 
             docker run -d \
-            --name $IMAGE_NAME \
+            --name api \
             --restart always \
-            -e DATABASE=${{ secrets.DATABASE }} \
-            -e API_URL=${{ secrets.API_URL }} \
-            -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
-            -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
-            -e SECRET=${{ secrets.SECRET }} \
-            -e HOST=${{ secrets.HOST }} \
-            -e API_PORT=${{ secrets.API_PORT }} \
-            -e CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL }} \
-            -e AWS_SENDER_EMAIL_ADDRESS=${{ secrets.AWS_SENDER_EMAIL_ADDRESS }} \
-            -e AWS_REGION=${{ secrets.AWS_REGION }} \
-            -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
-            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
-            -e S3_ENDPOINT=${{ secrets.S3_ENDPOINT }} \
-            -e S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }} \
-            -e S3_PORT=${{ secrets.S3_PORT }} \
-            -e S3_USE_SSL=${{ secrets.S3_USE_SSL }} \
-            -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
-            -e S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }} \
-            -e ALLOW_X_FORWARD_HEADER=${{ secrets.ALLOW_X_FORWARD_HEADER }} \
-            -e VALIDATE_EMAILS=${{ secrets.VALIDATE_EMAILS }} \
-            -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
-            -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
-            -e GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }} \
-            -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
-            -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
-            $REGISTRY/$IMAGE_NAME:latest
+            $REGISTRY/api:$ENV
