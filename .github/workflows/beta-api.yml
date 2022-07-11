@@ -94,6 +94,7 @@ jobs:
             docker run -d \
             --name api \
             --restart always \
+            --network=tinypage_net \
             -e DATABASE=${{ secrets.DATABASE }} \
             -e API_URL=${{ secrets.API_URL }} \
             -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
