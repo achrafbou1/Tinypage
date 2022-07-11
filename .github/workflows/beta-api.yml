@@ -1,10 +1,10 @@
-name: $ENV-CI
+name: BETA-CI
 
 # 1
 on:
   push:
     branches:
-      - $ENV
+      - beta
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -104,7 +104,7 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          envs: REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          envs: ENV,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
