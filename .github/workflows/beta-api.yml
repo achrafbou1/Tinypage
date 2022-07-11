@@ -111,6 +111,7 @@ jobs:
             docker-compose -f docker-compose-beta.yaml down api
             # Remove old container
             docker rm api
+            ls
             # Run a new container from a new image
             docker-compose -f docker-compose-beta.yaml up -d api
 #            docker run -d \

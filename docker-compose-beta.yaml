@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   api:
-    image: "${REGISTRY}/api:${ENV}"
+    image: "${REGISTRY}/api:beta"
     container_name: api
     restart: always
     build:
