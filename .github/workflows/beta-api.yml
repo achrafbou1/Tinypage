@@ -53,6 +53,10 @@ jobs:
         if: ${{ steps.changes.outputs.renderer == 'true' }}
         run: docker build -f renderer/renderer.Dockerfile -t $REGISTRY/renderer:beta .
 
+      - name: Build EDITOR image
+        if: ${{ steps.changes.outputs.editor == 'true' }}
+        run: docker build -f editor/editor.Dockerfile -t $REGISTRY/editor:beta .
+
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -68,6 +72,10 @@ jobs:
       - name: Push RENDERER image to Container Registry
         if: ${{ steps.changes.outputs.renderer == 'true' }}
         run: docker push $REGISTRY/renderer:beta
+
+      - name: Push EDITOR image to Container Registry
+        if: ${{ steps.changes.outputs.editor == 'true' }}
+        run: docker push $REGISTRY/editor:beta
 
   deploy:
     runs-on: ubuntu-latest
@@ -85,19 +93,26 @@ jobs:
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+            
             # Stop running container
             docker stop api
             docker stop renderer
+            docker stop editor
+            
             # Remove old container
             docker rm api
             docker rm renderer
+            docker rm editor
+            
             # Start dep containers
             docker start postgres
             docker start minio
+            
             # Create network
             docker network create tinypage_net
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
+            
             # Start renderer
             docker run -d \
             --name api \
@@ -129,6 +144,7 @@ jobs:
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:beta
+            
             docker run -d \
             --name renderer \
             --restart always \
@@ -140,3 +156,5 @@ jobs:
             -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:beta
+            
+            
