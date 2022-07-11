@@ -87,8 +87,10 @@ jobs:
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running container
             docker stop api
+            docker stop renderer
             # Remove old container
             docker rm api
+            docker rm renderer
             # Start dep containers
             docker start postgres
             docker start minio
@@ -127,6 +129,7 @@ jobs:
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:beta
+            ;
             docker run -d \
             --name renderer \
             --restart always \
