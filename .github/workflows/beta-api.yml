@@ -129,7 +129,7 @@ jobs:
             -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:beta
-            ;
+            echo "API deployed"
             docker run -d \
             --name renderer \
             --restart always \
