@@ -2,7 +2,7 @@ FROM node:16.14-alpine
 # Well folks, we tried to make this small, but this can't be helped...
 ## This is needed for the chromium instance for the internal screenshot api.
 
-RUN apk update && apk add --no-cache -y ca-certificates \
+RUN apk update && apk add --no-cache ca-certificates \
                                  fonts-liberation \
                                  libappindicator3-1 \
                                  libasound2 \
