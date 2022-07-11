@@ -1,10 +1,10 @@
-name: $ENV-CI
+name: BETA-CI
 
 # 1
 on:
   push:
     branches:
-      - $ENV
+      - beta
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
