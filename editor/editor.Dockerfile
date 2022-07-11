@@ -1,24 +1,19 @@
-FROM node:16.3.0-slim as BUILD_TS
-
-COPY ./ singlelink/
-
-WORKDIR /singlelink
-
-RUN npm i -g modclean && npm i -g typescript && npm i && npm run build
-RUN npm prune --production
-RUN modclean
-
-FROM node:16.3.0-slim as FINAL
-
-WORKDIR /singlelink
-
-COPY --from=BUILD_TS /singlelink/.nuxt ./.nuxt
-COPY --from=BUILD_TS /singlelink/node_modules ./node_modules
-COPY --from=BUILD_TS /singlelink/package.json ./package.json
-COPY --from=BUILD_TS /singlelink/nuxt.config.js ./nuxt.config.js
-COPY --from=BUILD_TS /singlelink/static ./static
+FROM node:16.14-slim
+ENV NODE_ENV production
 
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN npm i -g modclean && npm i -g typescript
+
+COPY editor/package*.json editor/
+WORKDIR editor/
+
+RUN npm i
+
+COPY editor/ ./
+
+RUN npm run build
+RUN npm prune --production
+RUN modclean
 
 CMD npm run start
