@@ -46,7 +46,7 @@ jobs:
             tinypage-v2-cache-
 
       - name: Build container image
-        if: steps.changes.outputs.api == 'true'
+#        if: steps.changes.outputs.api == 'true'
         run: docker build -f api/api.Dockerfile -t $REGISTRY/api:beta .
 
       - name: Install doctl
