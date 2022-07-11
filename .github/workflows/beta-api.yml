@@ -117,4 +117,4 @@ jobs:
             --name api \
             --restart always \
             -p ${{ secrets.API_PORT }}:${{ secrets.API_PORT }} \
-            $REGISTRY/api:$(echo $GITHUB_SHA | head -c7)-beta
+            $REGISTRY/api:beta
