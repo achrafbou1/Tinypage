@@ -47,7 +47,7 @@ jobs:
 
       - name: Build container image
         if: ${{ steps.changes.outputs.api == 'true' }}
-        run: docker build -f api/api.Dockerfile -t $REGISTRY/api:latest .
+        run: docker build -f api/api.Dockerfile -t $REGISTRY/api:staging .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -58,7 +58,7 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $REGISTRY/api:latest
+        run: docker push $REGISTRY/api:staging
 
   deploy:
     runs-on: ubuntu-latest
