@@ -95,11 +95,13 @@ jobs:
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             
             # Stop running container
+            docker stop nginx
             docker stop api
             docker stop renderer
             docker stop editor
             
             # Remove old container
+            docker rm nginx
             docker rm api
             docker rm renderer
             docker rm editor
@@ -157,4 +159,60 @@ jobs:
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:beta
             
+            docker run -d \
+            --name editor \
+            --restart always \
+            --network=tinypage_net \
+            -e EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
+            -e API_URL=${{ secrets.API_URL }} \
+            -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
+            -e SUPPORT="${{ secrets.SUPPORT }}" \
+            -e COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
+            -e EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
+            -e CUSTOM_TITLE="${{ secrets.CUSTOM_TITLE }}" \
+            -e CUSTOM_BRAND_NAME=${{ secrets.CUSTOM_BRAND_NAME }} \
+            -e CUSTOM_PRODUCT_NAME=${{ secrets.CUSTOM_PRODUCT_NAME }} \
+            -e CUSTOM_COMPANY=${{ secrets.CUSTOM_COMPANY }} \
+            -e CUSTOM_CONTACT_EMAIL=${{ secrets.CUSTOM_CONTACT_EMAIL }} \
+            -e CUSTOM_META_TITLE="${{ secrets.CUSTOM_META_TITLE }}" \
+            -e CUSTOM_META_DESCRIPTION="${{ secrets.CUSTOM_META_DESCRIPTION }}" \
+            -e CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
+            -e CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
+            -e CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
+            $REGISTRY/editor:beta
+            API_DOMAIN=$(${{ secrets.API_URL }} | awk -F[/:] '{print $4}')
+            RENDERER_DOMAIN=$(${{ secrets.RENDERER_URL }} | awk -F[/:] '{print $4}')
+            EDITOR_DOMAIN=$(${{ secrets.EDITOR_URL }} | awk -F[/:] '{print $4}')
+            echo '
+            server {
+                  listen 80;
+                  server_name $API_DOMAIN;
+              
+                  location / {
+                  proxy_pass http://api:${{ secrets.API_PORT }};
+                  proxy_pass_request_headers on;
+                }
+              }
+                
+                server {
+                listen 80;
+                server_name $EDITOR_DOMAIN;
+                
+                location / {
+                proxy_pass http://editor:${{ secrets.EDITOR_PORT }};
+                proxy_pass_request_headers on;
+              }
+              }
+                
+                server {
+                listen 80;
+                server_name $RENDERER_DOMAIN;
+                
+                location / {
+                proxy_pass http://renderer:${{ secrets.RENDERER_PORT }};
+                proxy_pass_request_headers on;
+              }
+              }' > nginx.conf
+            
+              docker run --name nginx --restart always --network=tinypage_net -v nginx.conf:/etc/nginx/nginx.conf:ro -d nginx:1.23
             
