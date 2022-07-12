@@ -40,6 +40,7 @@ jobs:
             renderer: 'renderer/**'
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
+        if: ${{ steps.changes.outputs.editor == 'true' || steps.changes.outputs.renderer == 'true' || steps.changes.outputs.api == 'true'}}
         with:
           key: tinypage-v3-cache-{hash}
           restore-keys: |
@@ -180,9 +181,9 @@ jobs:
             -e CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
             -e CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
             $REGISTRY/editor:beta
-            API_DOMAIN=$(${{ secrets.API_URL }} | awk -F[/:] '{print $4}')
-            RENDERER_DOMAIN=$(${{ secrets.RENDERER_URL }} | awk -F[/:] '{print $4}')
-            EDITOR_DOMAIN=$(${{ secrets.EDITOR_URL }} | awk -F[/:] '{print $4}')
+            API_DOMAIN=`${{ secrets.API_URL }} | awk -F[/:] '{print $4}'`
+            RENDERER_DOMAIN=`${{ secrets.RENDERER_URL }} | awk -F[/:] '{print $4}'`
+            EDITOR_DOMAIN=`${{ secrets.EDITOR_URL }} | awk -F[/:] '{print $4}'`
             echo '
             server {
                   listen 80;
