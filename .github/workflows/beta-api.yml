@@ -185,35 +185,45 @@ jobs:
             RENDERER_DOMAIN=`basename ${{ secrets.RENDERER_URL }}`
             EDITOR_DOMAIN=`basename ${{ secrets.EDITOR_URL }}`
             echo "
-            server {
-                  listen 80;
-                  server_name $API_DOMAIN;
-              
-                  location / {
-                  proxy_pass http://api:${{ secrets.API_PORT }};
-                  proxy_pass_request_headers on;
-                }
-              }
-                
-                server {
-                listen 80;
-                server_name $EDITOR_DOMAIN;
-                
-                location / {
-                proxy_pass http://editor:${{ secrets.EDITOR_PORT }};
-                proxy_pass_request_headers on;
-              }
-              }
-                
-                server {
-                listen 80;
-                server_name $RENDERER_DOMAIN;
-                
-                location / {
-                proxy_pass http://renderer:${{ secrets.RENDERER_PORT }};
-                proxy_pass_request_headers on;
-              }
-              }" > nginx.conf
+            http {
+              gzip on;
+              sendfile on;
+              tcp_nopush on;
+              tcp_nodelay on;
+              keepalive_timeout 65;
+              types_hash_max_size 2048;
+              default_type application/octet-stream;
             
-              docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx:1.23
+              server {
+                    listen 80;
+                    server_name $API_DOMAIN;
+                
+                    location / {
+                    proxy_pass http://api:${{ secrets.API_PORT }};
+                    proxy_pass_request_headers on;
+                  }
+                }
+                  
+                  server {
+                      listen 80;
+                      server_name $EDITOR_DOMAIN;
+                      
+                      location / {
+                      proxy_pass http://editor:${{ secrets.EDITOR_PORT }};
+                      proxy_pass_request_headers on;
+                    }
+                  }
+                  
+                  server {
+                      listen 80;
+                      server_name $RENDERER_DOMAIN;
+                      
+                      location / {
+                      proxy_pass http://renderer:${{ secrets.RENDERER_PORT }};
+                      proxy_pass_request_headers on;
+                    }
+                  }
+            }" > nginx.conf
+            
+              docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -p 80:80 -d nginx:1.23
             
