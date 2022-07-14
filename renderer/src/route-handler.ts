@@ -284,7 +284,7 @@ export class RouteHandler {
                         let style = link.style ?? '';
                         let customCss = link.customCss ?? '';
 
-                        let buttonImage = link.metadata?.buttonImageUrl
+                        let buttonImage = link.metadata?.buttonImageUrl;
                         let buttonImageFullWidth = link.metadata?.buttonImageFullWidth;
 
                         let buttonImageHtml = '';
@@ -497,7 +497,7 @@ function changeSlide(next = true, index) {
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })
                                        const link = response.json()
-                                       window.open(link?.link, '_blank');
+                                       window.open(link, '_blank');
                                        })()"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
