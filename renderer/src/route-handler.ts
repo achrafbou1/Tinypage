@@ -314,6 +314,13 @@ export class RouteHandler {
                             linkHtml += `<a
                                 id="sl-item-${link.id}"
                                 href="${config.apiUrl}/analytics/link/record/${link.id}"
+                                onclick="(async () => {
+                                           let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                           const response = fetch(recordUrl);
+                                           const link = response.json()
+                                           window.open(link);
+                                           return false;
+                                       })()"
                                 class="w-full sl-item-parent mt-4"
                                 target="_blank"
                                 >
