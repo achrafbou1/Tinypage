@@ -340,6 +340,7 @@ export default Vue.extend({
           customDomain: '',
         },
       },
+      rendererUrl: process.env.RENDERER_URL,
       rendererDomain: '' as string | undefined,
       preview: false,
       share_modal: false,
@@ -505,11 +506,6 @@ export default Vue.extend({
   methods: {
     attemptLogout() {
       this.$nuxt.$router.push('/logout');
-    },
-    computed: {
-      rendererUrl() {
-        return process.env.RENDERER_URL;
-      }
     },
     async createNewProfile() {
       try {
