@@ -182,5 +182,5 @@ jobs:
             -e CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
             $REGISTRY/editor:beta
             
-            docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl:/etc/ssl -p 80:80 -d nginx:1.23
+            docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
             
