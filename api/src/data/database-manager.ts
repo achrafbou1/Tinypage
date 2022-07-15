@@ -9,7 +9,7 @@ export class DatabaseManager {
 
     pool = new Pool({
         connectionString: config.database,
-        ssl: config.database.indexOf('@postgres') === -1 ? {
+        ssl: (config.database.indexOf('@localhost') === -1 && config.database.indexOf('@postgres') === -1) ? {
             rejectUnauthorized: false
         } : false
     });
