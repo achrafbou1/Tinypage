@@ -102,6 +102,10 @@ jobs:
             renderer: 'renderer/**'
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
+        env:
+          API_CHANGED: ${{ steps.changes.outputs.api }}
+          RENDERER_CHANGED: ${{ steps.changes.outputs.renderer }}
+          EDITOR_CHANGED: ${{ steps.changes.outputs.editor }}
         with:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.USERNAME }}
@@ -120,7 +124,7 @@ jobs:
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
             
-            if [ "${{ steps.changes.outputs.api }}" == "true" ]; then
+            if [ $API_CHANGED == "true" ]; then
               docker stop api
               docker rm api
               docker image rm $REGISTRY/api:beta
@@ -158,7 +162,7 @@ jobs:
             
             fi
             
-            if [ "${{ steps.changes.outputs.editor }}" == "true" ]; then
+            if [ $EDITOR_CHANGED == "true" ]; then
               docker stop editor
               docker stop nginx
               docker rm nginx
@@ -191,7 +195,7 @@ jobs:
             ufw-docker allow nginx 80/tcp
             fi
             
-            if [ "${{ steps.changes.outputs.renderer }}" == "true" ]; then
+            if [ $RENDERER_CHANGED == "true" ]; then
             docker stop renderer
             docker rm renderer
             docker image rm $REGISTRY/renderer:beta
