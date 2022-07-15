@@ -1,0 +1,187 @@
+name: MAIN-CI
+
+# 1
+on:
+  push:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Image version'
+        required: true
+#2
+env:
+  REGISTRY: "registry.digitalocean.com/tinypage"
+#3
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    environment: main
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.10.2
+        id: changes
+        with:
+          ref: main
+          base: main
+          filters: |
+            api: 
+              - 'api/**'
+              - 'editor/@types/editor-types.d.ts'
+            editor: 'editor/**'
+            renderer: 'renderer/**'
+      - name: Docker Layer Caching
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        if: ${{ steps.changes.outputs.editor == 'true' || steps.changes.outputs.renderer == 'true' || steps.changes.outputs.api == 'true'}}
+        with:
+          key: tinypage-v4-cache-{hash}
+          restore-keys: |
+            tinypage-v4-cache-
+
+      - name: Build API image
+        if: ${{ steps.changes.outputs.api == 'true' }}
+        run: docker build -f api/api.Dockerfile -t $REGISTRY/api:main .
+
+      - name: Build RENDERER image
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
+        run: docker build -f renderer/renderer.Dockerfile -t $REGISTRY/renderer:main .
+
+      - name: Build EDITOR image
+        if: ${{ steps.changes.outputs.editor == 'true' }}
+        run: docker build -f editor/editor.Dockerfile -t $REGISTRY/editor:main .
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Push API image to Container Registry
+        if: ${{ steps.changes.outputs.api == 'true' }}
+        run: docker push $REGISTRY/api:main
+
+      - name: Push RENDERER image to Container Registry
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
+        run: docker push $REGISTRY/renderer:main
+
+      - name: Push EDITOR image to Container Registry
+        if: ${{ steps.changes.outputs.editor == 'true' }}
+        run: docker push $REGISTRY/editor:main
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: main
+    needs: build_and_push
+
+    steps:
+      - name: Deploy to Digital Ocean droplet via SSH action
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DIGITALOCEAN_HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          envs: REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          script: |
+            # Login to registry
+            docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+            
+            # Stop running container
+            docker stop nginx
+            docker stop api
+            docker stop renderer
+            docker stop editor
+            
+            # Remove old container
+            docker rm nginx
+            docker rm api
+            docker rm renderer
+            docker rm editor
+            
+            # Start dep containers
+            docker start postgres
+            docker start minio
+            
+            # Create network
+            docker network create tinypage_net
+            docker network connect tinypage_net minio
+            docker network connect tinypage_net postgres
+            
+            # Start renderer
+            docker run -d \
+            --name api \
+            --restart always \
+            --network=tinypage_net \
+            -e DATABASE=${{ secrets.DATABASE }} \
+            -e API_URL=${{ secrets.API_URL }} \
+            -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
+            -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
+            -e SECRET=${{ secrets.SECRET }} \
+            -e HOST=${{ secrets.HOST }} \
+            -e API_PORT=${{ secrets.API_PORT }} \
+            -e CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL }} \
+            -e AWS_SENDER_EMAIL_ADDRESS=${{ secrets.AWS_SENDER_EMAIL_ADDRESS }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
+            -e S3_ENDPOINT=${{ secrets.S3_ENDPOINT }} \
+            -e S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }} \
+            -e S3_PORT=${{ secrets.S3_PORT }} \
+            -e S3_USE_SSL=${{ secrets.S3_USE_SSL }} \
+            -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
+            -e S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }} \
+            -e ALLOW_X_FORWARD_HEADER=${{ secrets.ALLOW_X_FORWARD_HEADER }} \
+            -e VALIDATE_EMAILS=${{ secrets.VALIDATE_EMAILS }} \
+            -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+            -e GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }} \
+            -e PAYMENTS_STRIPE_SECRET=${{ secrets.PAYMENTS_STRIPE_SECRET }} \
+            -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
+            $REGISTRY/api:main
+            
+            docker run -d \
+            --name renderer \
+            --restart always \
+            --network=tinypage_net \
+            -e API_URL=${{ secrets.API_URL }} \
+            -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
+            -e RENDERER_HOSTNAME=${{ secrets.RENDERER_HOSTNAME }} \
+            -e APP_NAME="${{ secrets.APP_NAME }}" \
+            -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
+            -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
+            $REGISTRY/renderer:main
+            
+            docker run -d \
+            --name editor \
+            --restart always \
+            --network=tinypage_net \
+            -e EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
+            -e API_URL=${{ secrets.API_URL }} \
+            -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
+            -e SUPPORT="${{ secrets.SUPPORT }}" \
+            -e COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
+            -e EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
+            -e CUSTOM_TITLE="${{ secrets.CUSTOM_TITLE }}" \
+            -e CUSTOM_BRAND_NAME=${{ secrets.CUSTOM_BRAND_NAME }} \
+            -e CUSTOM_PRODUCT_NAME=${{ secrets.CUSTOM_PRODUCT_NAME }} \
+            -e CUSTOM_COMPANY=${{ secrets.CUSTOM_COMPANY }} \
+            -e CUSTOM_CONTACT_EMAIL=${{ secrets.CUSTOM_CONTACT_EMAIL }} \
+            -e CUSTOM_META_TITLE="${{ secrets.CUSTOM_META_TITLE }}" \
+            -e CUSTOM_META_DESCRIPTION="${{ secrets.CUSTOM_META_DESCRIPTION }}" \
+            -e CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
+            -e CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
+            -e CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
+            $REGISTRY/editor:main
+            
+            docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
+            ufw-docker allow nginx 443/tcp
+            ufw-docker allow nginx 80/tcp
