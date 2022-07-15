@@ -469,6 +469,8 @@ export default Vue.extend({
     });
 
     this.isAdmin = permGroup["groupName"] === 'admin';
+    console.log('rendererUrl');
+    console.log(process.env.RENDERER_URL);
     if (this.rendererUrl) {
       this.rendererDomain = this.rendererUrl
           .replaceAll("https://", '')
