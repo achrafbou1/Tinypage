@@ -42,9 +42,9 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.11
         if: ${{ steps.changes.outputs.editor == 'true' || steps.changes.outputs.renderer == 'true' || steps.changes.outputs.api == 'true'}}
         with:
-          key: tinypage-v3-cache-{hash}
+          key: tinypage-beta-cache-{hash}
           restore-keys: |
-            tinypage-v3-cache-
+            tinypage-beta-cache-
 
       - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
@@ -166,7 +166,7 @@ jobs:
             --network=tinypage_net \
             -e EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
             -e API_URL=${{ secrets.API_URL }} \
-            -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
+            -e RENDERER_URL="${{ secrets.RENDERER_URL }}" \
             -e SUPPORT="${{ secrets.SUPPORT }}" \
             -e COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
             -e EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
