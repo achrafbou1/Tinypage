@@ -95,18 +95,6 @@ jobs:
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             
-            # Stop running container
-            docker stop nginx
-            docker stop api
-            docker stop renderer
-            docker stop editor
-            
-            # Remove old container
-            docker rm nginx
-            docker rm api
-            docker rm renderer
-            docker rm editor
-            
             # Start dep containers
             docker start postgres
             docker start minio
@@ -116,7 +104,11 @@ jobs:
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
             
-            # Start renderer
+            if [ ${{ steps.changes.outputs.api == 'true' }} ]; then
+              docker stop api
+              docker rm api
+              docker image rm $REGISTRY/api:beta
+              # Start api
             docker run -d \
             --name api \
             --restart always \
@@ -148,19 +140,16 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:beta
             
-            docker run -d \
-            --name renderer \
-            --restart always \
-            --network=tinypage_net \
-            -e API_URL=${{ secrets.API_URL }} \
-            -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
-            -e RENDERER_HOSTNAME=${{ secrets.RENDERER_HOSTNAME }} \
-            -e APP_NAME="${{ secrets.APP_NAME }}" \
-            -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
-            -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
-            $REGISTRY/renderer:beta
+            fi
             
-            docker run -d \
+            if [ ${{ steps.changes.outputs.editor == 'true' }} ]; then
+              docker stop editor
+              docker stop nginx
+              docker rm nginx
+              docker rm editor
+              docker image rm $REGISTRY/editor:beta
+            
+              docker run -d \
             --name editor \
             --restart always \
             --network=tinypage_net \
@@ -181,7 +170,24 @@ jobs:
             -e CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
             -e CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
             $REGISTRY/editor:beta
-            
             docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
             ufw-docker allow nginx 443/tcp
             ufw-docker allow nginx 80/tcp
+            fi
+            
+            if [ ${{ steps.changes.outputs.renderer == 'true' }} ]; then
+            docker stop renderer
+            docker rm renderer
+            docker image rm $REGISTRY/renderer:beta
+            docker run -d \
+            --name renderer \
+            --restart always \
+            --network=tinypage_net \
+            -e API_URL=${{ secrets.API_URL }} \
+            -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
+            -e RENDERER_HOSTNAME=${{ secrets.RENDERER_HOSTNAME }} \
+            -e APP_NAME="${{ secrets.APP_NAME }}" \
+            -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
+            -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
+            $REGISTRY/renderer:beta
+            fi
