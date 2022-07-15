@@ -3,7 +3,7 @@ import * as fs from "fs";
 import {config} from "../config/config";
 
 /**
- * The DatabaseManager manages a connection to the PostgreSQL database
+ * The DatabaseManager manages a connection to the PostgreSQL database.
  */
 export class DatabaseManager {
 
