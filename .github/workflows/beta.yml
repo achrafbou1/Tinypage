@@ -123,7 +123,7 @@ jobs:
             docker network create tinypage_net
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
-            
+            printenv API_CHANGED > api
             if $API_CHANGED; then
               docker stop api
               docker rm api
