@@ -284,7 +284,7 @@ export class RouteHandler {
                         let style = link.style ?? '';
                         let customCss = link.customCss ?? '';
 
-                        let buttonImage = link.metadata?.buttonImageUrl
+                        let buttonImage = link.metadata?.buttonImageUrl;
                         let buttonImageFullWidth = link.metadata?.buttonImageFullWidth;
 
                         let buttonImageHtml = '';
@@ -314,6 +314,13 @@ export class RouteHandler {
                             linkHtml += `<a
                                 id="sl-item-${link.id}"
                                 href="${config.apiUrl}/analytics/link/record/${link.id}"
+                                onclick="(async () => {
+                                           let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                           const response = fetch(recordUrl);
+                                           const link = response.json()
+                                           window.open(link);
+                                           return false;
+                                       })()"
                                 class="w-full sl-item-parent mt-4"
                                 target="_blank"
                                 >
@@ -497,7 +504,7 @@ function changeSlide(next = true, index) {
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })
                                        const link = response.json()
-                                       window.open(link?.link, '_blank');
+                                       window.open(link, '_blank');
                                        })()"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -588,7 +595,7 @@ function changeSlide(next = true, index) {
                                 >
                                     ${buttonImageHtml}
                                     <span class="font-medium text-gray-900 sl-label"
-                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    ><span style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                 </div>
                             </a>
                         `;
