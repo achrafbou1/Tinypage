@@ -183,4 +183,5 @@ jobs:
             $REGISTRY/editor:beta
             
             docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
-            
+            ufw-docker allow nginx 443/tcp
+            ufw-docker allow nginx 80/tcp
