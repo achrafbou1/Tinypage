@@ -84,6 +84,18 @@ jobs:
     needs: build_and_push
 
     steps:
+      - name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.10.2
+        id: changes
+        with:
+          ref: beta
+          base: beta
+          filters: |
+            api: 
+              - 'api/**'
+              - 'editor/@types/editor-types.d.ts'
+            editor: 'editor/**'
+            renderer: 'renderer/**'
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
         with:
