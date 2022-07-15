@@ -124,7 +124,7 @@ jobs:
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
             echo ${{ steps.changes.outputs.renderer }} > api
-            if $API_CHANGED; then
+            if [ ${{ steps.changes.outputs.api }} == "true" ]; then
               docker stop api
               docker rm api
               docker image rm $REGISTRY/api:beta
@@ -162,7 +162,7 @@ jobs:
             
             fi
             
-            if $EDITOR_CHANGED; then
+            if [ ${{ steps.changes.outputs.editor }} == "true" ]; then
               docker stop editor
               docker stop nginx
               docker rm nginx
@@ -195,7 +195,7 @@ jobs:
             ufw-docker allow nginx 80/tcp
             fi
             
-            if $RENDERER_CHANGED ; then
+            if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
             docker stop renderer
             docker rm renderer
             docker image rm $REGISTRY/renderer:beta
