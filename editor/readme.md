@@ -9,7 +9,7 @@
 <br>
 
 <h4 align="center">
-    Tinypage is a free & open-source link manager built with <a href="https://nuxtjs.org/" target="_blank">NuxtJS</a>, <a target="_blank" href="https://nodejs.org/en/">NodeJS</a>, and <a href="https://www.mongodb.com/" target="_blank">MongoDB</a>.
+    Tinypage is a free & open-source link manager built with <a href="https://nuxtjs.org/" target="_blank">NuxtJS </a>, <a target="_blank" href="https://nodejs.org/en/">NodeJS</a>, and <a href="https://www.mongodb.com/" target="_blank">MongoDB</a>.
 </h4>
 
 <p align="center">
