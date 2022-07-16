@@ -39,5 +39,4 @@ async function start() {
 }
 
 start().then(() => {
-    // do nothing
 });

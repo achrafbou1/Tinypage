@@ -44,7 +44,7 @@ export default {
     script: [
       {
         src: '/js/jscolor.min.js'
-      },
+      }
     ]
   },
   /*
@@ -64,11 +64,11 @@ export default {
     },
     {
       src: '~plugins/cssjson.ts',
-      ssr: true,
+      ssr: true
     },
     {
       src: '~plugins/server-customization.ts',
-      ssr: true,
+      ssr: true
     },
     {
       src: '~/plugins/vue-editor.js',
@@ -126,7 +126,7 @@ export default {
     PORT: process.env.PORT ?? 3000,
     LOGO_WIDTH: process.env.LOGO_WIDTH ?? '200px',
     ICON_WIDTH: process.env.ICON_WIDTH ?? '46px',
-    FREE_SIGNUP: process.env.FREE_SIGNUP ? (process.env.FREE_SIGNUP === 'true') : true,
+    FREE_SIGNUP: process.env.FREE_SIGNUP ? (process.env.FREE_SIGNUP === 'true') : true
   },
 
   publicRuntimeConfig: {
@@ -154,7 +154,7 @@ export default {
       // const vue = ctx.loaders.vue;
 
       // Added Line
-      config.devtool = ctx.isClient ? 'eval-source-map' : 'inline-source-map'
+      config.devtool = ctx.isClient ? 'eval-source-map' : 'inline-source-map';
     }
-  },
-}
+  }
+};
