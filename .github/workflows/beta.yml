@@ -49,24 +49,24 @@ jobs:
       - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
         run: |
-        docker build -f api/api.Dockerfile \
-        --build-arg EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
-        --build-arg API_URL=${{ secrets.API_URL }} \
-        --build-arg RENDERER_URL="${{ secrets.RENDERER_URL }}" \
-        --build-arg SUPPORT="${{ secrets.SUPPORT }}" \
-        --build-arg COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
-        --build-arg EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
-        --build-arg CUSTOM_TITLE="${{ secrets.CUSTOM_TITLE }}" \
-        --build-arg CUSTOM_BRAND_NAME=${{ secrets.CUSTOM_BRAND_NAME }} \
-        --build-arg CUSTOM_PRODUCT_NAME=${{ secrets.CUSTOM_PRODUCT_NAME }} \
-        --build-arg CUSTOM_COMPANY=${{ secrets.CUSTOM_COMPANY }} \
-        --build-arg CUSTOM_CONTACT_EMAIL=${{ secrets.CUSTOM_CONTACT_EMAIL }} \
-        --build-arg CUSTOM_META_TITLE="${{ secrets.CUSTOM_META_TITLE }}" \
-        --build-arg CUSTOM_META_DESCRIPTION="${{ secrets.CUSTOM_META_DESCRIPTION }}" \
-        --build-arg CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
-        --build-arg CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
-        --build-arg CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
-        -t $REGISTRY/api:beta .
+          docker build -f api/api.Dockerfile \
+          --build-arg EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
+          --build-arg API_URL=${{ secrets.API_URL }} \
+          --build-arg RENDERER_URL="${{ secrets.RENDERER_URL }}" \
+          --build-arg SUPPORT="${{ secrets.SUPPORT }}" \
+          --build-arg COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
+          --build-arg EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
+          --build-arg CUSTOM_TITLE="${{ secrets.CUSTOM_TITLE }}" \
+          --build-arg CUSTOM_BRAND_NAME=${{ secrets.CUSTOM_BRAND_NAME }} \
+          --build-arg CUSTOM_PRODUCT_NAME=${{ secrets.CUSTOM_PRODUCT_NAME }} \
+          --build-arg CUSTOM_COMPANY=${{ secrets.CUSTOM_COMPANY }} \
+          --build-arg CUSTOM_CONTACT_EMAIL=${{ secrets.CUSTOM_CONTACT_EMAIL }} \
+          --build-arg CUSTOM_META_TITLE="${{ secrets.CUSTOM_META_TITLE }}" \
+          --build-arg CUSTOM_META_DESCRIPTION="${{ secrets.CUSTOM_META_DESCRIPTION }}" \
+          --build-arg CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
+          --build-arg CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
+          --build-arg CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
+          -t $REGISTRY/api:beta .
 
       - name: Build RENDERER image
         if: ${{ steps.changes.outputs.renderer == 'true' }}
