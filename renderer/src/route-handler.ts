@@ -315,7 +315,7 @@ export class RouteHandler {
                                 id="sl-item-${link.id}"
                                 onclick="(async () => {
                                            let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                           const response = fetch(recordUrl);
+                                           const response = await fetch(recordUrl);
                                            const link = response.text()
                                            window.open(link);
                                            return false;
