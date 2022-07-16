@@ -316,8 +316,8 @@ export class RouteHandler {
                                 onclick="(async () => {
                                            let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
                                            const response = await fetch(recordUrl);
-                                           const link = response.text()
-                                           window.open(link);
+                                           const link = await response.text()
+                                           window.open(link, '_blank');
                                            return false;
                                        })()"
                                 class="w-full sl-item-parent mt-4"
@@ -501,7 +501,7 @@ function changeSlide(next = true, index) {
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })
-                                       const link = response.json()
+                                       const link = await response.text()
                                        window.open(link, '_blank');
                                        })()"
                                     >
@@ -732,8 +732,7 @@ function changeSlide(next = true, index) {
                                         }</style>
                                     <div class="embed-container mt-4" style="${style}">
                                         <iframe title="youtube"
-                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
-                                                frameborder="0" allowfullscreen
+                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2" allowfullscreen
                                         ></iframe>
                                     </div>
                                 `;
