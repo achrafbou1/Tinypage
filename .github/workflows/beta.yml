@@ -197,7 +197,7 @@ jobs:
             ufw-docker allow nginx 80/tcp
             fi
             
-            # if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
             docker stop renderer
             docker rm renderer
             docker image rm $REGISTRY/renderer:beta
@@ -212,4 +212,4 @@ jobs:
             -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:beta
-            # fi
+            fi
