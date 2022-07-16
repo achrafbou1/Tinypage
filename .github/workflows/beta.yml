@@ -48,7 +48,24 @@ jobs:
 
       - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
-        run: docker build -f api/api.Dockerfile -t $REGISTRY/api:beta .
+        run: docker build -f api/api.Dockerfile \
+        --build-arg EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
+        --build-arg API_URL=${{ secrets.API_URL }} \
+        --build-arg RENDERER_URL="${{ secrets.RENDERER_URL }}" \
+        --build-arg SUPPORT="${{ secrets.SUPPORT }}" \
+        --build-arg COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
+        --build-arg EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
+        --build-arg CUSTOM_TITLE="${{ secrets.CUSTOM_TITLE }}" \
+        --build-arg CUSTOM_BRAND_NAME=${{ secrets.CUSTOM_BRAND_NAME }} \
+        --build-arg CUSTOM_PRODUCT_NAME=${{ secrets.CUSTOM_PRODUCT_NAME }} \
+        --build-arg CUSTOM_COMPANY=${{ secrets.CUSTOM_COMPANY }} \
+        --build-arg CUSTOM_CONTACT_EMAIL=${{ secrets.CUSTOM_CONTACT_EMAIL }} \
+        --build-arg CUSTOM_META_TITLE="${{ secrets.CUSTOM_META_TITLE }}" \
+        --build-arg CUSTOM_META_DESCRIPTION="${{ secrets.CUSTOM_META_DESCRIPTION }}" \
+        --build-arg CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
+        --build-arg CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
+        --build-arg CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
+        -t $REGISTRY/api:beta .
 
       - name: Build RENDERER image
         if: ${{ steps.changes.outputs.renderer == 'true' }}
@@ -124,7 +141,7 @@ jobs:
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
             echo ${{ steps.changes.outputs.renderer }} > api
-            # if [ ${{ steps.changes.outputs.api }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.api }} == "true" ]; then
               docker stop api
               docker rm api
               docker image rm $REGISTRY/api:beta
@@ -160,9 +177,9 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:beta
             
-            # fi
+            fi
             
-            # if [ ${{ steps.changes.outputs.editor }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.editor }} == "true" ]; then
               docker stop editor
               docker stop nginx
               docker rm nginx
@@ -173,27 +190,12 @@ jobs:
             --name editor \
             --restart always \
             --network=tinypage_net \
-            -e EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
-            -e API_URL=${{ secrets.API_URL }} \
-            -e RENDERER_URL="${{ secrets.RENDERER_URL }}" \
-            -e SUPPORT="${{ secrets.SUPPORT }}" \
-            -e COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
-            -e EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
-            -e CUSTOM_TITLE="${{ secrets.CUSTOM_TITLE }}" \
-            -e CUSTOM_BRAND_NAME=${{ secrets.CUSTOM_BRAND_NAME }} \
-            -e CUSTOM_PRODUCT_NAME=${{ secrets.CUSTOM_PRODUCT_NAME }} \
-            -e CUSTOM_COMPANY=${{ secrets.CUSTOM_COMPANY }} \
-            -e CUSTOM_CONTACT_EMAIL=${{ secrets.CUSTOM_CONTACT_EMAIL }} \
-            -e CUSTOM_META_TITLE="${{ secrets.CUSTOM_META_TITLE }}" \
-            -e CUSTOM_META_DESCRIPTION="${{ secrets.CUSTOM_META_DESCRIPTION }}" \
-            -e CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
-            -e CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
-            -e CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
             $REGISTRY/editor:beta
+            
             docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
             ufw-docker allow nginx 443/tcp
             ufw-docker allow nginx 80/tcp
-            # fi
+            fi
             
             # if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
             docker stop renderer
