@@ -48,7 +48,8 @@ jobs:
 
       - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
-        run: docker build -f api/api.Dockerfile \
+        run: |
+        docker build -f api/api.Dockerfile \
         --build-arg EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
         --build-arg API_URL=${{ secrets.API_URL }} \
         --build-arg RENDERER_URL="${{ secrets.RENDERER_URL }}" \
