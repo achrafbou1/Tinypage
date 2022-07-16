@@ -56,7 +56,25 @@ jobs:
 
       - name: Build EDITOR image
         if: ${{ steps.changes.outputs.editor == 'true' }}
-        run: docker build -f editor/editor.Dockerfile -t $REGISTRY/editor:beta .
+        run: |
+          docker build -f editor/editor.Dockerfile \
+          --build-arg EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
+          --build-arg API_URL=${{ secrets.API_URL }} \
+          --build-arg RENDERER_URL="${{ secrets.RENDERER_URL }}" \
+          --build-arg SUPPORT="${{ secrets.SUPPORT }}" \
+          --build-arg COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
+          --build-arg EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
+          --build-arg CUSTOM_TITLE="${{ secrets.CUSTOM_TITLE }}" \
+          --build-arg CUSTOM_BRAND_NAME=${{ secrets.CUSTOM_BRAND_NAME }} \
+          --build-arg CUSTOM_PRODUCT_NAME=${{ secrets.CUSTOM_PRODUCT_NAME }} \
+          --build-arg CUSTOM_COMPANY=${{ secrets.CUSTOM_COMPANY }} \
+          --build-arg CUSTOM_CONTACT_EMAIL=${{ secrets.CUSTOM_CONTACT_EMAIL }} \
+          --build-arg CUSTOM_META_TITLE="${{ secrets.CUSTOM_META_TITLE }}" \
+          --build-arg CUSTOM_META_DESCRIPTION="${{ secrets.CUSTOM_META_DESCRIPTION }}" \
+          --build-arg CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
+          --build-arg CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
+          --build-arg CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
+          -t $REGISTRY/editor:beta .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -84,28 +102,36 @@ jobs:
     needs: build_and_push
 
     steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: beta
+      - name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.10.2
+        id: changes
+        with:
+          ref: beta
+          base: beta
+          filters: |
+            api: 
+              - 'api/**'
+              - 'editor/@types/editor-types.d.ts'
+            editor: 'editor/**'
+            renderer: 'renderer/**'
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
+        env:
+          API_CHANGED: ${{ steps.changes.outputs.api }}
+          RENDERER_CHANGED: ${{ steps.changes.outputs.renderer }}
+          EDITOR_CHANGED: ${{ steps.changes.outputs.editor }}
         with:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          envs: REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          envs: REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}, ${{ steps.changes.outputs.api }}, ${{ steps.changes.outputs.renderer }}, ${{ steps.changes.outputs.editor }}
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
-            
-            # Stop running container
-            docker stop nginx
-            docker stop api
-            docker stop renderer
-            docker stop editor
-            
-            # Remove old container
-            docker rm nginx
-            docker rm api
-            docker rm renderer
-            docker rm editor
             
             # Start dep containers
             docker start postgres
@@ -115,13 +141,17 @@ jobs:
             docker network create tinypage_net
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
-            
-            # Start renderer
+            echo ${{ steps.changes.outputs.renderer }} > api
+            if [ ${{ steps.changes.outputs.api }} == "true" ]; then
+              docker stop api
+              docker rm api
+              docker image rm $REGISTRY/api:beta
+              # Start api
             docker run -d \
             --name api \
             --restart always \
             --network=tinypage_net \
-            -e DATABASE=${{ secrets.DATABASE }} \
+            -e DATABASE="${{ secrets.DATABASE }}" \
             -e API_URL=${{ secrets.API_URL }} \
             -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
             -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
@@ -148,6 +178,29 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:beta
             
+            fi
+            
+            if [ ${{ steps.changes.outputs.editor }} == "true" ]; then
+              docker stop editor
+              docker stop nginx
+              docker rm nginx
+              docker rm editor
+              docker image rm $REGISTRY/editor:beta
+            
+              docker run -d \
+            --name editor \
+            --restart always \
+            --network=tinypage_net \
+            $REGISTRY/editor:beta
+            docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
+            ufw-docker allow nginx 443/tcp
+            ufw-docker allow nginx 80/tcp
+            fi
+            
+            if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
+            docker stop renderer
+            docker rm renderer
+            docker image rm $REGISTRY/renderer:beta
             docker run -d \
             --name renderer \
             --restart always \
@@ -159,29 +212,4 @@ jobs:
             -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:beta
-            
-            docker run -d \
-            --name editor \
-            --restart always \
-            --network=tinypage_net \
-            -e EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
-            -e API_URL=${{ secrets.API_URL }} \
-            -e RENDERER_URL="${{ secrets.RENDERER_URL }}" \
-            -e SUPPORT="${{ secrets.SUPPORT }}" \
-            -e COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
-            -e EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
-            -e CUSTOM_TITLE="${{ secrets.CUSTOM_TITLE }}" \
-            -e CUSTOM_BRAND_NAME=${{ secrets.CUSTOM_BRAND_NAME }} \
-            -e CUSTOM_PRODUCT_NAME=${{ secrets.CUSTOM_PRODUCT_NAME }} \
-            -e CUSTOM_COMPANY=${{ secrets.CUSTOM_COMPANY }} \
-            -e CUSTOM_CONTACT_EMAIL=${{ secrets.CUSTOM_CONTACT_EMAIL }} \
-            -e CUSTOM_META_TITLE="${{ secrets.CUSTOM_META_TITLE }}" \
-            -e CUSTOM_META_DESCRIPTION="${{ secrets.CUSTOM_META_DESCRIPTION }}" \
-            -e CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
-            -e CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
-            -e CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
-            $REGISTRY/editor:beta
-            
-            docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
-            ufw-docker allow nginx 443/tcp
-            ufw-docker allow nginx 80/tcp
+            fi
