@@ -48,8 +48,16 @@ jobs:
 
       - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
+        run: docker build -f api/api.Dockerfile -t $REGISTRY/api:beta .
+
+      - name: Build RENDERER image
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
+        run: docker build -f renderer/renderer.Dockerfile -t $REGISTRY/renderer:beta .
+
+      - name: Build EDITOR image
+        if: ${{ steps.changes.outputs.editor == 'true' }}
         run: |
-          docker build -f api/api.Dockerfile \
+          docker build -f editor/editor.Dockerfile \
           --build-arg EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
           --build-arg API_URL=${{ secrets.API_URL }} \
           --build-arg RENDERER_URL="${{ secrets.RENDERER_URL }}" \
@@ -66,15 +74,7 @@ jobs:
           --build-arg CUSTOM_META_IMAGE_URL=${{ secrets.CUSTOM_META_IMAGE_URL }} \
           --build-arg CUSTOM_MAIN_ICON=${{ secrets.CUSTOM_MAIN_ICON }} \
           --build-arg CUSTOM_FAVICON=${{ secrets.CUSTOM_FAVICON }} \
-          -t $REGISTRY/api:beta .
-
-      - name: Build RENDERER image
-        if: ${{ steps.changes.outputs.renderer == 'true' }}
-        run: docker build -f renderer/renderer.Dockerfile -t $REGISTRY/renderer:beta .
-
-      - name: Build EDITOR image
-        if: ${{ steps.changes.outputs.editor == 'true' }}
-        run: docker build -f editor/editor.Dockerfile -t $REGISTRY/editor:beta .
+          -t $REGISTRY/editor:beta .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -192,7 +192,6 @@ jobs:
             --restart always \
             --network=tinypage_net \
             $REGISTRY/editor:beta
-            
             docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
             ufw-docker allow nginx 443/tcp
             ufw-docker allow nginx 80/tcp
