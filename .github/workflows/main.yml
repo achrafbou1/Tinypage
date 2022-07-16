@@ -166,7 +166,7 @@ jobs:
             --network=tinypage_net \
             -e EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
             -e API_URL=${{ secrets.API_URL }} \
-            -e RENDERER_URL="${{ secrets.RENDERER_URL }}" \
+            -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
             -e SUPPORT="${{ secrets.SUPPORT }}" \
             -e COMMUNITY_GROUP=${{ secrets.COMMUNITY_GROUP }} \
             -e EDITOR_PORT=${{ secrets.EDITOR_PORT }} \
