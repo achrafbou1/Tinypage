@@ -340,8 +340,7 @@ export default Vue.extend({
           customDomain: '',
         },
       },
-
-      rendererUrl: '' as string | undefined,
+      rendererUrl: process.env.RENDERER_URL,
       rendererDomain: '' as string | undefined,
       preview: false,
       share_modal: false,
@@ -470,15 +469,10 @@ export default Vue.extend({
     });
 
     this.isAdmin = permGroup["groupName"] === 'admin';
-
-    this.rendererUrl = process.env.RENDERER_URL;
-
     if (this.rendererUrl) {
       this.rendererDomain = this.rendererUrl
           .replaceAll("https://", '')
           .replaceAll("http://", '');
-    } else {
-      this.rendererDomain = "singlel.ink";
     }
 
     this.setActive();
@@ -515,7 +509,6 @@ export default Vue.extend({
     attemptLogout() {
       this.$nuxt.$router.push('/logout');
     },
-
     async createNewProfile() {
       try {
         const profile = await this.$axios.$post('/profile/create', {

@@ -1,23 +1,7 @@
-FROM node:16.3.0-slim as BUILD_TS
-
-COPY ./ singlelink/
-
-WORKDIR /singlelink
-
-RUN npm i -g modclean && npm i -g typescript && npm i && npm run build
-RUN npm prune --production
-RUN modclean
-
-FROM node:16.3.0-slim as FINAL
-
-WORKDIR /singlelink
-
-COPY --from=BUILD_TS /singlelink/dist ./dist
-COPY --from=BUILD_TS /singlelink/node_modules ./node_modules
-COPY --from=BUILD_TS /singlelink/package.json ./package.json
-
+FROM node:16.14-slim
 # Well folks, we tried to make this small, but this can't be helped...
-# This is needed for the chromium instance for the internal screenshot api.
+## This is needed for the chromium instance for the internal screenshot api.
+
 RUN apt update && apt install -y ca-certificates \
                                  fonts-liberation \
                                  libappindicator3-1 \
@@ -56,7 +40,20 @@ RUN apt update && apt install -y ca-certificates \
                                  wget \
                                  xdg-utils
 
+
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN npm i -g modclean && npm i -g typescript
+
+COPY api/package*.json api/
+WORKDIR api/
+
+RUN npm i
+
+COPY editor/@types/editor-types.d.ts ../editor/@types/editor-types.d.ts
+COPY api/ ./
+RUN npm run build
+RUN npm prune --production
+RUN modclean
 
 CMD npm run start

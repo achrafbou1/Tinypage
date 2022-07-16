@@ -1,24 +1,52 @@
-FROM node:16.3.0-slim as BUILD_TS
+FROM node:16.14-slim
 
-COPY ./ singlelink/
+ARG EDITOR_HOSTNAME
+ARG API_URL
+ARG RENDERER_URL
+ARG SUPPORT
+ARG COMMUNITY_GROUP
+ARG EDITOR_PORT
+ARG CUSTOM_TITLE
+ARG CUSTOM_BRAND_NAME
+ARG CUSTOM_PRODUCT_NAME
+ARG CUSTOM_COMPANY
+ARG CUSTOM_CONTACT_EMAIL
+ARG CUSTOM_META_TITLE
+ARG CUSTOM_META_DESCRIPTION
+ARG CUSTOM_META_IMAGE_URL
+ARG CUSTOM_MAIN_ICON
+ARG CUSTOM_FAVICON
 
-WORKDIR /singlelink
-
-RUN npm i -g modclean && npm i -g typescript && npm i && npm run build
-RUN npm prune --production
-RUN modclean
-
-FROM node:16.3.0-slim as FINAL
-
-WORKDIR /singlelink
-
-COPY --from=BUILD_TS /singlelink/.nuxt ./.nuxt
-COPY --from=BUILD_TS /singlelink/node_modules ./node_modules
-COPY --from=BUILD_TS /singlelink/package.json ./package.json
-COPY --from=BUILD_TS /singlelink/nuxt.config.js ./nuxt.config.js
-COPY --from=BUILD_TS /singlelink/static ./static
+ENV EDITOR_HOSTNAME $EDITOR_HOSTNAME
+ENV API_URL $API_URL
+ENV RENDERER_URL $RENDERER_URL
+ENV SUPPORT $SUPPORT
+ENV COMMUNITY_GROUP $COMMUNITY_GROUP
+ENV EDITOR_PORT $EDITOR_PORT
+ENV CUSTOM_TITLE $CUSTOM_TITLE
+ENV CUSTOM_BRAND_NAME $CUSTOM_BRAND_NAME
+ENV CUSTOM_PRODUCT_NAME $CUSTOM_PRODUCT_NAME
+ENV CUSTOM_COMPANY $CUSTOM_COMPANY
+ENV CUSTOM_CONTACT_EMAIL $CUSTOM_CONTACT_EMAIL
+ENV CUSTOM_META_TITLE $CUSTOM_META_TITLE
+ENV CUSTOM_META_DESCRIPTION $CUSTOM_META_DESCRIPTION
+ENV CUSTOM_META_IMAGE_URL $CUSTOM_META_IMAGE_URL
+ENV CUSTOM_MAIN_ICON $CUSTOM_MAIN_ICON
+ENV CUSTOM_FAVICON $CUSTOM_FAVICON
 
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN npm i -g modclean && npm i -g typescript
+
+COPY editor/package*.json editor/
+WORKDIR editor/
+
+RUN npm i
+
+COPY editor/ ./
+
+RUN npm run build
+RUN npm prune --production
+RUN modclean
 
 CMD npm run start

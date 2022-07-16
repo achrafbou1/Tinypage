@@ -10,7 +10,6 @@ if (!fs.existsSync(__dirname + "/../config.json")) {
 
 export let config = require("../config.json");
 
-// Set defaults if missing
 if (config.host === undefined) {
     config.host = "0.0.0.0";
 }
@@ -51,8 +50,8 @@ if (process.env.HOST) {
 /**
  * The port that the server will use.
  */
-if (process.env.PORT) {
-    config.port = process.env.PORT;
+if (process.env.API_PORT) {
+    config.port = process.env.API_PORT;
 }
 
 /**
