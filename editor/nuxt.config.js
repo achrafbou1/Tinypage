@@ -23,7 +23,7 @@ export default {
 
   server: {
     host: process.env.SERVER_HOST ?? '0.0.0.0',
-    port: process.env.PORT ?? 80
+    port: process.env.EDITOR_PORT ?? 80
   },
 
   /*
@@ -118,12 +118,12 @@ export default {
   env: {
     ENABLE_WHITELABEL: process.env.ENABLE_WHITELABEL === 'true',
     API_URL: process.env.API_URL ?? 'https://api.singlelink.co',
-    HOSTNAME: process.env.HOSTNAME ?? 'app.singlelink.co',
+    HOSTNAME: process.env.EDITOR_HOSTNAME ?? 'app.singlelink.co',
     RENDERER_URL: process.env.RENDERER_URL ?? 'https://singlel.ink',
     LEADERBOARD: process.env.LEADERBOARD === 'true',
     SUPPORT: process.env.SUPPORT ?? 'https://discord.gg/BUbmgV4',
     COMMUNITY_GROUP: process.env.COMMUNITY_GROUP ?? 'https://www.facebook.com/neutroncreative/',
-    PORT: process.env.PORT ?? 3000,
+    EDITOR_PORT: process.env.EDITOR_PORT ?? 3000,
     LOGO_WIDTH: process.env.LOGO_WIDTH ?? '200px',
     ICON_WIDTH: process.env.ICON_WIDTH ?? '46px',
     FREE_SIGNUP: process.env.FREE_SIGNUP ? (process.env.FREE_SIGNUP === 'true') : true
@@ -151,7 +151,6 @@ export default {
   build: {
     plugins: [],
     extend (config, ctx) {
-      // const vue = ctx.loaders.vue;
 
       // Added Line
       config.devtool = ctx.isClient ? 'eval-source-map' : 'inline-source-map';

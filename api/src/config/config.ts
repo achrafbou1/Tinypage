@@ -50,8 +50,8 @@ if (process.env.HOST) {
 /**
  * The port that the server will use.
  */
-if (process.env.PORT) {
-    config.port = process.env.PORT;
+if (process.env.API_PORT) {
+    config.port = process.env.API_PORT;
 }
 
 /**
