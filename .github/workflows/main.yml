@@ -138,7 +138,7 @@ jobs:
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
             
-            # if [ ${{ steps.changes.outputs.api }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.api }} == "true" ]; then
               docker stop api
               docker rm api
               docker image rm $REGISTRY/api:main
@@ -174,9 +174,9 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:main
             
-            # fi
+            fi
             
-            # if [ ${{ steps.changes.outputs.editor }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.editor }} == "true" ]; then
               docker stop editor
               docker stop nginx
               docker rm nginx
@@ -191,9 +191,9 @@ jobs:
             docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
             ufw-docker allow nginx 443/tcp
             ufw-docker allow nginx 80/tcp
-            # fi
+            fi
             
-            # if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
             docker stop renderer
             docker rm renderer
             docker image rm $REGISTRY/renderer:main
@@ -208,4 +208,4 @@ jobs:
             -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:main
-            # fi
+            fi
