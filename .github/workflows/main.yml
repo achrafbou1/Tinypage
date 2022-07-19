@@ -47,15 +47,15 @@ jobs:
             tinypage-main-v1-cache-
 
       - name: Build API image
-        # if: ${{ steps.changes.outputs.api == 'true' }}
+        if: ${{ steps.changes.outputs.api == 'true' }}
         run: docker build -f api/api.Dockerfile -t $REGISTRY/api:main .
 
       - name: Build RENDERER image
-        # if: ${{ steps.changes.outputs.renderer == 'true' }}
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
         run: docker build -f renderer/renderer.Dockerfile -t $REGISTRY/renderer:main .
 
       - name: Build EDITOR image
-        # if: ${{ steps.changes.outputs.editor == 'true' }}
+        if: ${{ steps.changes.outputs.editor == 'true' }}
         run: |
           docker build -f editor/editor.Dockerfile \
           --build-arg EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
@@ -85,15 +85,15 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push API image to Container Registry
-        # if: ${{ steps.changes.outputs.api == 'true' }}
+        if: ${{ steps.changes.outputs.api == 'true' }}
         run: docker push $REGISTRY/api:main
 
       - name: Push RENDERER image to Container Registry
-        # if: ${{ steps.changes.outputs.renderer == 'true' }}
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
         run: docker push $REGISTRY/renderer:main
 
       - name: Push EDITOR image to Container Registry
-        # if: ${{ steps.changes.outputs.editor == 'true' }}
+        if: ${{ steps.changes.outputs.editor == 'true' }}
         run: docker push $REGISTRY/editor:main
 
   deploy:
@@ -137,7 +137,6 @@ jobs:
             docker network create tinypage_net
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
-            
             if [ ${{ steps.changes.outputs.api }} == "true" ]; then
               docker stop api
               docker rm api
