@@ -317,7 +317,7 @@ export class RouteHandler {
                                            let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
                                            const response = await fetch(recordUrl);
                                            const link = await response.text()
-                                           window.open(link, '_self');
+                                           window.parent.open(link, '_self');
                                            return false;
                                        })()"
                                 class="w-full sl-item-parent mt-4"
@@ -502,7 +502,7 @@ function changeSlide(next = true, index) {
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })
                                        const link = await response.text()
-                                       window.open(link, '_self');
+                                       window.parent.open(link, '_self');
                                        })()"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
