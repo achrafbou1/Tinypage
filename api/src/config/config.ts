@@ -10,7 +10,6 @@ if (!fs.existsSync(__dirname + "/../config.json")) {
 
 export let config = require("../config.json");
 
-// Set defaults if missing
 if (config.host === undefined) {
     config.host = "0.0.0.0";
 }

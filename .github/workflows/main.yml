@@ -40,7 +40,6 @@ jobs:
             renderer: 'renderer/**'
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
-        if: ${{ steps.changes.outputs.editor == 'true' || steps.changes.outputs.renderer == 'true' || steps.changes.outputs.api == 'true'}}
         with:
           key: tinypage-main-cache-{hash}
           restore-keys: |
