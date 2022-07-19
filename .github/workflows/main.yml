@@ -40,22 +40,21 @@ jobs:
             renderer: 'renderer/**'
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
-        # if: ${{ steps.changes.outputs.editor == 'true' || steps.changes.outputs.renderer == 'true' || steps.changes.outputs.api == 'true'}}
         with:
           key: tinypage-main-cache-{hash}
           restore-keys: |
             tinypage-main-cache-
 
       - name: Build API image
-        # if: ${{ steps.changes.outputs.api == 'true' }}
+        if: ${{ steps.changes.outputs.api == 'true' }}
         run: docker build -f api/api.Dockerfile -t $REGISTRY/api:main .
 
       - name: Build RENDERER image
-        # if: ${{ steps.changes.outputs.renderer == 'true' }}
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
         run: docker build -f renderer/renderer.Dockerfile -t $REGISTRY/renderer:main .
 
       - name: Build EDITOR image
-        # if: ${{ steps.changes.outputs.editor == 'true' }}
+        if: ${{ steps.changes.outputs.editor == 'true' }}
         run: |
           docker build -f editor/editor.Dockerfile \
           --build-arg EDITOR_HOSTNAME=${{ secrets.EDITOR_HOSTNAME }} \
@@ -85,15 +84,15 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push API image to Container Registry
-        # if: ${{ steps.changes.outputs.api == 'true' }}
+        if: ${{ steps.changes.outputs.api == 'true' }}
         run: docker push $REGISTRY/api:main
 
       - name: Push RENDERER image to Container Registry
-        # if: ${{ steps.changes.outputs.renderer == 'true' }}
+        if: ${{ steps.changes.outputs.renderer == 'true' }}
         run: docker push $REGISTRY/renderer:main
 
       - name: Push EDITOR image to Container Registry
-        # if: ${{ steps.changes.outputs.editor == 'true' }}
+        if: ${{ steps.changes.outputs.editor == 'true' }}
         run: docker push $REGISTRY/editor:main
 
   deploy:
@@ -138,7 +137,7 @@ jobs:
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
             echo ${{ steps.changes.outputs.renderer }} > api
-            # if [ ${{ steps.changes.outputs.api }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.api }} == "true" ]; then
               docker stop api
               docker rm api
               docker image rm $REGISTRY/api:main
@@ -174,9 +173,9 @@ jobs:
             -e PAYMENTS_STRIPE_WEBHOOK_SECRET=${{ secrets.PAYMENTS_STRIPE_WEBHOOK_SECRET }} \
             $REGISTRY/api:main
             
-            # fi
+            fi
             
-            # if [ ${{ steps.changes.outputs.editor }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.editor }} == "true" ]; then
               docker stop editor
               docker stop nginx
               docker rm nginx
@@ -191,9 +190,9 @@ jobs:
             docker run --name nginx --restart always --network=tinypage_net -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/ssl/:/etc/ssl/ -p 80:80 -p 443:443 -d nginx:1.23
             ufw-docker allow nginx 443/tcp
             ufw-docker allow nginx 80/tcp
-            # fi
+            fi
             
-            # if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
+            if [ ${{ steps.changes.outputs.renderer }} == "true" ]; then
             docker stop renderer
             docker rm renderer
             docker image rm $REGISTRY/renderer:main
@@ -208,4 +207,4 @@ jobs:
             -e FREE_SIGNUP=${{ secrets.FREE_SIGNUP }} \
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:main
-            # fi
+            fi
