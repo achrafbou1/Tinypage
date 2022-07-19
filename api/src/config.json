@@ -1,0 +1,49 @@
+{
+    "database": "",
+    "secret": "",
+    "host": "0.0.0.0",
+    "port": 2000,
+    "apiUrl": "",
+    "editorUrl": "",
+    "rendererUrl": "",
+    "contactEmail": "",
+    "aws": {
+        "senderEmailAddress": "",
+        "region": "",
+        "accessKey": "",
+        "secretKey": ""
+    },
+    "s3Bucket": {
+        "endPoint": "",
+        "bucketName": "",
+        "port": 443,
+        "useSSL": true,
+        "accessKey": "",
+        "secretKey": ""
+    },
+    "analytics": {
+        "mixpanelToken": null
+    },
+    "settings": {
+        "marketplaceDeleteAddonThreshold": 10
+    },
+    "google": {
+        "clientId": "",
+        "clientSecret": "",
+        "redirectDomain": ""
+    },
+    "allowXForwardHeader": true,
+    "validateEmails": false,
+    "messages": {
+        "passwordResetEmail": {
+            "subjectCharset": "UTF-8",
+            "subject": "Password Reset Request for TinyPage",
+            "message": "Hello,\n\nA password reset for your account on TinyPage was requested.\n\nIf you are aware of this request, please visit the link below to reset your password.\n\n${url}\n\nThis link will be valid for 15 minutes.\nIf you cannot click the link above, copy & paste the link into your browser.\n\nThank you,\nTinypage Assistant.",
+            "messageCharset": "UTF-8"
+        }
+    },
+    "payments": {
+        "stripeSecret": "",
+        "stripeWebhookSecret": ""
+    }
+}
