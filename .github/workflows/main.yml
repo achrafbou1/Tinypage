@@ -40,10 +40,11 @@ jobs:
             renderer: 'renderer/**'
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
+        if: ${{ steps.changes.outputs.editor == 'true' || steps.changes.outputs.renderer == 'true' || steps.changes.outputs.api == 'true'}}
         with:
-          key: tinypage-main-cache-{hash}
+          key: tinypage-main-v1-cache-{hash}
           restore-keys: |
-            tinypage-main-cache-
+            tinypage-main-v1-cache-
 
       - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
@@ -140,7 +141,6 @@ jobs:
             docker network create tinypage_net
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
-            echo ${{ steps.changes.outputs.renderer }} > api
             if [ ${{ steps.changes.outputs.api }} == "true" ]; then
               docker stop api
               docker rm api
