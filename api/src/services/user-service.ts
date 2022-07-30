@@ -523,4 +523,9 @@ export class UserService extends DatabaseService {
 
         return DbTypeConverter.toSensitiveUser(profileQuery.rows[0]);
     }
+
+    public async getNumOfAllowedPages(userId: string): Promise<number> {
+        let queryResult = await this.pool.query<{ count: number }>("select count(*) from enterprise.products where user_id=$1", [userId]);
+        return queryResult.rows[0].count;
+    }
 }

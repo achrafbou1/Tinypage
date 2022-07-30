@@ -22,7 +22,7 @@
           <select
               id="tierSelect"
               v-model="selectedProductId"
-              :disabled="godmode"
+              :disabled="subInfo.purchase_type === 'recurring' || godmode"
               class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl font-bold border w-full lg:w-auto flex-grow lg:max-w-md"
           >
             <option v-if="subInfo.purchase_type === 'free'" :value="null">None</option>
@@ -250,7 +250,7 @@
             Make sure to check your spam folder.</p>
 
           <p v-if="passwordError" class="text-gray-600 text-sm">
-            <i class="fas fa-exclamation-triangle"/>
+            <em class="fas fa-exclamation-triangle"/>
             {{ passwordError }}
           </p>
           <button
@@ -418,13 +418,11 @@ export default Vue.extend({
   },
 
   async beforeMount() {
-    if (process.env.NODE_ENV === 'production') {
-      await this.getUserData();
+    await this.getUserData();
 
-      this.availableSubscriptions = (await this.$axios.post('/products', {})).data
+    this.availableSubscriptions = (await this.$axios.post('/products', {})).data
 
-      await this.checkSubscription();
-    }
+    await this.checkSubscription();
     this.loaded = true;
 
   },

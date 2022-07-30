@@ -201,7 +201,7 @@ export class SubscriptionService extends DatabaseService {
                 tier: currentPermission.name,
                 product_id: null,
                 created_on: null,
-                purchase_type: 'one_time'
+                purchase_type: 'recurring'
             };
         }
 
@@ -359,9 +359,9 @@ export class SubscriptionService extends DatabaseService {
             await this.pool.query("update app.profiles set visibility='unpublished' where profiles.user_id=$1", [userId]);
         } else {
             let number = await this.countPublishedProfiles(userId);
-
-            if (number > perm.pageCount) {
-                let queryResult = await this.pool.query<{ id: string }>("select id from app.profiles where profiles.user_id=$1 limit $2", [userId, perm.pageCount]);
+            let numOfAllowedPages = await this.getNumOfAllowedPages(userId);
+            if (number > numOfAllowedPages) {
+                let queryResult = await this.pool.query<{ id: string }>("select id from app.profiles where profiles.user_id=$1 limit $2", [userId, numOfAllowedPages]);
                 await this.pool.query("update app.profiles set visibility='unpublished' where profiles.id != all($1) and user_id=$2", [queryResult.rows, userId]);
             }
         }
@@ -370,6 +370,11 @@ export class SubscriptionService extends DatabaseService {
     private async countPublishedProfiles(userId: string): Promise<number> {
         let queryResult = await this.pool.query<{ count: number }>("select count(*) from app.profiles where user_id=$1 and visibility != 'unpublished'", [userId]);
 
+        return queryResult.rows[0].count;
+    }
+
+    private async getNumOfAllowedPages(userId: string): Promise<number> {
+        let queryResult = await this.pool.query<{ count: number }>("select count(*) from enterprise.products where user_id=$1", [userId]);
         return queryResult.rows[0].count;
     }
 }

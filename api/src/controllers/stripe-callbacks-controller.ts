@@ -158,7 +158,7 @@ export class StripeCallbacksController extends Controller {
 
                         let tier = product?.metadata.permission;
 
-                        if (tier && price.type === 'one_time') {
+                        if (tier) {
                             await PermissionUtils.addProductPurchase(user, tier, product.id);
 
                             await this.subService.checkProfilesForOverLimit(user.id);
