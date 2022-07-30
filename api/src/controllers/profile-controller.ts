@@ -18,7 +18,6 @@ import {IpUtils} from "../utils/ip-utils";
 import jwt from "jsonwebtoken";
 import {ProfileSerializer} from "../utils/profile-serializer";
 import {Readable} from "stream";
-import {PermissionUtils} from "../utils/permission-utils";
 
 interface ProfileQRCodeUrlRequest extends RequestGenericInterface {
     Params: {
@@ -506,10 +505,9 @@ export class ProfileController extends Controller {
                 // Check for sub tier and limit published profile count
                 if (body.authProfile.visibility === "unpublished") {
                     let ownerId = body.authProfile.userId;
-                    let permission = await PermissionUtils.getCurrentPermission(ownerId);
                     let published = await this.profileService.countPublishedProfiles(ownerId);
-
-                    if (published >= permission.pageCount) {
+                    let numOfAllowedPages = await this.userService.getNumOfAllowedPages(ownerId);
+                    if (published >= numOfAllowedPages) {
                         visibility = "unpublished";
                     }
                 }
