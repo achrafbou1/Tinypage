@@ -60,9 +60,6 @@ export class StripeCallbacksController extends Controller {
         }
 
         try {
-            console.log(config.payments.stripeWebhookSecret);
-            console.log(sig);
-            console.log(rawBody);
             event = this.stripe.webhooks.constructEvent(rawBody, sig, config.payments.stripeWebhookSecret);
         } catch (err) {
             console.error(`Error while constructing event: ${err}`);
