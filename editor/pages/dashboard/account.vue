@@ -22,7 +22,7 @@
           <select
               id="tierSelect"
               v-model="selectedProductId"
-              :disabled="subInfo.purchase_type === 'recurring' || godmode"
+              :disabled="godmode"
               class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl font-bold border w-full lg:w-auto flex-grow lg:max-w-md"
           >
             <option v-if="subInfo.purchase_type === 'free'" :value="null">None</option>
@@ -42,7 +42,7 @@
               type="button"
               @click="initCheckout"
           >
-            Checkout
+            Add page
           </button>
 
           <button
