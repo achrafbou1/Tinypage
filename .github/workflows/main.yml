@@ -152,6 +152,7 @@ jobs:
             --network=tinypage_net \
             -e DATABASE="${{ secrets.DATABASE }}" \
             -e API_URL=${{ secrets.API_URL }} \
+            -e MIXPANEL_TOKEN=${{ secrets.MIXPANEL_TOKEN }} \
             -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
             -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
             -e SECRET=${{ secrets.SECRET }} \
