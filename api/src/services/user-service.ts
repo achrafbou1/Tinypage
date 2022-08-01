@@ -270,7 +270,7 @@ export class UserService extends DatabaseService {
             await new AWS.SES().sendEmail(emailParams).promise();
 
             return user;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             throw new HttpError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to send email because of an internal server error: " + e.toString());
         }
