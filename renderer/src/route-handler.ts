@@ -284,7 +284,7 @@ export class RouteHandler {
                         let style = link.style ?? '';
                         let customCss = link.customCss ?? '';
 
-                        let buttonImage = link.metadata?.buttonImageUrl
+                        let buttonImage = link.metadata?.buttonImageUrl;
                         let buttonImageFullWidth = link.metadata?.buttonImageFullWidth;
 
                         let buttonImageHtml = '';
@@ -313,9 +313,14 @@ export class RouteHandler {
                         if (!link.hidden) {
                             linkHtml += `<a
                                 id="sl-item-${link.id}"
-                                href="${config.apiUrl}/analytics/link/record/${link.id}"
+                                onclick="(async () => {
+                                           let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                           const response = await fetch(recordUrl);
+                                           const link = await response.text()
+                                           window.open(link, '_self');
+                                           return false;
+                                       })()"
                                 class="w-full sl-item-parent mt-4"
-                                target="_blank"
                                 >
                                 <div
                                     class="rounded-2xl shadow bg-white w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
@@ -496,8 +501,8 @@ function changeSlide(next = true, index) {
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })
-                                       const link = response.json()
-                                       window.open(link?.link, '_blank');
+                                       const link = await response.text()
+                                       window.open(link, '_self');
                                        })()"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -588,7 +593,7 @@ function changeSlide(next = true, index) {
                                 >
                                     ${buttonImageHtml}
                                     <span class="font-medium text-gray-900 sl-label"
-                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;">${link.label}${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                 </div>
                             </a>
                         `;
@@ -727,8 +732,7 @@ function changeSlide(next = true, index) {
                                         }</style>
                                     <div class="embed-container mt-4" style="${style}">
                                         <iframe title="youtube"
-                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
-                                                frameborder="0" allowfullscreen
+                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2" allowfullscreen
                                         ></iframe>
                                     </div>
                                 `;

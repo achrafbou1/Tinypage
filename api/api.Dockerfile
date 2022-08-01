@@ -1,6 +1,6 @@
 FROM node:16.14-slim
 # Well folks, we tried to make this small, but this can't be helped...
-# This is needed for the chromium instance for the internal screenshot api.
+## This is needed for the chromium instance for the internal screenshot api.
 
 RUN apt update && apt install -y ca-certificates \
                                  fonts-liberation \

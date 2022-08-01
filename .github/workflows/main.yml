@@ -141,7 +141,7 @@ jobs:
             docker network create tinypage_net
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
-            echo ${{ steps.changes.outputs.renderer }} > api
+            
             if [ ${{ steps.changes.outputs.api }} == "true" ]; then
               docker stop api
               docker rm api
