@@ -7,7 +7,7 @@
   "scripts": {
     "copy": "(copyfiles -f \"src/sql/*.sql\" dist/sql)",
     "start": "node dist/app.js",
-    "build": "tsc && npm run copy",
+    "build": "tsc && yarn run copy",
     "dev": "ts-node src/app.ts",
     "postversion": "auto-changelog --output ../CHANGELOG.md && git add ../CHANGELOG.md && cd ../editor && npm version patch",
     "test": "jest",

@@ -2,17 +2,15 @@ FROM node:16.14-slim
 
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN npm i -g modclean && npm i -g typescript
+RUN yarn global add typescript modclean
 
-COPY renderer/package*.json renderer/
+COPY renderer/package.json renderer/yarn.lock renderer/
 WORKDIR renderer/
 
-RUN npm i
+RUN yarn install  --non-interactive --link-duplicates
 
 COPY renderer/ ./
 
-RUN npm run build
-RUN npm prune --production
-RUN modclean
+RUN yarn run build && modclean -P -r
 
-CMD npm run start
+CMD yarn run start

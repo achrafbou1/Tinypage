@@ -121,7 +121,7 @@ export class SecurityUtils {
             let queryResult = await this.pool.query("insert into security.expired_tokens(user_id, token) values ($1, $2) returning *", [userId, token]);
 
             return queryResult.rowCount > 0;
-        } catch (e) {
+        } catch (e: any) {
             if (e.code === PgErrorCodes.UNIQUE_VIOLATION) {
                 return false;
             }
