@@ -11,6 +11,7 @@ import {StatusCodes} from "http-status-codes";
 import Mixpanel from "mixpanel";
 import {UserService} from "../services/user-service";
 import {ProfileService} from "../services/profile-service";
+import {PermissionUtils} from "../utils/permission-utils";
 
 interface SubscribeRequest extends SensitiveAuthenticatedRequest {
     Body: {
@@ -74,7 +75,8 @@ export class SubscriptionController extends Controller {
     async GetProfileCount(request: FastifyRequest<SensitiveAuthenticatedRequest>, reply: FastifyReply) {
         try {
             let count = await this.profileService.countPublishedProfiles(request.body.authUser.id);
-            let numOfAllowedPages = await this.userService.getNumOfAllowedPages(request.body.authUser.id);
+            let perm = await PermissionUtils.getCurrentPermission(request.body.authUser.id);
+            let numOfAllowedPages = await this.userService.getNumOfAllowedPages(perm, request.body.authUser.id);
 
             return {
                 published: count,
