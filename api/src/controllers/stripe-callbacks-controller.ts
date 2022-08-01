@@ -61,7 +61,7 @@ export class StripeCallbacksController extends Controller {
 
         try {
             event = this.stripe.webhooks.constructEvent(rawBody, sig, config.payments.stripeWebhookSecret);
-        } catch (err) {
+        } catch (err: any) {
             console.error(`Error while constructing event: ${err}`);
             reply.status(StatusCodes.BAD_REQUEST);
             return {error: err.message};
