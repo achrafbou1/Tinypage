@@ -13,7 +13,7 @@
 	<img src="https://img.shields.io/badge/users-%3C10-%2330336b" alt="Users"/>
 </p>
 
-## Prerequisites
+# Prerequisites
 > It is important to set a cron job or some sort of automated task to periodically refresh your analytics.
 > SingleLink caches analytics for performance reasons using a materialized view, and thus, you must manually refresh
 > this view for accurate analytics.
