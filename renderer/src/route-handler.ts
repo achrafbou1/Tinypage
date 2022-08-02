@@ -313,12 +313,9 @@ export class RouteHandler {
                         if (!link.hidden) {
                             linkHtml += `<a
                                 id="sl-item-${link.id}"
-                                onclick="(async () => {
-                                           let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                           const response = await fetch(recordUrl);
-                                           const link = await response.text()
-                                           window.open(link, '_self');
-                                           return false;
+                                onclick="(() => {
+                                           fetch('${config.apiUrl}/analytics/link/record/${link.id}');
+                                           window.open('${link.url}', '_self');
                                        })()"
                                 class="w-full sl-item-parent mt-4"
                                 >
@@ -488,21 +485,18 @@ function changeSlide(next = true, index) {
                                 // language=HTML
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
-                                       href="${siSettings.url}"
                                        class="social-button mt-4"
                                        target="_blank"
                                        style="color:${siSettings.color};"
-                                       onclick="(async () => {
-                                         let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                         const response = await fetch(recordUrl, {
+                                       onclick="(() => {
+                                         fetch('${config.apiUrl}/analytics/link/record/${link.id}', {
                                            method: 'POST', 
                                            headers: {
                                           'Content-Type': 'application/json'
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
                                        })
-                                       const link = await response.text()
-                                       window.open(link, '_self');
+                                       window.open('${siSettings.url}', '_self');
                                        })()"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -577,14 +571,10 @@ function changeSlide(next = true, index) {
 
                             <a
                                     id="sl-item-${link.id}"
-                                    href="${config.apiUrl}/analytics/link/record/${link.id}"
                                     class="w-full sl-item-parent mt-4"
                                     onclick="{
-                                           let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                           fetch(recordUrl, {method: 'POST'});
-
+                                           fetch('${config.apiUrl}/analytics/link/record/${link.id}', {method: 'POST'});
                                            window.open('${dataUrl}');
-                                           return false;
                                        }"
                             >
                                 <div
