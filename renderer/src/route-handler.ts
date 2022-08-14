@@ -6,6 +6,7 @@ import {StatusCodes} from "http-status-codes";
 import ejs from "ejs";
 
 import fs, {promises as fsPromises} from "fs";
+import parse from "node-html-parser";
 
 interface MicrositeRequest extends FastifyRequest {
     Querystring: {
@@ -485,6 +486,17 @@ function changeSlide(next = true, index) {
                                         </div>`;
                                 }
 
+                                if(svgData) {
+                                    const svgDataHtml = parse(svgData);
+                                    let svgElement = svgDataHtml.querySelector(`#sl-item-a-${link.id}-${i} svg`);
+                                    svgElement?.querySelector("title")?.remove();
+                                    svgElement?.setAttribute("style", `color:${siSettings.color};`);
+                                    if (scale) {
+                                        svgElement?.setAttribute("height", scale.toString());
+                                        svgElement?.setAttribute("width", scale.toString());
+                                    }
+                                    svgData = svgDataHtml.toString();
+                                }
                                 // language=HTML
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
@@ -505,19 +517,6 @@ function changeSlide(next = true, index) {
                                        window.open(link, '_self');
                                        })()"
                                     >
-                                        <script type="module">
-                                            {
-                                                let svgElement = document.querySelector("#sl-item-a-${link.id}-${i} svg");
-                                                svgElement.querySelector("title")?.remove();
-                                                svgElement.setAttribute("style", "color:${siSettings.color};");
-                                                let scale = ${scale};
-                                                if (scale) {
-                                                    svgElement.setAttribute("height", scale);
-                                                    svgElement.setAttribute("width", scale);
-                                                }
-
-                                            }
-                                        </script>
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                             ${svgData}
                                             ${labelData}
