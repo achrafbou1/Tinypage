@@ -505,10 +505,6 @@ function changeSlide(next = true, index) {
                                        window.open(link, '_self');
                                        })()"
                                     >
-                                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                            ${svgData}
-                                            ${labelData}
-                                        </div>
                                         <script>
                                             {
                                                 let svgElement = document.querySelector("#sl-item-a-${link.id}-${i} svg");
@@ -522,6 +518,10 @@ function changeSlide(next = true, index) {
 
                                             }
                                         </script>
+                                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                            ${svgData}
+                                            ${labelData}
+                                        </div>
                                     </a>
                                 `;
                             }
