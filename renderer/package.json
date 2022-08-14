@@ -21,7 +21,8 @@
     "fastify": "^3.14.0",
     "fastify-cookie": "5.3.1",
     "fastify-static": "4.4.2",
-    "http-status-codes": "^2.1.4"
+    "http-status-codes": "^2.1.4",
+    "node-html-parser": "^5.4.2-0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
