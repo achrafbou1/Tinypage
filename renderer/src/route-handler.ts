@@ -505,7 +505,7 @@ function changeSlide(next = true, index) {
                                        window.open(link, '_self');
                                        })()"
                                     >
-                                        <script>
+                                        <script type="module">
                                             {
                                                 let svgElement = document.querySelector("#sl-item-a-${link.id}-${i} svg");
                                                 svgElement.querySelector("title")?.remove();
