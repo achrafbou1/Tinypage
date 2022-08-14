@@ -6,7 +6,7 @@ import {StatusCodes} from "http-status-codes";
 import ejs from "ejs";
 
 import fs, {promises as fsPromises} from "fs";
-import parse from "node-html-parser";
+import * as cheerio from "cheerio";
 
 interface MicrositeRequest extends FastifyRequest {
     Querystring: {
@@ -486,14 +486,14 @@ function changeSlide(next = true, index) {
                                         </div>`;
                                 }
 
-                                const svgDataHtml = parse(svgData);
-                                svgDataHtml?.querySelector("title")?.remove();
-                                svgDataHtml?.setAttribute("style", `color:${siSettings.color};`);
+                                const svgDataHtml =  cheerio.load(svgData, null, false);
+                                svgDataHtml("title").remove();
+                                svgDataHtml("svg").attr("style", `color:${siSettings.color};`);
                                 if (scale) {
-                                    svgDataHtml?.setAttribute("height", scale.toString());
-                                    svgDataHtml?.setAttribute("width", scale.toString());
+                                    svgDataHtml("svg").attr("height", scale.toString());
+                                    svgDataHtml("svg").attr("width", scale.toString());
                                 }
-                                svgData = svgDataHtml.toString();
+                                svgData = svgDataHtml.html();
                                 // language=HTML
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
