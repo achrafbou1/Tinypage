@@ -486,17 +486,14 @@ function changeSlide(next = true, index) {
                                         </div>`;
                                 }
 
-                                if(svgData) {
-                                    const svgDataHtml = parse(svgData);
-                                    let svgElement = svgDataHtml.querySelector(`#sl-item-a-${link.id}-${i} svg`);
-                                    svgElement?.querySelector("title")?.remove();
-                                    svgElement?.setAttribute("style", `color:${siSettings.color};`);
-                                    if (scale) {
-                                        svgElement?.setAttribute("height", scale.toString());
-                                        svgElement?.setAttribute("width", scale.toString());
-                                    }
-                                    svgData = svgDataHtml.toString();
+                                const svgDataHtml = parse(svgData);
+                                svgDataHtml?.querySelector("title")?.remove();
+                                svgDataHtml?.setAttribute("style", `color:${siSettings.color};`);
+                                if (scale) {
+                                    svgDataHtml?.setAttribute("height", scale.toString());
+                                    svgDataHtml?.setAttribute("width", scale.toString());
                                 }
+                                svgData = svgDataHtml.toString();
                                 // language=HTML
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
