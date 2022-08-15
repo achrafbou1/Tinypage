@@ -175,7 +175,7 @@ export default Vue.extend({
         this.$nuxt.$loading.finish();
 
         window.location.href = '/dashboard?tour=sl-101-01';
-      } catch (err) {
+      } catch (err: any) {
         if (err.response) {
           if (err.response.status === StatusCodes.CONFLICT) {
             this.error = 'Email or handle already in use. Try again with a different email address or handle.';
