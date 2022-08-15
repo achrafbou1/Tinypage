@@ -313,13 +313,11 @@ export class RouteHandler {
                         if (!link.hidden) {
                             linkHtml += `<a
                                 id="sl-item-${link.id}"
-                                onclick="(async () => {
-                                           let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                           const response = await fetch(recordUrl);
-                                           const link = await response.text()
-                                           window.open(link, '_self');
-                                           return false;
-                                       })()"
+                                onclick="{
+                                           const recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                           fetch(recordUrl);
+                                           window.open('${link.url}');
+                                       }"
                                 class="w-full sl-item-parent mt-4"
                                 >
                                 <div
@@ -488,22 +486,20 @@ function changeSlide(next = true, index) {
                                 // language=HTML
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
-                                       href="${siSettings.url}"
                                        class="social-button mt-4"
                                        target="_blank"
                                        style="color:${siSettings.color};"
-                                       onclick="(async () => {
-                                         let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                         const response = await fetch(recordUrl, {
+                                       onclick="{
+                                         const recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                         fetch(recordUrl, {
                                            method: 'POST', 
                                            headers: {
                                           'Content-Type': 'application/json'
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
-                                       })
-                                       const link = await response.text()
-                                       window.open(link, '_self');
-                                       })()"
+                                       });
+                                       window.open('${siSettings.url}');
+                                       }"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                             ${svgData}
