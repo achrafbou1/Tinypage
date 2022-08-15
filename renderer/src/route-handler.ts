@@ -6,6 +6,7 @@ import {StatusCodes} from "http-status-codes";
 import ejs from "ejs";
 
 import fs, {promises as fsPromises} from "fs";
+import * as cheerio from "cheerio";
 
 interface MicrositeRequest extends FastifyRequest {
     Querystring: {
@@ -483,6 +484,14 @@ function changeSlide(next = true, index) {
                                         </div>`;
                                 }
 
+                                const svgDataHtml =  cheerio.load(svgData, null, false);
+                                svgDataHtml("title").remove();
+                                svgDataHtml("svg").attr("style", `color:${siSettings.color};`);
+                                if (scale) {
+                                    svgDataHtml("svg").attr("height", scale.toString());
+                                    svgDataHtml("svg").attr("width", scale.toString());
+                                }
+                                svgData = svgDataHtml.html();
                                 // language=HTML
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
@@ -505,19 +514,6 @@ function changeSlide(next = true, index) {
                                             ${svgData}
                                             ${labelData}
                                         </div>
-                                        <script>
-                                            {
-                                                let svgElement = document.querySelector("#sl-item-a-${link.id}-${i} svg");
-                                                svgElement.querySelector("title")?.remove();
-                                                svgElement.setAttribute("style", "color:${siSettings.color};");
-                                                let scale = ${scale};
-                                                if (scale) {
-                                                    svgElement.setAttribute("height", scale);
-                                                    svgElement.setAttribute("width", scale);
-                                                }
-
-                                            }
-                                        </script>
                                     </a>
                                 `;
                             }
