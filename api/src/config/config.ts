@@ -126,6 +126,13 @@ if (process.env.S3_BUCKETNAME) {
 }
 
 /**
+ * Env Name.
+ */
+if (process.env.ENV_NAME) {
+    config.envName = process.env.ENV_NAME;
+}
+
+/**
  * S3 Bucket Port.
  */
 if (process.env.S3_PORT) {
