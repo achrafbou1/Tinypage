@@ -25,13 +25,20 @@
               :disabled="godmode"
               class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl font-bold border w-full lg:w-auto flex-grow lg:max-w-md"
           >
-            <option v-if="subInfo.purchase_type === 'free'" :value="null">None</option>
-            <option v-for="subInfo of availableSubscriptions" v-if="availableSubscriptions" :key="subInfo.id"
-                    :value="subInfo.id"
+            <option v-if="subInfo.purchase_type === 'free'" :value="null">
+              None
+            </option>
+            <option
+                v-for="subInfo of availableSubscriptions"
+                v-if="availableSubscriptions"
+                :key="subInfo.id"
+                :value="subInfo.id"
             >
               {{ subInfo.name }}
             </option>
-            <option v-if="godmode" value="godmode">God Mode</option>
+            <option v-if="godmode" value="godmode">
+              God Mode
+            </option>
           </select>
 
           <button
@@ -94,7 +101,9 @@
               style="min-width: 120px; max-width: 161px;"
               @change="onMemberRoleUpdate(member.email, member.role)"
           >
-            <option selected value="editor">Editor</option>
+            <option selected value="editor">
+              Editor
+            </option>
           </select>
         </div>
       </div>
@@ -121,8 +130,14 @@
               style="min-width: 120px; max-width: 220px;"
           >
             <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
-            <option selected value="editor">Editor</option>
+            <option selected value="editor">
+              Editor
+            </option>
           </select>
+        </div>
+
+        <div v-if="error" class="error py-4 px-6 mt-4 text-sm text-white align-center justify-center">
+          {{ error }}
         </div>
 
         <button
@@ -172,7 +187,9 @@
         <h2 class="text-black font-bold text-lg w-full">
           Request GDPR Package
         </h2>
-        <p class="text-black font-bold opacity-70">Download a data package containing all of your recorded data.</p>
+        <p class="text-black font-bold opacity-70">
+          Download a data package containing all of your recorded data.
+        </p>
       </div>
       <button
           class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex px-6 py-3 text-sm text-white text-center bg-green-600 hover:bg-green-400 rounded-2xl font-bold w-1/3 justify-center align-center"
@@ -250,7 +267,7 @@
             Make sure to check your spam folder.</p>
 
           <p v-if="passwordError" class="text-gray-600 text-sm">
-            <i class="fas fa-exclamation-triangle"/>
+            <em class="fas fa-exclamation-triangle"/>
             {{ passwordError }}
           </p>
           <button
@@ -277,7 +294,9 @@
             Are you sure?
           </h2>
 
-          <p class="text-gray-600 text-sm">There is NO UNDO for this operation! All your profiles will be deleted!</p>
+          <p class="text-gray-600 text-sm">
+            There is NO UNDO for this operation! All your profiles will be deleted!
+          </p>
 
           <button
               class="mt-4 p-3 text-center text-md text-white bg-red-700 hover:bg-red-400 rounded-2xl font-bold"
@@ -309,39 +328,6 @@ export default Vue.extend({
   name: 'DashboardAccount',
   layout: 'dashboard',
   middleware: 'authenticated',
-
-  head() {
-    return {
-      title: 'Account Settings - ' + this.$customSettings.productName,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Manage your ' + this.$customSettings.productName + ' account.'
-        },
-        {
-          hid: 'twitter:description',
-          name: 'twitter:description',
-          content: 'Manage your ' + this.$customSettings.productName + ' account.'
-        },
-        {
-          hid: 'og:title',
-          name: 'og:title',
-          content: 'Account Settings - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'twitter:title',
-          name: 'twitter:title',
-          content: 'Account Settings - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'Manage your ' + this.$customSettings.productName + ' account.'
-        },
-      ],
-    };
-  },
 
   data() {
     return {
@@ -404,6 +390,39 @@ export default Vue.extend({
     };
   },
 
+  head() {
+    return {
+      title: 'Account Settings - ' + this.$customSettings.productName,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Manage your ' + this.$customSettings.productName + ' account.'
+        },
+        {
+          hid: 'twitter:description',
+          name: 'twitter:description',
+          content: 'Manage your ' + this.$customSettings.productName + ' account.'
+        },
+        {
+          hid: 'og:title',
+          name: 'og:title',
+          content: 'Account Settings - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: 'Account Settings - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Manage your ' + this.$customSettings.productName + ' account.'
+        },
+      ],
+    };
+  },
+
   watch: {
     'user.activeProfile.showWatermark': {
       handler(val) {
@@ -412,7 +431,7 @@ export default Vue.extend({
     },
     selectedProductId: {
       handler(val) {
-        this.selectedPurchaseType = this.availableSubscriptions.find(x => x.id == val)?.price?.type;
+        this.selectedPurchaseType = this.availableSubscriptions.find(x => x.id === val)?.price?.type;
       }
     }
   },
@@ -421,7 +440,7 @@ export default Vue.extend({
     if (process.env.NODE_ENV === 'production') {
       await this.getUserData();
 
-      this.availableSubscriptions = (await this.$axios.post('/products', {})).data
+      this.availableSubscriptions = (await this.$axios.post('/products', {})).data;
 
       await this.checkSubscription();
     }
@@ -429,7 +448,7 @@ export default Vue.extend({
 
   },
 
-  async mounted() {
+  mounted() {
     this.getTeamMembers().catch();
   },
 
@@ -441,8 +460,9 @@ export default Vue.extend({
     },
 
     async getTeamMembers() {
-      if (!this.teamMembers)
+      if (!this.teamMembers) {
         this.teamMembers = [];
+      }
 
       this.teamMembers.length = 0;
 
@@ -455,12 +475,17 @@ export default Vue.extend({
 
     async addTeamMember(email: string, role: string) {
       const token = this.$store.getters['auth/getToken'];
-
-      await this.$axios.post('/team/add', {
-        token,
-        email,
-        role
-      });
+      try {
+        await this.$axios.post('/team/add', {
+          token,
+          email,
+          role
+        });
+        this.error = '';
+      } catch (err: any) {
+        console.log(err.response);
+        this.error = err.response.data.error;
+      }
 
       await this.getTeamMembers();
     },
@@ -481,7 +506,7 @@ export default Vue.extend({
       try {
         const token = this.$store.getters['auth/getToken'];
 
-        let response = await this.$axios.post('/stripe/create-checkout-session', {
+        const response = await this.$axios.post('/stripe/create-checkout-session', {
           token,
           productId: this.selectedProductId
         });
@@ -496,7 +521,7 @@ export default Vue.extend({
       try {
         const token = this.$store.getters['auth/getToken'];
 
-        let response = await this.$axios.post('/stripe/create-portal-session', {
+        const response = await this.$axios.post('/stripe/create-portal-session', {
           token
         });
 
@@ -518,10 +543,10 @@ export default Vue.extend({
       if (this.subInfo.product_id) {
         this.selectedProductId = this.subInfo.product_id;
 
-        let product = <any>this.subInfo.product;
+        const product: any = this.subInfo.product;
 
         if (!product.active) {
-          let find = this.availableSubscriptions.find(x => x.id === this.selectedProductId);
+          const find = this.availableSubscriptions.find(x => x.id === this.selectedProductId);
 
           if (find) {
             find.name += " (Legacy)";
@@ -530,7 +555,7 @@ export default Vue.extend({
       }
 
       this.availableSubscriptions = this.availableSubscriptions.filter(sub => {
-        let permission = Permission.parse(sub.metadata.permission);
+        const permission = Permission.parse(sub.metadata.permission);
 
         if (sub.price.type === 'recurring' && permission.permLevel === this.currentPermission.permLevel) {
           return false;
@@ -592,7 +617,7 @@ export default Vue.extend({
 
           this.$root.$emit('refreshUserProfileView');
         }
-      } catch (err) {
+      } catch (err: any) {
         if (err.response) {
           if (err.response.status === StatusCodes.CONFLICT) {
             console.error("This handle is already being used by another profile.");
@@ -647,7 +672,7 @@ export default Vue.extend({
         if (request.status && request.status === 200) {
           this.passwordError = '';
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
 
         this.passwordError = err.toString();
@@ -670,7 +695,7 @@ export default Vue.extend({
 
     async downloadGDPRPackage() {
       if (process.client) {
-        let token = this.$store.getters['auth/getToken'];
+        const token = this.$store.getters['auth/getToken'];
 
         const response = await this.$axios.post('/user/data-package', {
           token
@@ -678,7 +703,7 @@ export default Vue.extend({
 
         let filename = "data.json";
         const disposition = response.headers['content-disposition'];
-        if (disposition && disposition.indexOf('filename') !== -1) {
+        if (disposition && disposition.includes('filename')) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(disposition);
           if (matches != null && matches[1]) {
@@ -713,5 +738,13 @@ export default Vue.extend({
 
 input, select {
   @apply font-bold;
+}
+
+.error {
+  @apply bottom-0 rounded-lg shadow border border-gray-200;
+  color: mintcream;
+  background-color: #ff4a4a;
+  padding: 7px;
+  z-index: 25;
 }
 </style>
