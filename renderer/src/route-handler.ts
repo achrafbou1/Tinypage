@@ -496,7 +496,6 @@ function changeSlide(next = true, index) {
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
                                        class="social-button mt-4"
-                                       target="_blank"
                                        style="color:${siSettings.color};"
                                        onclick="{
                                          const recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
