@@ -63,6 +63,10 @@ export default {
       ssr: true
     },
     {
+      src: '~plugins/vue-modal.js',
+      ssr: false
+    },
+    {
       src: '~plugins/cssjson.ts',
       ssr: true
     },

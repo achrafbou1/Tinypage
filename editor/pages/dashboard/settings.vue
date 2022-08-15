@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col p-8 items-center overflow-x-hidden overflow-y-scroll">
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
-      <img class="w-8" src="/icons/Settings.svg">
+      <img class="w-8" src="/icons/Settings.svg" alt="Settings">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
         Page Settings
       </h1>
@@ -223,7 +223,8 @@
           Customize your preview link
         </h2>
         <div class="flex flex-col w-full lg:w-1/2 mr-3 mb-3 lg:mb-0">
-          <label class="font-bold opacity-70 text-sm text-black" for="image_url_2">Image URL (We recommend using a 16:9 image)</label>
+          <label class="font-bold opacity-70 text-sm text-black" for="image_url_2">Image URL (We recommend using a 16:9
+            image)</label>
           <input
               id="image_url"
               v-model="user.activeProfile.metadata.previewImageUrl"
@@ -324,37 +325,24 @@
     </div>
 
     <!-- Leave page -->
-    <div v-if="user.activeProfile.userId !== user.id" class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8" >
+    <div
+        v-if="user.activeProfile.userId !== user.id"
+        class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8"
+    >
       <div class="flex flex-col mr-auto w-full lg:w-full">
         <h2 class="text-black font-bold text-lg w-full">
           Leave this page
         </h2>
-        <p class="text-black opacity-70 font-semibold">Leave this page (only works for pages you've been invited to).</p>
+        <p class="text-black opacity-70 font-semibold">
+          Leave this page (only works for pages you've been invited to).
+        </p>
       </div>
       <button
           class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
           type="button"
-          @click="leavePageModalActive = true; setDeleteProfileModalActive(false);"
+          @click="$modal.show('leave-page'); $modal.hide('delete-page');"
       >
         Leave this page
-      </button>
-    </div>
-
-    <!-- Delete site -->
-    <div v-if="user.activeProfile.userId === user.id" class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-full">
-        <h2 class="text-black font-bold text-lg w-full">
-          Delete this page
-        </h2>
-        <p class="text-black opacity-70 font-semibold">Done with this page? Click the button on your right to delete
-          this page and all related content.</p>
-      </div>
-      <button
-          class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
-          type="button"
-          @click="setDeleteProfileModalActive(true); leavePageModalActive = false;"
-      >
-        Delete this page
       </button>
     </div>
 
@@ -374,7 +362,7 @@
             style="border-width:3px;border-style:solid;"
             @click="assignGoogleAccount()"
         >
-          <img class="w-5 mr-4" src="/icons/google-icon.png">
+          <img class="w-5 mr-4" src="/icons/google-icon.png" alt="Link with Google">
           Link with Google
         </a>
         <!--        <a-->
@@ -483,15 +471,35 @@
       </n-link>
     </div>
 
-    <transition name="fade">
+    <!-- Delete site -->
+    <div
+        v-if="user.activeProfile.userId === user.id"
+        class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8"
+    >
+      <div class="flex flex-col mr-auto w-full lg:w-full">
+        <h2 class="text-black font-bold text-lg w-full">
+          Delete this page
+        </h2>
+        <p class="text-black opacity-70 font-semibold">Done with this page? Click the button on your right to delete
+          this page and all related content.</p>
+      </div>
+      <button
+          class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
+          type="button"
+          @click="$modal.hide('leave-page'); $modal.show('delete-page');"
+      >
+        Delete this page
+      </button>
+    </div>
+
+    <modal name="delete-page">
       <!-- Confirm site deletion modal -->
       <div
-          v-if="deleteProfileModalActive"
-          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
-          style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
-          @click="setDeleteProfileModalActive(false)"
+          class="flex items-center justify-center"
+          style="backdrop-filter: saturate(180%) blur(5px);"
+          @click="$modal.hide('delete-page')"
       >
-        <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
+        <div class="flex flex-col p-6 mt-6 bg-white rounded-2xl w-full max-w-lg" @click.stop>
           <h2 class="text-black font-semibold text-xl">
             Are you sure?
           </h2>
@@ -501,30 +509,29 @@
           <button
               class="mt-4 w-full p-4 text-center text-md text-black bg-red-600 hover:bg-red-700 text-white rounded-2xl font-semibold"
               type="button"
-              @click="deleteProfile"
+              @click="deletePage"
           >
-            Yes, delete this site
+            Yes, delete this page
           </button>
           <button
               class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 text-white hover:bg-gray-700 rounded-2xl font-semibold"
               type="button"
-              @click="deleteProfileModalActive = false"
+              @click="$modal.hide('delete-page')"
           >
             Cancel
           </button>
         </div>
       </div>
-    </transition>
+    </modal>
 
-    <transition name="fade">
+    <modal name="leave-page">
       <!-- Confirm site deletion modal -->
       <div
-          v-if="leavePageModalActive"
-          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
-          style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
-          @click="leavePageModalActive = false"
+          class="flex items-center justify-center"
+          style="backdrop-filter: saturate(180%) blur(5px);"
+          @click="$modal.hide('leave-page')"
       >
-        <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
+        <div class="flex flex-col p-6 mt-8 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
           <h2 class="text-black font-semibold text-xl">
             Are you sure?
           </h2>
@@ -538,44 +545,13 @@
           <button
               class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 hover:bg-gray-700 text-white rounded-2xl font-semibold"
               type="button"
-              @click="leavePageModalActive = false"
+              @click="$modal.hide('leave-page')"
           >
             Cancel
           </button>
         </div>
       </div>
-    </transition>
-
-    <transition name="fade">
-      <!-- Password reset confirmation modal -->
-      <div
-          v-if="resetPasswordModalActive"
-          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
-          style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
-          @click="resetPasswordModalActive = false"
-      >
-        <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
-          <h2 class="text-black font-semibold text-xl">
-            {{ passwordError ? 'Error on password request!' : 'Password reset requested' }}
-          </h2>
-          <p v-if="!passwordError" class="text-gray-800 text-sm">A password reset link has been sent to your account
-            email inbox successfully.
-            Make sure to check your spam folder.</p>
-
-          <p v-if="passwordError" class="text-gray-800 text-sm">
-            <i class="fas fa-exclamation-triangle"/>
-            {{ passwordError }}
-          </p>
-          <button
-              class="mt-4 p-3 text-center text-md text-black bg-blue-600 hover:bg-blue-400 rounded-2xl font-semibold"
-              type="button"
-              @click="resetPasswordModalActive = false"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </transition>
+    </modal>
 
   </section>
 </template>
@@ -592,10 +568,7 @@ export default Vue.extend({
   data() {
     return {
       showHTML: false,
-      leavePageModalActive: false,
       loaded: false,
-      resetPasswordModalActive: false,
-      deleteProfileModalActive: false,
       originalHandle: '',
       user: {
         id: '',
@@ -816,7 +789,7 @@ export default Vue.extend({
     async importLinktree() {
       const linktreeInput: HTMLInputElement = (document.getElementById('linktreeUrl')) as HTMLInputElement;
       const linktreeHandle: string = linktreeInput.value;
-      const result = await this.$axios.$post('/profile/linktree_import', {
+      await this.$axios.$post('/profile/linktree_import', {
         token: this.$store.getters['auth/getToken'],
         handle: linktreeHandle
       });
@@ -855,7 +828,7 @@ export default Vue.extend({
 
           this.$root.$emit('refreshUserProfileView');
         }
-      } catch (err) {
+      } catch (err: any) {
         if (err.response) {
           if (err.response.status === StatusCodes.CONFLICT) {
             console.error("This handle is already being used by another profile.");
@@ -869,11 +842,7 @@ export default Vue.extend({
       }
     },
 
-    setDeleteProfileModalActive(active: boolean) {
-      this.deleteProfileModalActive = active;
-    },
-
-    async deleteProfile() {
+    async deletePage() {
       this.$nuxt.$loading.start();
 
       await this.$axios.$post('/profile/delete', {
@@ -911,5 +880,9 @@ export default Vue.extend({
 
 iframe.widgetFrame {
   margin-left: 0 !important;
+}
+
+.vm--modal {
+  background: none;
 }
 </style>
