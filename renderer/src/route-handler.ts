@@ -883,14 +883,11 @@ function changeSlide(next = true, index) {
 
                     <script>
                         async function onClickCopyLink () {
+                            let text = window.location.href.replace(/\\?fbclid.+/, "");
                             try {
-                                let text = window.location.href;
-
                                 await window.navigator.clipboard.writeText(text);
                                 alert('Url copied to clipboard!');
                             } catch (error) {
-                                let text = window.location.href;
-
                                 prompt('Copy this url to the clipboard: Ctrl+C, Enter\\n', text);
                             }
                         }
