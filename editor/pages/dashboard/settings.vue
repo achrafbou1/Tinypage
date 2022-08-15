@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col p-8 items-center overflow-x-hidden overflow-y-scroll">
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
-      <img class="w-8" src="/icons/Settings.svg">
+      <img class="w-8" src="/icons/Settings.svg" alt="settings">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
         Page Settings
       </h1>
@@ -374,7 +374,7 @@
             style="border-width:3px;border-style:solid;"
             @click="assignGoogleAccount()"
         >
-          <img class="w-5 mr-4" src="/icons/google-icon.png">
+          <img class="w-5 mr-4" src="/icons/google-icon.png" alt="google">
           Link with Google
         </a>
         <!--        <a-->
@@ -563,7 +563,7 @@
             Make sure to check your spam folder.</p>
 
           <p v-if="passwordError" class="text-gray-800 text-sm">
-            <i class="fas fa-exclamation-triangle"/>
+            <em class="fas fa-exclamation-triangle"/>
             {{ passwordError }}
           </p>
           <button
@@ -695,14 +695,11 @@ export default Vue.extend({
 
   async mounted() {
     await this.getUserData();
-    if (process.env.NODE_ENV === 'production') {
-
-      if (this.$route.query.googleLinked) {
-        this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
-      }
-
-      await this.updateProfileUsage();
+    if (this.$route.query.googleLinked) {
+      this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
     }
+
+    await this.updateProfileUsage();
     this.loaded = true;
   },
 

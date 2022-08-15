@@ -25,14 +25,9 @@
               :disabled="godmode"
               class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl font-bold border w-full lg:w-auto flex-grow lg:max-w-md"
           >
-            <option v-if="subInfo.purchase_type === 'free'" :value="null">
-              None
-            </option>
-            <option
-                v-for="subInfo of availableSubscriptions"
-                v-if="availableSubscriptions"
-                :key="subInfo.id"
-                :value="subInfo.id"
+
+            <option v-for="subInfo of availableSubscriptions" v-if="availableSubscriptions" :key="subInfo.id"
+                    :value="subInfo.id"
             >
               {{ subInfo.name }}
             </option>
@@ -43,13 +38,13 @@
 
           <button
               v-if="loaded"
-              v-show="(subInfo.purchase_type === 'free' || (subInfo.purchase_type === 'one_time' && selectedPurchaseType === 'recurring')) && selectedProductId && selectedProductId !== subInfo.product_id"
+              v-show="selectedProductId"
               :disabled="godmode"
               class="w-full lg:w-auto flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
               type="button"
               @click="initCheckout"
           >
-            Checkout
+            Add page
           </button>
 
           <button
@@ -437,13 +432,10 @@ export default Vue.extend({
   },
 
   async beforeMount() {
-    if (process.env.NODE_ENV === 'production') {
-      await this.getUserData();
+    await this.getUserData();
+    this.availableSubscriptions = (await this.$axios.post('/products', {})).data
 
-      this.availableSubscriptions = (await this.$axios.post('/products', {})).data;
-
-      await this.checkSubscription();
-    }
+    await this.checkSubscription();
     this.loaded = true;
 
   },
@@ -556,10 +548,6 @@ export default Vue.extend({
 
       this.availableSubscriptions = this.availableSubscriptions.filter(sub => {
         const permission = Permission.parse(sub.metadata.permission);
-
-        if (sub.price.type === 'recurring' && permission.permLevel === this.currentPermission.permLevel) {
-          return false;
-        }
 
         return this.currentPermission.permLevel <= permission.permLevel;
       });

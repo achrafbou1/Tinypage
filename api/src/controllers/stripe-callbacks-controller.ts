@@ -99,33 +99,26 @@ export class StripeCallbacksController extends Controller {
         switch (event.type) {
             case 'invoice.payment_action_required':
             case 'invoice.payment_failed': {
-                await this.subService.setDbSubscriptionTier(user, 'free', true);
+                await this.subService.setDbSubscriptionTier(user, 'free', true, eventObject, false);
                 await this.subService.checkProfilesForOverLimit(user.id);
             }
                 break;
 
             case 'customer.subscription.deleted': {
                 // If the subscription was a downgrade, resubscribe, otherwise, cancel
-                await this.subService.setDbSubscriptionTier(user, 'free', true);
+                await this.subService.setDbSubscriptionTier(user, 'free', true, eventObject, false);
                 await this.subService.checkProfilesForOverLimit(user.id);
             }
                 break;
 
-            case 'customer.subscription.created':
-            case 'customer.subscription.updated': {
-                let item = eventObject.plan.product;
-                let product = await this.stripe.products.retrieve(item);
-
-                let tier = product?.metadata.permission;
-
-                if (tier) {
-                    await this.subService.setDbSubscriptionTier(user, tier, false, product.id);
-                    await this.subService.checkProfilesForOverLimit(user.id);
-                } else {
-                    console.error("[customer.subscription.updated] Couldn't set subscription for user: " + user.id + " to tier " + tier);
-                }
-                break;
+            case 'customer.subscription.created': {
+                await this.subService.createOrUpdateSubscription(user, eventObject, true);
             }
+                break;
+            case 'customer.subscription.updated': {
+                await this.subService.createOrUpdateSubscription(user, eventObject, false);
+            }
+                break;
 
             case 'invoice.paid': {
                 let item = eventObject.lines.data[0].price.product;
@@ -134,7 +127,7 @@ export class StripeCallbacksController extends Controller {
                 let tier = product?.metadata.permission;
 
                 if (tier) {
-                    await this.subService.setDbSubscriptionTier(user, tier, true, product.id);
+                    // await this.subService.setDbSubscriptionTier(user, tier, true, false , eventObject, product.id);
                     await this.subService.checkProfilesForOverLimit(user.id);
                 } else {
                     console.error("[invoice.paid] Couldn't set subscription for user: " + user.id + " to tier " + tier);
@@ -158,7 +151,7 @@ export class StripeCallbacksController extends Controller {
 
                         let tier = product?.metadata.permission;
 
-                        if (tier && price.type === 'one_time') {
+                        if (tier) {
                             await PermissionUtils.addProductPurchase(user, tier, product.id);
 
                             await this.subService.checkProfilesForOverLimit(user.id);
