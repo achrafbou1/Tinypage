@@ -506,10 +506,10 @@ export class ProfileController extends Controller {
                 // Check for sub tier and limit published profile count
                 if (body.authProfile.visibility === "unpublished") {
                     let ownerId = body.authProfile.userId;
-                    let permission = await PermissionUtils.getCurrentPermission(ownerId);
                     let published = await this.profileService.countPublishedProfiles(ownerId);
-
-                    if (published >= permission.pageCount) {
+                    let perm = await PermissionUtils.getCurrentPermission(ownerId);
+                    let numOfAllowedPages = await this.userService.getNumOfAllowedPages(perm, ownerId);
+                    if (published >= numOfAllowedPages) {
                         visibility = "unpublished";
                     }
                 }
