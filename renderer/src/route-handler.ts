@@ -313,10 +313,11 @@ export class RouteHandler {
                         if (!link.hidden) {
                             linkHtml += `<a
                                 id="sl-item-${link.id}"
-                                onclick="(() => {
-                                           fetch('${config.apiUrl}/analytics/link/record/${link.id}');
-                                           window.open('${link.url}', '_self');
-                                       })()"
+                                onclick="{
+                                           const recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                           fetch(recordUrl);
+                                           window.open('${link.url}');
+                                       }"
                                 class="w-full sl-item-parent mt-4"
                                 >
                                 <div
@@ -488,16 +489,17 @@ function changeSlide(next = true, index) {
                                        class="social-button mt-4"
                                        target="_blank"
                                        style="color:${siSettings.color};"
-                                       onclick="(() => {
-                                         fetch('${config.apiUrl}/analytics/link/record/${link.id}', {
+                                       onclick="{
+                                         const recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                         fetch(recordUrl, {
                                            method: 'POST', 
                                            headers: {
                                           'Content-Type': 'application/json'
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
-                                       })
-                                       window.open('${siSettings.url}', '_self');
-                                       })()"
+                                       });
+                                       window.open('${siSettings.url}');
+                                       }"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                             ${svgData}
