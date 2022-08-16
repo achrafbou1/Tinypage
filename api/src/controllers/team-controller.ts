@@ -92,10 +92,8 @@ export class TeamController extends Controller {
             return ReplyUtils.success("Success.");
         } catch (e) {
             if (e instanceof HttpError) {
-                if (e.statusCode !== StatusCodes.NOT_FOUND) {
-                    reply.code(e.statusCode);
-                    return ReplyUtils.error(e.message, e);
-                }
+                reply.code(e.statusCode);
+                return ReplyUtils.error(e.message, e);
             }
         }
     }
@@ -104,7 +102,7 @@ export class TeamController extends Controller {
         let user;
         try {
             if (request.body.email) {
-                 user = await this.userService.getUserByEmail(request.body.email);
+                user = await this.userService.getUserByEmail(request.body.email);
 
                 if (user.id === request.body.authUser.id) {
                     if (await Auth.checkProfileOwnership(this.profileService, request.body.profileId, request.body.authUser.id, false)) {

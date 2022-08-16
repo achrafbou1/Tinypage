@@ -314,13 +314,11 @@ export class RouteHandler {
                         if (!link.hidden) {
                             linkHtml += `<a
                                 id="sl-item-${link.id}"
-                                onclick="(async () => {
-                                           let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                           const response = await fetch(recordUrl);
-                                           const link = await response.text()
-                                           window.open(link, '_self');
-                                           return false;
-                                       })()"
+                                onclick="{
+                                           const recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                           fetch(recordUrl);
+                                           window.open('${link.url}');
+                                       }"
                                 class="w-full sl-item-parent mt-4"
                                 >
                                 <div
@@ -497,22 +495,19 @@ function changeSlide(next = true, index) {
                                 // language=HTML
                                 linkHtml += `
                                     <a id="sl-item-a-${link.id}-${i}"
-                                       href="${siSettings.url}"
                                        class="social-button mt-4"
-                                       target="_blank"
                                        style="color:${siSettings.color};"
-                                       onclick="(async () => {
-                                         let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                         const response = await fetch(recordUrl, {
+                                       onclick="{
+                                         const recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
+                                         fetch(recordUrl, {
                                            method: 'POST', 
                                            headers: {
                                           'Content-Type': 'application/json'
                                         }, 
                                         body: JSON.stringify({socialIconUrl: '${siSettings.url}'})
-                                       })
-                                       const link = await response.text()
-                                       window.open(link, '_self');
-                                       })()"
+                                       });
+                                       window.open('${siSettings.url}');
+                                       }"
                                     >
                                         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                             ${svgData}
@@ -573,14 +568,10 @@ function changeSlide(next = true, index) {
 
                             <a
                                     id="sl-item-${link.id}"
-                                    href="${config.apiUrl}/analytics/link/record/${link.id}"
                                     class="w-full sl-item-parent mt-4"
                                     onclick="{
-                                           let recordUrl = '${config.apiUrl}/analytics/link/record/${link.id}'
-                                           fetch(recordUrl, {method: 'POST'});
-
+                                           fetch('${config.apiUrl}/analytics/link/record/${link.id}', {method: 'POST'});
                                            window.open('${dataUrl}');
-                                           return false;
                                        }"
                             >
                                 <div
@@ -892,14 +883,11 @@ function changeSlide(next = true, index) {
 
                     <script>
                         async function onClickCopyLink () {
+                            let text = window.location.href.replace(/\\?fbclid.+/, "");
                             try {
-                                let text = window.location.href;
-
                                 await window.navigator.clipboard.writeText(text);
                                 alert('Url copied to clipboard!');
                             } catch (error) {
-                                let text = window.location.href;
-
                                 prompt('Copy this url to the clipboard: Ctrl+C, Enter\\n', text);
                             }
                         }
@@ -992,7 +980,7 @@ function changeSlide(next = true, index) {
 
                     <link rel="stylesheet" href="/css/quill.core.min.css"/>
 
-                    ${links.some(element => element.type == 'gallery') ? '<style>.carousel { aspect-ratio: 1/1; width: 100%; border-radius: 3px; overflow: hidden; position: relative; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); } .carousel:hover .controls { opacity: 1; } .carousel .controls { opacity: 0; display: flex; position: absolute; top: 50%; left: 0; justify-content: space-between; width: 100%; z-index: 99999; transition: all ease 0.5s; } .carousel .controls .control { margin: 0 5px; display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.7); opacity: 0.5; transition: ease 0.3s; cursor: pointer; } .carousel .controls .control:hover { opacity: 1; } .carousel [class^="slides"] { position: absolute; top: 50%; left: 0; transform: translateY(-50%); display: flex; width: 100%; transition: 1s ease-in-out all; } .carousel [class^="slides"] .slide { min-width: 100%; height: auto; }</style>' : '\n'}
+                    ${links.some(element => element.type == 'gallery') ? '<style>.carousel { aspect-ratio: 1/1; width: 100%; border-radius: 3px; overflow: hidden; position: relative; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); } .carousel:hover .controls { opacity: 1; } .carousel .controls { opacity: 0; display: flex; position: absolute; top: 50%; left: 0; justify-content: space-between; width: 100%; z-index: 99999; transition: all ease 0.5s; } .carousel .controls .control { margin: 0 5px; display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.7); opacity: 0.5; transition: ease 0.3s; cursor: pointer; } .carousel .controls .control:hover { opacity: 1; } .carousel [class^="slides"] { position: absolute; top: 50%; left: 0; transform: translateY(-50%); display: flex; width: 100%; transition: 1s ease-in-out all; } .carousel [class^="slides"] .slide { min-width: 100%; height: auto; aspect-ratio: 1/1;}</style>' : '\n'}
 
                     <!-- Tailwind CSS Embedded Styles -->
                     <style>

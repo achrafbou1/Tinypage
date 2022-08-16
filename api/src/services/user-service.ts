@@ -12,6 +12,7 @@ import crypto from "crypto";
 import {Auth} from "../utils/auth";
 import {URLSearchParams} from "url";
 import {SecurityUtils} from "../utils/security-utils";
+import {Permission} from "../utils/permission-utils";
 
 export interface LoginResultData {
     user: {
@@ -522,5 +523,13 @@ export class UserService extends DatabaseService {
         }
 
         return DbTypeConverter.toSensitiveUser(profileQuery.rows[0]);
+    }
+
+    public async getNumOfAllowedPages(perm: Permission, userId: string): Promise<number> {
+        if (perm.name === Permission.GODMODE.name) {
+            return 9999;
+        }
+        let queryResult = await this.pool.query<{ count: number }>("select count(*) from enterprise.subscriptions where user_id=$1 and tier!='free'", [userId]);
+        return queryResult.rows[0].count;
     }
 }
