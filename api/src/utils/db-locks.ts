@@ -37,7 +37,7 @@ export class DbLocks {
             }
 
             return queryResult.rows[0].success;
-        } catch (e) {
+        } catch (e: any) {
             if (e.code === PgErrorCodes.UNIQUE_VIOLATION) {
                 // lock already exists
                 return null;

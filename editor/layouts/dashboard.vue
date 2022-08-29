@@ -169,6 +169,10 @@
             </div>
 
             <div class="flex flex-col">
+              <n-link :class="getActiveStyles('page-management')" to="/dashboard/page-management">
+                <img :src="`${$customSettings.icons.mainIcon}`" style="width:32px;height:32px;">
+                <span class="ml-4 font-extrabold">Page Management</span>
+              </n-link>
               <n-link :class="getActiveStyles('dashboard')" to="/dashboard/">
                 <img :src="`${$customSettings.icons.mainIcon}`" style="width:32px;height:32px;">
                 <span class="ml-4 font-extrabold">Tinypage</span>
@@ -252,7 +256,7 @@
               </n-link>
             </div>
           </div>
-          <Nuxt
+          <NuxtChild
               id="child"
               class="relative p-16 flex-grow flex-1 w-auto lg:overflow-y-scroll lg:h-screen"
           />
@@ -477,7 +481,6 @@ export default Vue.extend({
 
     this.setActive();
     await this.getUserData();
-    await this.listProfiles();
 
     try {
       this.profileUrl = this.rendererUrl + '/' + this.user.activeProfile.handle;
@@ -500,8 +503,6 @@ export default Vue.extend({
       if (iFrame) {
         iFrame.src = this.getProfilePreviewUrl();
       }
-
-      this.listProfiles();
     });
   },
 
@@ -528,7 +529,7 @@ export default Vue.extend({
         if (profile?.id) {
           await this.selectProfile(profile.id);
         }
-      } catch (err) {
+      } catch (err: any) {
         if (err.response) {
           if (err.response.status === StatusCodes.TOO_MANY_REQUESTS) {
             this.error = `Slow down! You are making profiles too quickly. Error: ${err.response.data.message}`;
@@ -574,18 +575,6 @@ export default Vue.extend({
       });
     },
 
-    async listProfiles() {
-      this.profiles = await this.$axios.$post('/profiles', {
-        token: this.$store.getters['auth/getToken']
-      });
-
-      this.filteredProfiles = this.profiles;
-
-      this.filteredProfiles.sort(function (a, b) {
-        return a.handle.localeCompare(b.handle);
-      });
-    },
-
     getActiveStyles(page: string) {
       if (page === this.active) {
         return "nav-link active";
@@ -603,6 +592,10 @@ export default Vue.extend({
               break;
             case "dashboard-upgrade":
               this.active = "dashboard-upgrade";
+              this.preview = false;
+              break;
+            case "dashboard-page-management":
+              this.active = "dashboard-page-management";
               this.preview = false;
               break;
             case "dashboard-appearance":
@@ -670,7 +663,7 @@ export default Vue.extend({
         this.user = userResponse;
         this.user.activeProfile = profileResponse;
         this.originalHandle = this.user.activeProfile.handle;
-      } catch (err) {
+      } catch (err: any) {
         console.log('Error getting user data');
         console.log(err);
 

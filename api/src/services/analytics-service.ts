@@ -74,7 +74,7 @@ export class AnalyticsService extends DatabaseService {
             `select count(*) filter (where type = 'page') as profile_views
              from analytics.visits
              where referral_id = $1
-               and created_on > current_date - interval '1 day' * $2
+             and created_on > current_date - interval '1 day' * $2
             `,
             [
                 profileId,

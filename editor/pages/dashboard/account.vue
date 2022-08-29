@@ -7,60 +7,6 @@
       </h1>
     </div>
 
-    <!-- Select billing tier -->
-    <div class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-start w-full mb-8">
-      <h2 class="text-black font-bold text-lg w-full">
-        Manage Subscription
-      </h2>
-      <p class="text-black font-bold opacity-70 max-w-xl">
-        Want to upgrade or manage your subscription? Use the dropdown below.
-        (You will be navigated to our checkout page.)
-      </p>
-      <div class="flex flex-col mt-4 mb-2 w-full">
-        <label class="font-bold opacity-70 text-black mb-3" for="tierSelect">Account tier</label>
-        <div class="flex flex-col lg:flex-row items-center justify-start space-y-4 lg:space-y-0 lg:space-x-4 w-full">
-          <select
-              id="tierSelect"
-              v-model="selectedProductId"
-              :disabled="godmode"
-              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl font-bold border w-full lg:w-auto flex-grow lg:max-w-md"
-          >
-            <option v-for="subInfo of availableSubscriptions" v-if="availableSubscriptions" :key="subInfo.id"
-                    :value="subInfo.id"
-            >
-              {{ subInfo.name }}
-            </option>
-            <option v-if="godmode" value="godmode">God Mode</option>
-          </select>
-
-          <button
-              v-if="loaded"
-              v-show="selectedProductId"
-              :disabled="godmode"
-              class="w-full lg:w-auto flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              type="button"
-              @click="initCheckout"
-          >
-            Add page
-          </button>
-
-          <button
-              v-if="loaded || godmode"
-              v-show="subInfo.purchase_type === 'recurring' || godmode"
-              class="w-full lg:w-auto flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              type="button"
-              @click="manageSubscription"
-          >
-            Manage Subscription
-          </button>
-        </div>
-        <br>
-        <p v-if="loaded && godmode">
-          Your account has god mode enabled.
-        </p>
-      </div>
-    </div>
-
     <!-- Team/seats controls -->
     <div class="flex flex-col py-6 bg-white shadow rounded-2xl justify-center items-start w-full mb-8">
       <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
@@ -93,7 +39,9 @@
               style="min-width: 120px; max-width: 161px;"
               @change="onMemberRoleUpdate(member.email, member.role)"
           >
-            <option selected value="editor">Editor</option>
+            <option selected value="editor">
+              Editor
+            </option>
           </select>
         </div>
       </div>
@@ -120,7 +68,9 @@
               style="min-width: 120px; max-width: 220px;"
           >
             <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
-            <option selected value="editor">Editor</option>
+            <option selected value="editor">
+              Editor
+            </option>
           </select>
         </div>
 
@@ -171,7 +121,9 @@
         <h2 class="text-black font-bold text-lg w-full">
           Request GDPR Package
         </h2>
-        <p class="text-black font-bold opacity-70">Download a data package containing all of your recorded data.</p>
+        <p class="text-black font-bold opacity-70">
+          Download a data package containing all of your recorded data.
+        </p>
       </div>
       <button
           class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex px-6 py-3 text-sm text-white text-center bg-green-600 hover:bg-green-400 rounded-2xl font-bold w-1/3 justify-center align-center"
@@ -276,7 +228,9 @@
             Are you sure?
           </h2>
 
-          <p class="text-gray-600 text-sm">There is NO UNDO for this operation! All your profiles will be deleted!</p>
+          <p class="text-gray-600 text-sm">
+            There is NO UNDO for this operation! All your profiles will be deleted!
+          </p>
 
           <button
               class="mt-4 p-3 text-center text-md text-white bg-red-700 hover:bg-red-400 rounded-2xl font-bold"
@@ -308,39 +262,6 @@ export default Vue.extend({
   name: 'DashboardAccount',
   layout: 'dashboard',
   middleware: 'authenticated',
-
-  head() {
-    return {
-      title: 'Account Settings - ' + this.$customSettings.productName,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Manage your ' + this.$customSettings.productName + ' account.'
-        },
-        {
-          hid: 'twitter:description',
-          name: 'twitter:description',
-          content: 'Manage your ' + this.$customSettings.productName + ' account.'
-        },
-        {
-          hid: 'og:title',
-          name: 'og:title',
-          content: 'Account Settings - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'twitter:title',
-          name: 'twitter:title',
-          content: 'Account Settings - ' + this.$customSettings.productName
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'Manage your ' + this.$customSettings.productName + ' account.'
-        },
-      ],
-    };
-  },
 
   data() {
     return {
@@ -403,6 +324,39 @@ export default Vue.extend({
     };
   },
 
+  head() {
+    return {
+      title: 'Account Settings - ' + this.$customSettings.productName,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Manage your ' + this.$customSettings.productName + ' account.'
+        },
+        {
+          hid: 'twitter:description',
+          name: 'twitter:description',
+          content: 'Manage your ' + this.$customSettings.productName + ' account.'
+        },
+        {
+          hid: 'og:title',
+          name: 'og:title',
+          content: 'Account Settings - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: 'Account Settings - ' + this.$customSettings.productName
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Manage your ' + this.$customSettings.productName + ' account.'
+        },
+      ],
+    };
+  },
+
   watch: {
     'user.activeProfile.showWatermark': {
       handler(val) {
@@ -411,7 +365,7 @@ export default Vue.extend({
     },
     selectedProductId: {
       handler(val) {
-        this.selectedPurchaseType = this.availableSubscriptions.find(x => x.id == val)?.price?.type;
+        this.selectedPurchaseType = this.availableSubscriptions.find(x => x.id === val)?.price?.type;
       }
     }
   },
@@ -419,14 +373,14 @@ export default Vue.extend({
   async beforeMount() {
     await this.getUserData();
 
-    this.availableSubscriptions = (await this.$axios.post('/products', {})).data
+    this.availableSubscriptions = (await this.$axios.post('/products', {})).data;
 
     await this.checkSubscription();
     this.loaded = true;
 
   },
 
-  async mounted() {
+  mounted() {
     this.getTeamMembers().catch();
   },
 
@@ -438,8 +392,9 @@ export default Vue.extend({
     },
 
     async getTeamMembers() {
-      if (!this.teamMembers)
+      if (!this.teamMembers) {
         this.teamMembers = [];
+      }
 
       this.teamMembers.length = 0;
 
@@ -478,7 +433,7 @@ export default Vue.extend({
       try {
         const token = this.$store.getters['auth/getToken'];
 
-        let response = await this.$axios.post('/stripe/create-checkout-session', {
+        const response = await this.$axios.post('/stripe/create-checkout-session', {
           token,
           productId: this.selectedProductId
         });
@@ -493,7 +448,7 @@ export default Vue.extend({
       try {
         const token = this.$store.getters['auth/getToken'];
 
-        let response = await this.$axios.post('/stripe/create-portal-session', {
+        const response = await this.$axios.post('/stripe/create-portal-session', {
           token
         });
 
@@ -515,10 +470,10 @@ export default Vue.extend({
       if (this.subInfo.product_id) {
         this.selectedProductId = this.subInfo.product_id;
 
-        let product = <any>this.subInfo.product;
+        const product: any = this.subInfo.product;
 
         if (!product.active) {
-          let find = this.availableSubscriptions.find(x => x.id === this.selectedProductId);
+          const find = this.availableSubscriptions.find(x => x.id === this.selectedProductId);
 
           if (find) {
             find.name += " (Legacy)";
@@ -527,7 +482,7 @@ export default Vue.extend({
       }
 
       this.availableSubscriptions = this.availableSubscriptions.filter(sub => {
-        let permission = Permission.parse(sub.metadata.permission);
+        const permission = Permission.parse(sub.metadata.permission);
 
         return this.currentPermission.permLevel <= permission.permLevel;
       });
@@ -585,7 +540,7 @@ export default Vue.extend({
 
           this.$root.$emit('refreshUserProfileView');
         }
-      } catch (err) {
+      } catch (err: any) {
         if (err.response) {
           if (err.response.status === StatusCodes.CONFLICT) {
             console.error("This handle is already being used by another profile.");
@@ -640,7 +595,7 @@ export default Vue.extend({
         if (request.status && request.status === 200) {
           this.passwordError = '';
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
 
         this.passwordError = err.toString();
@@ -663,7 +618,7 @@ export default Vue.extend({
 
     async downloadGDPRPackage() {
       if (process.client) {
-        let token = this.$store.getters['auth/getToken'];
+        const token = this.$store.getters['auth/getToken'];
 
         const response = await this.$axios.post('/user/data-package', {
           token
@@ -671,7 +626,7 @@ export default Vue.extend({
 
         let filename = "data.json";
         const disposition = response.headers['content-disposition'];
-        if (disposition && disposition.indexOf('filename') !== -1) {
+        if (disposition && disposition.includes('filename')) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(disposition);
           if (matches != null && matches[1]) {

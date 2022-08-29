@@ -114,9 +114,23 @@ interface Profile {
     createdOn: string
 }
 
+interface ProfileWithAnalytics extends Profile {
+    page_views: string
+}
+
 interface SensitiveProfile extends Profile {
     privateMetadata: any;
 }
+
+interface Subscription {
+    userId: string,
+    tier: SubscriptionTier,
+    productId: string | null,
+    createdOn?: string | null,
+    lastUpdated?: string | null
+    purchaseType: 'recurring'
+}
+
 
 interface Link {
     id: string,
@@ -148,6 +162,10 @@ interface Visit {
     type: VisitType,
     referralId: string,
     createdOn: string
+}
+
+interface VisitCount extends DbVisit{
+    page_views: string
 }
 
 interface AnalyticsGlobalStats {

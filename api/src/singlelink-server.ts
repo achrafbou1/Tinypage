@@ -40,7 +40,7 @@ export class SingleLinkServer {
      * Starts the fastify server with the controllers provided.
      */
     startServer() {
-        this.fastify.listen(config.port, config.host, (err: Error, address: string) => {
+        this.fastify.listen(config.port, config.host, (err: Error | null, address: string) => {
             if (err)
                 throw err;
         });

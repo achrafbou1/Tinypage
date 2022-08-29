@@ -5,7 +5,7 @@ import {
     RequestGenericInterface,
     RouteShorthandOptions
 } from "fastify";
-import jwt, {VerifyErrors} from "jsonwebtoken";
+import jwt, {JwtPayload, VerifyErrors} from "jsonwebtoken";
 import {config} from "../config/config";
 import {Pool} from "pg";
 import {ReplyUtils} from "./reply-utils";
@@ -122,7 +122,7 @@ export class Auth {
             {
                 maxAge: '90d'
             },
-            async function (err: VerifyErrors | null, decoded: object | undefined) {
+            async function (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) {
                 if (err) {
                     reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("Error while validating token.", err));
                     return;
@@ -178,7 +178,7 @@ export class Auth {
             {
                 maxAge: '90d'
             },
-            async function (err: VerifyErrors | null, decoded: object | undefined) {
+            async function (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) {
                 if (err) {
                     reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("Error while validating token.", err));
                     return;
@@ -260,7 +260,7 @@ export class Auth {
                     done();
                     return;
 
-                } catch (err) {
+                } catch (err: any) {
                     if (err) {
                         reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReplyUtils.error("Error while authenticating request.", err));
                         return;
@@ -300,7 +300,7 @@ export class Auth {
             {
                 maxAge: '90d'
             },
-            async function (err: VerifyErrors | null, decoded: object | undefined) {
+            async function (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) {
                 if (err) {
                     reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("Error while validating token.", err));
                     return;
@@ -382,7 +382,7 @@ export class Auth {
                     done();
                     return;
 
-                } catch (err) {
+                } catch (err: any) {
                     if (err) {
                         reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReplyUtils.error("Error while authenticating request.", err));
                         return;
@@ -422,7 +422,7 @@ export class Auth {
             {
                 maxAge: '90d'
             },
-            async function (err: VerifyErrors | null, decoded: object | undefined) {
+            async function (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) {
                 if (err) {
                     reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("Error while validating token.", err));
                     return;
@@ -524,7 +524,7 @@ export class Auth {
                     done();
                     return;
 
-                } catch (err) {
+                } catch (err: any) {
                     if (err) {
                         reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReplyUtils.error("Error while authenticating request.", err));
                         return;
@@ -551,9 +551,7 @@ export class Auth {
     /**
      * Validates ownership of the requested resource.
      */
-    static async checkProfileOwnership(service: DatabaseService, profileId: string, userId: string, includeMemberOf: boolean): Promise<boolean> {
-        const pool = service.pool;
-
+    static async checkProfileOwnership(pool: Pool, profileId: string, userId: string, includeMemberOf: boolean): Promise<boolean> {
         let queryResult;
 
         if (includeMemberOf) {

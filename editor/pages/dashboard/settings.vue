@@ -18,7 +18,10 @@
           </div>
         </div>
       </transition>
-
+      <div v-if="profileUsage.published === profileUsage.allowed" class="warning">
+        Unpublished pages are used for design and testing at no charge. To publish your page, please add a page <NuxtLink to="/dashboard/account" style="text-decoration: underline;">
+        here</NuxtLink> then set it's visibility to "Public" on the page settings.
+      </div>
       <h2 class="text-black font-bold text-xl w-full mb-2">
         Site details
       </h2>
@@ -68,6 +71,7 @@
             <select
                 id="visibility"
                 v-model="user.activeProfile.visibility"
+                :disabled="profileUsage.published === profileUsage.allowed"
                 class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
             >
               <option value="unpublished">
@@ -329,7 +333,9 @@
         <h2 class="text-black font-bold text-lg w-full">
           Leave this page
         </h2>
-        <p class="text-black opacity-70 font-semibold">Leave this page (only works for pages you've been invited to).</p>
+        <p class="text-black opacity-70 font-semibold">
+Leave this page (only works for pages you've been invited to).
+</p>
       </div>
       <button
           class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
@@ -908,5 +914,13 @@ export default Vue.extend({
 
 iframe.widgetFrame {
   margin-left: 0 !important;
+}
+
+.warning {
+  @apply bottom-0 rounded-lg shadow border border-gray-200;
+  color: mintcream;
+  background-color: #ff9900;
+  padding: 7px;
+  z-index: 25;
 }
 </style>

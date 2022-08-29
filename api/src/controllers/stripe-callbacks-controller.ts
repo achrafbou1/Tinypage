@@ -61,7 +61,7 @@ export class StripeCallbacksController extends Controller {
 
         try {
             event = this.stripe.webhooks.constructEvent(rawBody, sig, config.payments.stripeWebhookSecret);
-        } catch (err) {
+        } catch (err: any) {
             console.error(`Error while constructing event: ${err}`);
             reply.status(StatusCodes.BAD_REQUEST);
             return {error: err.message};
@@ -99,14 +99,14 @@ export class StripeCallbacksController extends Controller {
         switch (event.type) {
             case 'invoice.payment_action_required':
             case 'invoice.payment_failed': {
-                await this.subService.setDbSubscriptionTier(user, 'free', true, eventObject, false);
+                await this.subService.setDbSubscriptionTier(user, 'free', true, false, eventObject);
                 await this.subService.checkProfilesForOverLimit(user.id);
             }
                 break;
 
             case 'customer.subscription.deleted': {
                 // If the subscription was a downgrade, resubscribe, otherwise, cancel
-                await this.subService.setDbSubscriptionTier(user, 'free', true, eventObject, false);
+                await this.subService.setDbSubscriptionTier(user, 'free', true, false, eventObject);
                 await this.subService.checkProfilesForOverLimit(user.id);
             }
                 break;
