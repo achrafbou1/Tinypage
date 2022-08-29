@@ -346,7 +346,7 @@ export class UserController extends Controller {
                 newProfile = await this.profileService.getProfile(newProfileId);
             }
 
-            if (!await Auth.checkProfileOwnership(this.userService, newProfile.id, user.id, true)) {
+            if (!await Auth.checkProfileOwnership(this.pool, newProfile.id, user.id, true)) {
                 reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("The user is not a member of the profile."));
                 return;
             }

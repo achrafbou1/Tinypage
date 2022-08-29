@@ -7,63 +7,6 @@
       </h1>
     </div>
 
-    <!-- Select billing tier -->
-    <div class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-start w-full mb-8">
-      <h2 class="text-black font-bold text-lg w-full">
-        Manage Subscription
-      </h2>
-      <p class="text-black font-bold opacity-70 max-w-xl">
-        Want to upgrade or manage your subscription? Use the dropdown below.
-        (You will be navigated to our checkout page.)
-      </p>
-      <div class="flex flex-col mt-4 mb-2 w-full">
-        <label class="font-bold opacity-70 text-black mb-3" for="tierSelect">Account tier</label>
-        <div class="flex flex-col lg:flex-row items-center justify-start space-y-4 lg:space-y-0 lg:space-x-4 w-full">
-          <select
-              id="tierSelect"
-              v-model="selectedProductId"
-              :disabled="godmode"
-              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl font-bold border w-full lg:w-auto flex-grow lg:max-w-md"
-          >
-
-            <option v-for="subInfo of availableSubscriptions" v-if="availableSubscriptions" :key="subInfo.id"
-                    :value="subInfo.id"
-            >
-              {{ subInfo.name }}
-            </option>
-            <option v-if="godmode" value="godmode">
-              God Mode
-            </option>
-          </select>
-
-          <button
-              v-if="loaded"
-              v-show="selectedProductId"
-              :disabled="godmode"
-              class="w-full lg:w-auto flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              type="button"
-              @click="initCheckout"
-          >
-            Add page
-          </button>
-
-          <button
-              v-if="loaded || godmode"
-              v-show="subInfo.purchase_type === 'recurring' || godmode"
-              class="w-full lg:w-auto flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              type="button"
-              @click="manageSubscription"
-          >
-            Manage Subscription
-          </button>
-        </div>
-        <br>
-        <p v-if="loaded && godmode">
-          Your account has god mode enabled.
-        </p>
-      </div>
-    </div>
-
     <!-- Team/seats controls -->
     <div class="flex flex-col py-6 bg-white shadow rounded-2xl justify-center items-start w-full mb-8">
       <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
@@ -433,7 +376,8 @@ export default Vue.extend({
 
   async beforeMount() {
     await this.getUserData();
-    this.availableSubscriptions = (await this.$axios.post('/products', {})).data
+
+    this.availableSubscriptions = (await this.$axios.post('/products', {})).data;
 
     await this.checkSubscription();
     this.loaded = true;
