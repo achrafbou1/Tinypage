@@ -366,23 +366,6 @@ export default Vue.extend({
 
       error: '',
       errorIntervalHandler: undefined as any,
-
-      // usetiful_script
-      // (function (w, d, s) {
-      //   const a = d.getElementsByTagName('head')[0];
-      //   const r = d.createElement('script');
-      //   r.async = 1;
-      //   r.src = s;
-      //   r.setAttribute('id', 'usetifulScript');
-      //   r.dataset.token = "28f17918d3a60fc2f638a53eeb3a23d9";
-      //   a.appendChild(r);
-      //   if (window.location.href.split('?').length > 1) {
-      //     const links = document.getElementsByTagName('a');
-      //     for (let i = 0; i < links.length; i++) {
-      //       links[i].href += '?' + window.location.href.split('?')[1];
-      //     }
-      //   }
-      // })(window, document, "https://www.usetiful.com/dist/usetiful.js");
     };
   },
 
@@ -471,7 +454,6 @@ export default Vue.extend({
     const permGroup = await this.$axios.$post("/admin/perm-group", {
       token: this.$store.getters['auth/getToken']
     });
-
     this.isAdmin = permGroup["groupName"] === 'admin';
     if (this.rendererUrl) {
       this.rendererDomain = this.rendererUrl

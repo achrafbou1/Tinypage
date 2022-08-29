@@ -74,6 +74,10 @@
           </select>
         </div>
 
+        <div v-if="error" class="error py-4 px-6 mt-4 text-sm text-white align-center justify-center">
+          {{ error }}
+        </div>
+
         <button
             class="w-full flex py-3 px-6 mt-4 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
             type="button"
@@ -407,12 +411,17 @@ export default Vue.extend({
 
     async addTeamMember(email: string, role: string) {
       const token = this.$store.getters['auth/getToken'];
-
-      await this.$axios.post('/team/add', {
-        token,
-        email,
-        role
-      });
+      try {
+        await this.$axios.post('/team/add', {
+          token,
+          email,
+          role
+        });
+        this.error = '';
+      } catch (err: any) {
+        console.log(err.response);
+        this.error = err.response.data.error;
+      }
 
       await this.getTeamMembers();
     },
@@ -661,5 +670,13 @@ export default Vue.extend({
 
 input, select {
   @apply font-bold;
+}
+
+.error {
+  @apply bottom-0 rounded-lg shadow border border-gray-200;
+  color: mintcream;
+  background-color: #ff4a4a;
+  padding: 7px;
+  z-index: 25;
 }
 </style>

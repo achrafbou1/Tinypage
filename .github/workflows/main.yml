@@ -42,9 +42,9 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.11
         if: ${{ steps.changes.outputs.editor == 'true' || steps.changes.outputs.renderer == 'true' || steps.changes.outputs.api == 'true'}}
         with:
-          key: tinypage-main-v1-cache-{hash}
+          key: tinypage-main-cache-{hash}
           restore-keys: |
-            tinypage-main-v1-cache-
+            tinypage-main-cache-
 
       - name: Build API image
         if: ${{ steps.changes.outputs.api == 'true' }}
@@ -120,6 +120,10 @@ jobs:
             renderer: 'renderer/**'
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
+        env:
+          API_CHANGED: ${{ steps.changes.outputs.api }}
+          RENDERER_CHANGED: ${{ steps.changes.outputs.renderer }}
+          EDITOR_CHANGED: ${{ steps.changes.outputs.editor }}
         with:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.USERNAME }}
@@ -137,6 +141,7 @@ jobs:
             docker network create tinypage_net
             docker network connect tinypage_net minio
             docker network connect tinypage_net postgres
+            
             if [ ${{ steps.changes.outputs.api }} == "true" ]; then
               docker stop api
               docker rm api
@@ -148,6 +153,7 @@ jobs:
             --network=tinypage_net \
             -e DATABASE="${{ secrets.DATABASE }}" \
             -e API_URL=${{ secrets.API_URL }} \
+            -e MIXPANEL_TOKEN=${{ secrets.MIXPANEL_TOKEN }} \
             -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
             -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
             -e SECRET=${{ secrets.SECRET }} \

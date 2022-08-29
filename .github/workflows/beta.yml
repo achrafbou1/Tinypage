@@ -119,6 +119,10 @@ jobs:
             renderer: 'renderer/**'
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
+        env:
+          API_CHANGED: ${{ steps.changes.outputs.api }}
+          RENDERER_CHANGED: ${{ steps.changes.outputs.renderer }}
+          EDITOR_CHANGED: ${{ steps.changes.outputs.editor }}
         with:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.USERNAME }}
@@ -148,6 +152,8 @@ jobs:
             --network=tinypage_net \
             -e DATABASE="${{ secrets.DATABASE }}" \
             -e API_URL=${{ secrets.API_URL }} \
+            -e ENV_NAME=${{ secrets.ENV_NAME }} \
+            -e MIXPANEL_TOKEN=${{ secrets.MIXPANEL_TOKEN }} \
             -e EDITOR_URL=${{ secrets.EDITOR_URL }} \
             -e RENDERER_URL=${{ secrets.RENDERER_URL }} \
             -e SECRET=${{ secrets.SECRET }} \

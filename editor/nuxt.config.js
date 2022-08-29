@@ -67,6 +67,10 @@ export default {
       ssr: true
     },
     {
+      src: '~plugins/vue-modal.js',
+      ssr: false
+    },
+    {
       src: '~plugins/cssjson.ts',
       ssr: true
     },
@@ -88,9 +92,7 @@ export default {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxt/typescript-build',
-    // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/dotenv'
   ],

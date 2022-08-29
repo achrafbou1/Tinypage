@@ -36,17 +36,15 @@ ENV CUSTOM_FAVICON $CUSTOM_FAVICON
 
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN npm i -g modclean && npm i -g typescript
+RUN yarn global add typescript modclean
 
-COPY editor/package*.json editor/
+COPY editor/package.json editor/yarn.lock editor/
 WORKDIR editor/
 
-RUN npm i
+RUN yarn install --non-interactive --link-duplicates
 
 COPY editor/ ./
 
-RUN npm run build
-RUN npm prune --production
-RUN modclean
+RUN yarn run build && modclean -P -r
 
-CMD npm run start
+CMD yarn run start
