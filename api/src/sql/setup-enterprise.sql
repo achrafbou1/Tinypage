@@ -16,7 +16,7 @@ create table if not exists enterprise.subscriptions
     tier            text,
     product_id      text,
     subscription_id text,
-    profile_id      bigint references app.profiles (id) on delete cascade primary key,
+    profile_id      bigint references app.profiles (id) on delete cascade unique,
     created_on      timestamp not null default current_timestamp,
     last_updated    timestamp not null default current_timestamp
 );
@@ -94,6 +94,6 @@ on conflict do nothing;
 
 --v4 - Payments per page, user_id can be not unique and add primary key column
 alter table enterprise.subscriptions
-    drop constraint if exists subscriptions_user_id_key,
     add column if not exists subscription_id text unique,
-    add column if not exists profile_id      bigint references app.profiles (id) on delete cascade primary key;
+    add column if not exists profile_id bigint references app.profiles (id) on delete cascade unique,
+    drop constraint if exists subscriptions_user_id_key;
