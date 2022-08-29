@@ -889,7 +889,7 @@ iframe.widgetFrame {
   background-color: #ff9900;
   padding: 7px;
   z-index: 25;
-  
+}
 .vm--modal {
   background: none;
 }
