@@ -35,7 +35,11 @@ export default Vue.extend({
   computed: {
     parametersTable1() {
       return {
-        data: this.profiles,
+        sortingMode: "single",
+        showDownloadButton: false,
+        showEntriesInfo: false,
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        data: this.profiles.sort((a, b) => a.handle.localeCompare(b.handle)),
         columns: [
           {
             key: "imageUrl",
@@ -78,5 +82,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-
+.data-table {
+  height: 80%;
+}
 </style>

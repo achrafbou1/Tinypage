@@ -2,7 +2,7 @@
   <div class="buttons">
     <button
         v-if="!data.status || data.status === 'free'"
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-sm"
         @click="initCheckout"
     >
       <font-awesome-icon icon="fa-solid fa-cloud-arrow-up"/>

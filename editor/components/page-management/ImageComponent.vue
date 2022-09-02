@@ -1,6 +1,9 @@
 <template>
-  <img v-if="data.imageUrl" :src="data.imageUrl" alt="no-image" width="75" height="75">
-  <img v-else src="https://www.gravatar.com/avatar/" alt="no-image" width="75" height="75">
+  <img
+      :src="data.imageUrl ? data.imageUrl : 'https://www.gravatar.com/avatar/'"
+      alt="no-image"
+      class="rounded-full h-8 w-8"
+>
 </template>
 <script lang="ts">
 import Vue from 'vue';
