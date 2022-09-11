@@ -390,65 +390,7 @@
       </div>
     </div>
 
-    <!-- Import from Linktree -->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
-        <h2 class="text-black font-bold text-lg w-full">
-          Import from Linktree
-        </h2>
-        <p class="text-black opacity-70 font-semibold">
-          Replace all of your profile links with links from your linktree profile.
-        </p>
-        <div class="flex flex-row rounded-2xl border border-solid border-gray-300 text-sm mt-2 overflow-hidden">
-          <span
-              class="flex p-2 bg-gray-100 border text-gray-900 border-solid border-gray-300 border-t-0 border-l-0 border-b-0"
-          >https://linktr.ee/</span>
-          <input
-              id="linktreeUrl"
-              autocomplete="off"
-              class="p-2 flex-grow"
-              placeholder="e.g. janedoe"
-              type="text"
-          >
-        </div>
-      </div>
-      <div class="flex flex-col space-y-2">
-        <button
-            v-if="alerts.linktreeImported === null"
-            class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
-            type="button"
-            @click="importLinktree"
-        >
-          Import
-        </button>
-        <div
-            v-if="alerts.linktreeImported !== null && alerts.linktreeImported"
-            class="flex flex-col lg:flex-row justify-center items-center p-3 rounded-2xl bg-green-300 shadow max-w-xs mt-4"
-        >
-          <p class="text-black opacity-70 font-semibold">
-            Successfully imported Linktree links
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-7/12">
-        <h2 class="text-black font-bold text-lg w-full">
-          Account settings
-        </h2>
-        <p class="text-black opacity-70 font-semibold">
-          Need to configure the account managing your micro-sites?
-        </p>
-      </div>
-      <n-link
-          class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
-          to="/dashboard/account"
-      >
-        Manage
-      </n-link>
-    </div>
-
+    <transition name="fade">
     <!-- Delete site -->
     <div
         v-if="user.activeProfile.userId === user.id"
@@ -782,18 +724,6 @@ export default Vue.extend({
         document.body.removeChild(link);
       }
     },
-
-    async importLinktree() {
-      const linktreeInput: HTMLInputElement = (document.getElementById('linktreeUrl')) as HTMLInputElement;
-      const linktreeHandle: string = linktreeInput.value;
-      await this.$axios.$post('/profile/linktree_import', {
-        token: this.$store.getters['auth/getToken'],
-        handle: linktreeHandle
-      });
-      linktreeInput.value = '';
-      this.$data.alerts.linktreeImported = true;
-    },
-
     async saveChanges() {
       // Update profile
       try {
