@@ -9,16 +9,29 @@
 
     <div class="overflow-x-hidden overflow-y-hidden w-full">
       <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8">
-        <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
-          Manage your pages
-        </h2>
-        <div class="w-full bg-gray-200" style="height:1px;"/>
+        <div class="flex space-x-96 flex-row">
+          <div>
+            <h2 class="text-black font-bold text-lg w-full px-6">
+              Manage your pages
+            </h2>
+          </div>
+          <div class="flex-initial w-64 data-table-search-filter mb-6">
+            <span>search:</span><input type="search" @input="filterProfiles">
+          </div>
+        </div>
         <DataTable v-bind="profilesTableParams"/>
       </div>
       <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8">
-        <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
-          Manage your team
-        </h2>
+        <div class="flex space-x-96 flex-row">
+          <div>
+            <h2 class="text-black font-bold text-lg w-full px-6">
+              Manage your team
+            </h2>
+          </div>
+          <div class="flex-initial w-64 data-table-search-filter mb-6">
+            <span>search:</span><input type="search" @input="filterTeams">
+          </div>
+        </div>
         <div class="w-full bg-gray-200" style="height:1px;"/>
         <div class="flex flex-col mt-4 mb-2 w-full px-6 mt-6">
           <label v-if="!teamMembers || teamMembers.length < 1" class="font-bold text-black opacity-70 mb-3">Ready to add
@@ -288,6 +301,8 @@ export default Vue.extend({
   layout: 'dashboard',
   middleware: 'authenticated',
   data: () => ({
+    filteredTeamMembers: [] as ProfileMember[],
+    filteredProfiles: [] as EditorProfile[],
     profiles: [] as EditorProfile[],
     selectedProductId: null as string | null,
     selectedPurchaseType: undefined as DbProduct["purchase_type"],
@@ -374,10 +389,11 @@ export default Vue.extend({
       return {
         showPerPage: false,
         sortingMode: "single",
+        showSearchFilter: false,
         showDownloadButton: false,
         showEntriesInfo: false,
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        data: this.teamMembers,
+        data: this.filteredTeamMembers,
         columns: [
           {
             key: "email"
@@ -396,11 +412,12 @@ export default Vue.extend({
     profilesTableParams(): Object {
       return {
         showPerPage: false,
+        showSearchFilter: false,
         sortingMode: "single",
         showDownloadButton: false,
         showEntriesInfo: false,
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        data: this.profiles.sort((a, b) => a.handle.localeCompare(b.handle)),
+        data: this.filteredProfiles.sort((a, b) => a.handle.localeCompare(b.handle)),
         columns: [
           {
             key: "imageUrl",
@@ -462,6 +479,7 @@ export default Vue.extend({
       token: this.$store.getters['auth/getToken'],
       includePaymentInfoAndAnalytics: true
     });
+    this.filteredProfiles = this.profiles;
 
     EventBus.$on("getTeamMembers", () => {
       this.getTeamMembers();
@@ -473,6 +491,26 @@ export default Vue.extend({
   },
 
   methods: {
+    filterTeams(event: any) {
+      const target = event.target;
+      const filterSearch = target.value.toLowerCase();
+      const teams = this.teamMembers;
+      if (filterSearch) {
+        this.filteredTeamMembers = teams.filter(x => x.email.toLowerCase().includes(filterSearch));
+      } else {
+        this.filteredTeamMembers = this.teamMembers;
+      }
+    },
+    filterProfiles(event: any) {
+      const target = event.target;
+      const filterSearch = target.value.toLowerCase();
+      const profiles = this.profiles;
+      if (filterSearch) {
+        this.filteredProfiles = profiles.filter(x => x.handle.toLowerCase().includes(filterSearch));
+      } else {
+        this.filteredProfiles = this.profiles;
+      }
+    },
     async assignGoogleAccount() {
       const response = await this.$axios.post('/auth/google/assign', {
         token: this.$store.getters['auth/getToken']
@@ -492,6 +530,7 @@ export default Vue.extend({
       this.teamMembers = (await this.$axios.post('/team', {
         token
       })).data;
+      this.filteredTeamMembers = this.teamMembers;
     },
 
     async addTeamMember(email: string, role: string): Promise<void> {
