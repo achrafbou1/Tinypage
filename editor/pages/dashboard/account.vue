@@ -389,6 +389,7 @@ export default Vue.extend({
       return {
         showPerPage: false,
         sortingMode: "single",
+        showSearchFilter: false,
         showDownloadButton: false,
         showEntriesInfo: false,
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
