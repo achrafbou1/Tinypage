@@ -1,5 +1,5 @@
 <template>
-  <section class="flex flex-col p-8 items-center overflow-x-hidden overflow-y-scroll">
+  <div class="flex flex-col p-8 items-center overflow-x-hidden overflow-y-scroll">
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
       <img alt="settings svg" class="w-8" src="/icons/Person.svg">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
@@ -7,85 +7,61 @@
       </h1>
     </div>
 
-    <!-- Team/seats controls -->
-    <div class="flex flex-col py-6 bg-white shadow rounded-2xl justify-center items-start w-full mb-8">
-      <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
-        Manage your team
-      </h2>
-      <div class="w-full bg-gray-200" style="height:1px;"/>
-      <div
-          v-for="member in teamMembers"
-          :key="member.id"
-          class="flex flex-row py-2 px-8 w-full items-center justify-start hover:bg-opaqueBlack border border-gray-200 border-t-0 border-l-0 border-r-0"
-      >
-        <p class="font-bold text-black text-lg mr-auto">
-          {{ member.email }}
-        </p>
-        <p class="font-bold text-black text-lg mr-auto">
-          {{ member.profileHandle }}
-        </p>
-        <button
-            class="py-1 px-2 mb-1 mr-2 rounded-full text-white bg-red-400 text-sm font-extrabold leading-tight grow"
-            @click="removeTeamMember(member.email, member.profileId)"
-        >
-          Remove
-        </button>
-        <div
-            class="py-1 px-2 mb-1 rounded-full text-green-500 bg-green-200 text-sm font-extrabold leading-tight grow"
-        >
-          <select
-              v-model="member.role"
-              class="text-green-500 bg-green-200"
-              style="min-width: 120px; max-width: 161px;"
-              @change="onMemberRoleUpdate(member.email, member.role)"
-          >
-            <option selected value="editor">
-              Editor
-            </option>
-          </select>
-        </div>
+    <div class="overflow-x-hidden overflow-y-hidden w-full">
+      <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8">
+        <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
+          Manage your pages
+        </h2>
+        <div class="w-full bg-gray-200" style="height:1px;"/>
+        <DataTable v-bind="profilesTableParams"/>
       </div>
+      <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8">
+        <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
+          Manage your team
+        </h2>
+        <div class="w-full bg-gray-200" style="height:1px;"/>
+        <div class="flex flex-col mt-4 mb-2 w-full px-6 mt-6">
+          <label v-if="!teamMembers || teamMembers.length < 1" class="font-bold text-black opacity-70 mb-3">Ready to add
+            your first team
+            member? Add them here!</label>
+          <label v-else class="font-bold text-black opacity-70 mb-3">Want to add a new member? Add them here!</label>
 
-      <div class="flex flex-col mt-4 mb-2 w-full px-6 mt-6">
-        <label v-if="!teamMembers || teamMembers.length <=1" class="font-bold text-black opacity-70 mb-3">Ready to add
-          your first team
-          member? Add them here!</label>
-        <label v-else class="font-bold text-black opacity-70 mb-3">Want to add a new member? Add them here!</label>
+          <div class="flex flex-row items-center justify-start w-full">
+            <label class="mr-4 font-normal">Email</label>
+            <input
+                v-model="teamMemberEmail"
+                class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
+                placeholder="e.g. jane@gmail.com"
+                type="text"
+            >
 
-        <div class="flex flex-row items-center justify-start w-full">
-          <label class="mr-4 font-normal">Email</label>
-          <input
-              v-model="teamMemberEmail"
-              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
-              placeholder="e.g. jane@gmail.com"
-              type="text"
+            <label class="ml-4 mr-4 font-normal">Role</label>
+            <select
+                v-model="teamMemberRole"
+                class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
+                style="min-width: 120px; max-width: 220px;"
+            >
+              <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
+              <option selected value="editor">
+                Editor
+              </option>
+            </select>
+          </div>
+
+          <div v-if="error" class="error py-4 px-6 mt-4 text-sm text-white align-center justify-center">
+            {{ error }}
+          </div>
+
+          <button
+              class="w-full flex py-3 px-6 mt-4 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
+              type="button"
+              @click="addTeamMember(teamMemberEmail, teamMemberRole); teamMemberEmail = '';"
           >
+            Add team member
+          </button>
 
-          <label class="ml-4 mr-4 font-normal">Role</label>
-          <select
-              v-model="teamMemberRole"
-              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
-              style="min-width: 120px; max-width: 220px;"
-          >
-            <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
-            <option selected value="editor">
-              Editor
-            </option>
-          </select>
         </div>
-
-        <div v-if="error" class="error py-4 px-6 mt-4 text-sm text-white align-center justify-center">
-          {{ error }}
-        </div>
-
-        <button
-            class="w-full flex py-3 px-6 mt-4 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-            type="button"
-            @click="addTeamMember(teamMemberEmail, teamMemberRole); teamMemberEmail = '';"
-        >
-          Add team member
-        </button>
-
+        <DataTable v-bind="teamsTableParams"/>
       </div>
     </div>
 
@@ -118,6 +94,36 @@
     <!--        </div>-->
     <!--      </div>-->
     <!--    </div>-->
+
+    <!-- Manage SSO -->
+    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
+      <div class="flex flex-col mr-auto w-full lg:w-1/2">
+        <h2 class="text-black font-bold text-lg w-full">
+          Manage SSO
+        </h2>
+        <p class="text-black opacity-70 font-semibold">
+          Link up your social media accounts for easy single sign-on access.
+        </p>
+      </div>
+      <div>
+        <a
+            class="flex flex-row items-center font-bold justify-center cursor-pointer rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"
+            style="border-width:3px;border-style:solid;"
+            @click="assignGoogleAccount()"
+        >
+          <img class="w-5 mr-4" src="/icons/google-icon.png" alt="Link with Google">
+          Link with Google
+        </a>
+        <!--        <a-->
+        <!--          class="flex flex-row items-center font-bold justify-center rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"-->
+        <!--          style="border-width:3px;border-style:solid;"-->
+        <!--          @click="assignGitHubAccount()"-->
+        <!--        >-->
+        <!--          <img src="/icons/google-icon.png" class="w-5 mr-4">-->
+        <!--          Link with GitHub-->
+        <!--        </a>-->
+      </div>
+    </div>
 
     <!-- Request GDPR package-->
     <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
@@ -254,81 +260,84 @@
         </div>
       </div>
     </transition>
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
+// @ts-ignore
+import DataTable from '@andresouzaabreu/vue-data-table';
+
 import Vue from "vue";
+// eslint-disable-next-line import/named
+import {MetaInfo} from "vue-meta";
 import {StatusCodes} from "http-status-codes";
 import {Permission} from "~/plugins/permission-utils";
+import ImageComponent from "~/components/page-management/ImageComponent.vue";
+import VisibilityComponent from "~/components/page-management/VisibilityComponent.vue";
+import StatusComponent from "~/components/page-management/StatusComponent.vue";
+import ActionsComponentTeamMember from "~/components/team-members/ActionsComponent.vue";
+import '@andresouzaabreu/vue-data-table/dist/DataTable.css';
+import EventBus from '~/plugins/eventbus';
+import ActionsComponent from "~/components/page-management/ActionsComponent.vue";
 
 export default Vue.extend({
   name: 'DashboardAccount',
+  components: {
+    DataTable
+  },
   layout: 'dashboard',
   middleware: 'authenticated',
+  data: () => ({
+    profiles: [] as EditorProfile[],
+    selectedProductId: null as string | null,
+    selectedPurchaseType: undefined as DbProduct["purchase_type"],
+    currentPermission: Permission.FREE,
+    availableSubscriptions: [] as {
+      id?: string,
+      name: string,
+      metadata: any,
+      order: number,
+      price: any
+    }[],
 
-  data() {
-    return {
-      selectedProductId: null as string | null,
-      selectedPurchaseType: undefined as DbProduct["purchase_type"],
-      currentPermission: Permission.FREE,
-      availableSubscriptions: [] as {
-        id?: string,
-        name: string,
-        metadata: any,
-        order: number,
-        price: any
-      }[],
+    godmode: false,
 
-      godmode: false,
+    subInfo: {} as (DbSubscription | DbProduct) & { product: unknown | null, price: unknown | null },
 
-      subInfo: {} as (DbSubscription | DbProduct) & { product: unknown | null, price: unknown | null },
+    loaded: false,
+    resetPasswordModalActive: false,
+    deleteUserModalActive: false,
+    originalHandle: '',
 
-      loaded: false,
-      resetPasswordModalActive: false,
-      deleteUserModalActive: false,
-      originalHandle: '',
+    user: {
+      name: '',
+      emailHash: '',
+      email: '',
+      activeProfile: {
+        imageUrl: '',
+        headline: '',
+        subtitle: '',
+        handle: '',
+        customDomain: '',
+        visibility: '',
+        showWatermark: false,
+      }
+    },
+    teamMemberEmail: '' as string,
+    teamMemberRole: 'editor' as string,
 
-      user: {
-        name: '',
-        emailHash: '',
-        email: '',
-        activeProfile: {
-          imageUrl: '',
-          headline: '',
-          subtitle: '',
-          handle: '',
-          customDomain: '',
-          visibility: '',
-          showWatermark: false,
-        }
-      },
+    teamMembers: [] as ProfileMember[],
+    error: '',
+    passwordError: '',
+    passwordEmail: '' as string | null | undefined,
+    resetNewEmail: '',
+    showWatermarkNotice: false,
+    app_name: process.env.APP_NAME,
 
-      teamMemberEmail: '',
-      teamMemberRole: 'editor',
+    alerts: {},
+  }),
 
-      teamMembers: [
-        {
-          userId: '0',
-          profileId: '0',
-          profileHandle: 'loading...',
-          email: 'loading...',
-          role: ''
-        }
-      ],
-
-      error: '',
-      passwordError: '',
-      passwordEmail: '' as string | null | undefined,
-      resetNewEmail: '',
-      showWatermarkNotice: false,
-      app_name: process.env.APP_NAME,
-
-      alerts: {},
-    };
-  },
-
-  head() {
+  head(): MetaInfo {
     return {
       title: 'Account Settings - ' + this.$customSettings.productName,
       meta: [
@@ -360,6 +369,69 @@ export default Vue.extend({
       ],
     };
   },
+  computed: {
+    teamsTableParams(): Object {
+      return {
+        showPerPage: false,
+        sortingMode: "single",
+        showDownloadButton: false,
+        showEntriesInfo: false,
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        data: this.teamMembers,
+        columns: [
+          {
+            key: "email"
+          },
+          {
+            key: "role",
+          },
+          {
+            key: "actions",
+            component: ActionsComponentTeamMember,
+            sortable: false
+          }
+        ]
+      };
+    },
+    profilesTableParams(): Object {
+      return {
+        showPerPage: false,
+        sortingMode: "single",
+        showDownloadButton: false,
+        showEntriesInfo: false,
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        data: this.profiles.sort((a, b) => a.handle.localeCompare(b.handle)),
+        columns: [
+          {
+            key: "imageUrl",
+            title: "Avatar Photo",
+            component: ImageComponent,
+          },
+          {
+            key: "handle",
+          },
+          {
+            key: "visibility",
+            component: VisibilityComponent,
+          },
+          {
+            key: "status",
+            component: StatusComponent,
+          },
+          {
+            key: "pageViews",
+            title: "Total Views"
+          },
+          {
+            key: "actions",
+            title: "Actions",
+            component: ActionsComponent,
+            sortable: false
+          }
+        ]
+      };
+    },
+  },
 
   watch: {
     'user.activeProfile.showWatermark': {
@@ -384,18 +456,31 @@ export default Vue.extend({
 
   },
 
-  mounted() {
-    this.getTeamMembers().catch();
+  async mounted() {
+    await this.getTeamMembers();
+    this.profiles = await this.$axios.$post('/profiles', {
+      token: this.$store.getters['auth/getToken'],
+      includePaymentInfoAndAnalytics: true
+    });
+
+    EventBus.$on("getTeamMembers", () => {
+      this.getTeamMembers();
+    });
+
+    EventBus.$on("addTeamMembers", ({email, role}: ProfileMember) => {
+      this.addTeamMember(email, role);
+    });
   },
 
   methods: {
-    async onMemberRoleUpdate(email: string, role: string) {
+    async assignGoogleAccount() {
+      const response = await this.$axios.post('/auth/google/assign', {
+        token: this.$store.getters['auth/getToken']
+      });
 
-      await this.addTeamMember(email, role);
-      await this.getTeamMembers();
+      window.location.assign(response.data);
     },
-
-    async getTeamMembers() {
+    async getTeamMembers(): Promise<void> {
       if (!this.teamMembers) {
         this.teamMembers = [];
       }
@@ -409,7 +494,7 @@ export default Vue.extend({
       })).data;
     },
 
-    async addTeamMember(email: string, role: string) {
+    async addTeamMember(email: string, role: string): Promise<void> {
       const token = this.$store.getters['auth/getToken'];
       try {
         await this.$axios.post('/team/add', {
@@ -422,18 +507,6 @@ export default Vue.extend({
         console.log(err.response);
         this.error = err.response.data.error;
       }
-
-      await this.getTeamMembers();
-    },
-
-    async removeTeamMember(email: string, profileId: string) {
-      const token = this.$store.getters['auth/getToken'];
-
-      await this.$axios.post('/team/remove', {
-        token,
-        email,
-        profileId
-      });
 
       await this.getTeamMembers();
     },
@@ -678,5 +751,9 @@ input, select {
   background-color: #ff4a4a;
   padding: 7px;
   z-index: 25;
+}
+
+.data-table {
+  height: 50%;
 }
 </style>

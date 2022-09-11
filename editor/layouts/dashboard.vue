@@ -169,10 +169,6 @@
             </div>
 
             <div class="flex flex-col">
-              <n-link :class="getActiveStyles('page-management')" to="/dashboard/page-management">
-                <img :src="`${$customSettings.icons.mainIcon}`" style="width:32px;height:32px;">
-                <span class="ml-4 font-extrabold">Page Management</span>
-              </n-link>
               <n-link :class="getActiveStyles('dashboard')" to="/dashboard/">
                 <img :src="`${$customSettings.icons.mainIcon}`" style="width:32px;height:32px;">
                 <span class="ml-4 font-extrabold">Tinypage</span>
@@ -451,6 +447,10 @@ export default Vue.extend({
     }
   },
   async mounted() {
+    this.profiles = await this.$axios.$post('/profiles', {
+      token: this.$store.getters['auth/getToken'],
+      includePaymentInfoAndAnalytics: true
+    });
     const permGroup = await this.$axios.$post("/admin/perm-group", {
       token: this.$store.getters['auth/getToken']
     });
@@ -606,7 +606,7 @@ export default Vue.extend({
               break;
             case "dashboard-account":
               this.active = "dashboard-account";
-              this.preview = true;
+              this.preview = false;
               break;
             case "dashboard-admin":
               this.active = "dashboard-admin";
