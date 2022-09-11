@@ -78,8 +78,8 @@
                     <div
                         class="py-1 px-2 mb-1 rounded-full text-sm font-extrabold leading-tight cursor-pointer grow"
                         style="color:rgb(108,108,108);background:rgba(108,108,108,.1);"
-                        @click="toggleProfileSelect"
-                    >manage pages
+                        @click="createNewProfile"
+                    >create new page
                     </div>
                   </div>
 
@@ -89,83 +89,6 @@
 
                 </div>
               </div>
-
-              <div
-                  @focusout="onSelectingProfilesFocusOut($event)"
-              >
-                <ul
-                    v-if="selectingProfile"
-                    id="profileSelection"
-                    class="absolute bottom-0 rounded-2xl shadow bg-whiteish border border-gray-200 profile-list z-30"
-                    style="left:0;right:0; top: 170px; width:100%;height:fit-content;max-height:450px;"
-                    tabindex="0"
-                >
-                  <li class="flex flex-row items-center justify-left profile-search text-black">
-                    <!-- Create new profile-->
-                    <input
-                        id="filterProfilesInput"
-                        aria-label="Filter profiles"
-                        class="text-sm p-2 mr-auto font-bold"
-                        placeholder="Filter profiles..."
-                        style="outline:none !important;background:transparent;"
-                        type="text"
-                        @input="onFilterProfilesInput"
-                    >
-                    <i class="search-icon fas fa-search text-sm p-2 opacity-50"/>
-                  </li>
-
-                  <li
-                      v-for="profile in filteredProfiles"
-                      :key="profile.handle"
-                      :style="!profile.handle ? 'max-height: 51px;' : ''"
-                      class="p-2 pl-4 pr-4 hover:bg-opaqueIndigo cursor-pointer flex flex-row items-center justify-start"
-                      @click="selectProfile(profile.id)"
-                  >
-                    <div
-                        v-if="profile.handle"
-                        :style="'width: 35px;height:35px;background:linear-gradient(146deg, rgba(0,255,240,1) 00%, rgba(173,255,0,1) 100%);margin-right:.75rem;background-size:cover;background-repeat:no-repeat;background-position:center;background-image:url(' + (profile.imageUrl || 'https://www.gravatar.com/avatar/' + user.emailHash) + ');'"
-                        alt="avatar"
-                        class="w-8 h-8 rounded-full"
-                        style="z-index: -1"
-                    />
-                    <div class="flex flex-col">
-                      <span class="text-base text-black font-bold">{{ profile.handle }}</span>
-                      <span class="text-sm text-black opacity-70 font-bold">{{ profile.headline }}</span>
-
-                      <div
-                          v-if="profile.visibility !== 'unpublished'"
-                          class="py-1 px-2 mb-1 rounded-full text-green-500 bg-green-200 text-sm font-extrabold leading-tight"
-                          style="width: fit-content"
-                      >{{ profile.visibility }}
-                      </div>
-
-                      <div
-                          v-if="profile.userId !== user.id"
-                          class="py-1 px-2 mb-1 rounded-full text-gray-700 bg-gray-200 text-sm font-extrabold leading-tight"
-                          style="width: fit-content"
-                      >shared with you
-                      </div>
-
-                    </div>
-                  </li>
-
-                  <li class="flex flex-row items-center justify-center button-controls">
-                    <!-- Create new profile-->
-                    <span
-                        class="text-center w-1/2 hover:bg-opaqueIndigo p-2 pl-4 text-xs font-bold text-gray-700"
-                        @click="createNewProfile"
-                    >Create new</span>
-
-                    <!-- Logout-->
-                    <a
-                        class="text-center w-1/2 hover:bg-opaqueIndigo p-2 pr-4 text-xs font-bold text-gray-700"
-                        href="/logout"
-                    >Logout</a>
-                  </li>
-
-                </ul>
-              </div>
-
             </div>
 
             <div class="flex flex-col">
@@ -320,6 +243,7 @@
 import Vue from "vue";
 import {StatusCodes} from "http-status-codes";
 import GDPRConsentPopup from "~/components/utilities/GDPRConsentPopup.vue";
+import EventBus from "~/plugins/eventbus";
 
 export default Vue.extend({
   components: {
@@ -345,9 +269,6 @@ export default Vue.extend({
       preview: false,
       share_modal: false,
       qr_src: null,
-      profiles: [] as EditorProfile[],
-      filteredProfiles: [] as EditorProfile[],
-      selectingProfile: false,
       profileUrl: "",
       version: "Version loading...",
       previewMode: 'mobile',
@@ -447,10 +368,6 @@ export default Vue.extend({
     }
   },
   async mounted() {
-    this.profiles = await this.$axios.$post('/profiles', {
-      token: this.$store.getters['auth/getToken'],
-      includePaymentInfoAndAnalytics: true
-    });
     const permGroup = await this.$axios.$post("/admin/perm-group", {
       token: this.$store.getters['auth/getToken']
     });
@@ -479,6 +396,10 @@ export default Vue.extend({
       console.warn("Failed to retrieve version from server.");
     }
 
+    EventBus.$on("selectProfile", ({profileId}: { profileId: string }) => {
+      this.selectProfile(profileId);
+    });
+
     this.$root.$on('refreshUserProfileView', () => {
       const iFrame = document.getElementById('preview-frame') as HTMLIFrameElement;
 
@@ -497,16 +418,6 @@ export default Vue.extend({
         const profile = await this.$axios.$post('/profile/create', {
           token: this.$store.getters['auth/getToken']
         }) as EditorProfile;
-
-        this.profiles.push(profile);
-
-        this.filteredProfiles = this.profiles;
-
-        this.filteredProfiles.sort(function (a, b) {
-          return a.handle.localeCompare(b.handle);
-        });
-
-        this.selectingProfile = false;
 
         if (profile?.id) {
           await this.selectProfile(profile.id);
@@ -549,8 +460,6 @@ export default Vue.extend({
         token: this.$store.getters['auth/getToken'],
         newProfileId: profileId
       });
-
-      this.selectingProfile = false;
 
       this.$nextTick(() => {
         window.location.replace('/dashboard');
@@ -716,66 +625,6 @@ export default Vue.extend({
         case "desktop":
           return 'desktop-display';
       }
-    },
-
-    onFilterProfilesInput(event: any) {
-      const target = event.target;
-      const filterSearch = target.value.toLowerCase();
-      const profiles = this.profiles as EditorProfile[];
-
-      this.filteredProfiles = profiles.filter(x => x.handle.toLowerCase().startsWith(filterSearch));
-
-      this.filteredProfiles.sort(function (a, b) {
-        return a.handle.localeCompare(b.handle);
-      });
-
-      const diff = this.profiles.length - this.filteredProfiles.length;
-
-      for (let i = 0; i < diff; i++) {
-        this.filteredProfiles.push({
-          customCss: "",
-          customHtml: "",
-          handle: "",
-          headline: "",
-          imageUrl: "",
-          subtitle: "",
-          themeId: "",
-          visibility: "unpublished",
-          showWatermark: true
-        });
-      }
-    },
-
-    toggleProfileSelect() {
-      this.selectingProfile = !this.selectingProfile;
-
-      if (this.selectingProfile) {
-        this.onSelectingProfilesOpen();
-
-        if (process.client) {
-          this.$nextTick(() => {
-            const elem = document.getElementById("profileSelection");
-
-            if (elem) {
-              elem.focus({preventScroll: true});
-            }
-          });
-        }
-      }
-    },
-
-    onSelectingProfilesOpen() {
-      this.filteredProfiles = this.profiles;
-    },
-
-    onSelectingProfilesFocusOut(event: FocusEvent) {
-      if (event.relatedTarget instanceof Element && event.target instanceof Element) {
-        if (event.target.contains(event.relatedTarget)) {
-          return;
-        }
-      }
-
-      this.selectingProfile = false;
     },
 
     async onClickDownloadPreviewImage() {
