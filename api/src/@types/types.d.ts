@@ -7,7 +7,7 @@
  * Subscription Tier type.
  *
  */
-type SubscriptionTier = 'free' | 'basic' | 'pro' | 'business' | string;
+type SubscriptionTier = 'free' | 'pro' | string;
 
 /**
  * Profile visibility type

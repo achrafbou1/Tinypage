@@ -58,6 +58,24 @@ export class SubscriptionService extends DatabaseService {
         };
     }
 
+    async createOrUpdateSubscription(user: User, eventObject: any, create: boolean) {
+        let item = eventObject.plan.product;
+        let product = await this.stripe.products.retrieve(item);
+        let tier = product?.metadata.permission;
+        let allowDowngrade = false;
+        if(eventObject.cancel_at) {
+            tier= 'free';
+            allowDowngrade = true;
+        }
+
+
+        if (tier) {
+            await this.setDbSubscriptionTier(user, tier, allowDowngrade, create, eventObject, product.id);
+            await this.checkProfilesForOverLimit(user.id);
+        } else {
+            console.error("[customer.subscription.updated] Couldn't set subscription for user: " + user.id + " to tier " + tier);
+        }
+    }
     async getProducts() {
         let products: Stripe.Product[] = (await this.stripe.products.list({active: true})).data;
 
@@ -201,7 +219,7 @@ export class SubscriptionService extends DatabaseService {
                 tier: currentPermission.name,
                 product_id: null,
                 created_on: null,
-                purchase_type: 'one_time'
+                purchase_type: 'recurring'
             };
         }
 
@@ -236,9 +254,11 @@ export class SubscriptionService extends DatabaseService {
      * @param user
      * @param tier
      * @param allowDowngrade
+     * @param create
      * @param productId
      */
-    async setDbSubscriptionTier(user: User, tier: SubscriptionTier, allowDowngrade: boolean, productId?: string) {
+    async setDbSubscriptionTier(user: User, tier: SubscriptionTier, allowDowngrade: boolean, create: boolean, eventObject: any, productId?: string) {
+        const subscriptionId = eventObject.object === 'subscription' ? eventObject.id : null;
         if (!allowDowngrade) {
             let oldPerm = await PermissionUtils.getCurrentPermission(user.id);
             let newPerm = Permission.parse(tier);
@@ -248,15 +268,33 @@ export class SubscriptionService extends DatabaseService {
                 return;
             }
         }
-
-        let queryResult = await this.pool.query<DbUser>("insert into enterprise.subscriptions(user_id, tier, product_id, last_updated) values ($1, $2, $3, $4) on conflict(user_id) do update set user_id=$1, tier=$2, product_id=$3, last_updated=$4",
-            [
+        let queryResult;
+        if (create) {
+            queryResult = await this.pool.query<DbUser>("insert into enterprise.subscriptions(user_id, tier, product_id, last_updated, subscription_id) values ($1, $2, $3, $4, $5)",
+                [
+                    user.id,
+                    tier,
+                    productId,
+                    new Date(),
+                    subscriptionId
+                ]);
+        } else {
+            let updateQuery = "update enterprise.subscriptions set user_id=$1, tier=$2, product_id=$3, last_updated=$4";
+            let updateValues = [
                 user.id,
                 tier,
                 productId,
                 new Date()
-            ]);
-
+            ];
+            if(subscriptionId) {
+                updateQuery += " where subscription_id=$5";
+                updateValues.push(subscriptionId);
+            } else {
+                updateQuery += " where user_id=$1";
+            }
+            queryResult = await this.pool.query<DbUser>(updateQuery,
+                updateValues);
+        }
         if (queryResult.rowCount <= 0) {
             throw new HttpError(StatusCodes.NOT_FOUND, "The user couldn't be found.");
         }
@@ -359,9 +397,9 @@ export class SubscriptionService extends DatabaseService {
             await this.pool.query("update app.profiles set visibility='unpublished' where profiles.user_id=$1", [userId]);
         } else {
             let number = await this.countPublishedProfiles(userId);
-
-            if (number > perm.pageCount) {
-                let queryResult = await this.pool.query<{ id: string }>("select id from app.profiles where profiles.user_id=$1 limit $2", [userId, perm.pageCount]);
+            let numOfAllowedPages = await this.getNumOfAllowedPages(perm, userId);
+            if (number > numOfAllowedPages) {
+                let queryResult = await this.pool.query<{ id: string }>("select id from app.profiles where profiles.user_id=$1 limit $2", [userId, numOfAllowedPages]);
                 await this.pool.query("update app.profiles set visibility='unpublished' where profiles.id != all($1) and user_id=$2", [queryResult.rows, userId]);
             }
         }
@@ -370,6 +408,14 @@ export class SubscriptionService extends DatabaseService {
     private async countPublishedProfiles(userId: string): Promise<number> {
         let queryResult = await this.pool.query<{ count: number }>("select count(*) from app.profiles where user_id=$1 and visibility != 'unpublished'", [userId]);
 
+        return queryResult.rows[0].count;
+    }
+
+    private async getNumOfAllowedPages(perm: Permission, userId: string): Promise<number> {
+        if (perm.name === Permission.GODMODE.name) {
+            return 9999;
+        }
+        let queryResult = await this.pool.query<{ count: number }>("select count(*) from enterprise.subscriptions where user_id=$1 and tier!='free'", [userId]);
         return queryResult.rows[0].count;
     }
 }
