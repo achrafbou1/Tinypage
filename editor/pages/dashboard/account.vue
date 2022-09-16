@@ -423,6 +423,11 @@ export default Vue.extend({
             key: "imageUrl",
             title: "Avatar Photo",
             component: ImageComponent,
+            sortable: false
+          },
+          {
+            key: "headline",
+            sortable: false
           },
           {
             key: "handle",
