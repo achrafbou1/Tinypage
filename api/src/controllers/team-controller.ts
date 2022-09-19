@@ -9,6 +9,10 @@ import {ProfileService} from "../services/profile-service";
 import {Auth, AuthenticatedRequest} from "../utils/auth";
 import {TeamService} from "../services/team-service";
 
+interface GetTeamMembersRequest extends AuthenticatedRequest {
+    Body: {} & AuthenticatedRequest["Body"];
+}
+
 interface AddTeamMemberRequest extends AuthenticatedRequest {
     Body: {
         email: string,
@@ -40,15 +44,15 @@ export class TeamController extends Controller {
     }
 
     registerRoutes(): void {
-        this.fastify.post<AuthenticatedRequest>('/team', Auth.ValidateWithData, this.ListTeamUsers.bind(this));
+        this.fastify.post<GetTeamMembersRequest>('/team', Auth.ValidateWithData, this.ListTeamUsers.bind(this));
 
         this.fastify.post<AddTeamMemberRequest>('/team/add', Auth.ValidateWithData, this.AddTeamUser.bind(this));
         this.fastify.post<RemoveTeamMemberRequest>('/team/remove', Auth.ValidateWithData, this.RemoveTeamUser.bind(this));
     }
 
-    async ListTeamUsers(request: FastifyRequest<AuthenticatedRequest>, reply: FastifyReply) {
+    async ListTeamUsers(request: FastifyRequest<GetTeamMembersRequest>, reply: FastifyReply) {
         try {
-            let profileMembers = await this.teamService.listTeamMembers(request.body.authUser.id);
+            let profileMembers = await this.teamService.listTeamMembers(request.body.authUser.id, request.body.authProfile.id);
 
             let members = [];
 
@@ -86,7 +90,7 @@ export class TeamController extends Controller {
                 return ReplyUtils.error("You can't add yourself as a team member!");
             }
 
-            await this.teamService.addTeamMember(request.body.authProfile.id, user.id, request.body.role);
+            await this.teamService.addTeamMember(request.body.authProfile.id, user.id, request.body.authUser.id, request.body.role);
 
             reply.status(StatusCodes.OK);
             return ReplyUtils.success("Success.");

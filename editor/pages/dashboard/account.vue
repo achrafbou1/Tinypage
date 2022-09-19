@@ -21,61 +21,6 @@
         </div>
         <DataTable v-bind="profilesTableParams"/>
       </div>
-      <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8">
-        <div class="flex space-x-96 flex-row">
-          <div>
-            <h2 class="text-black font-bold text-lg w-full px-6">
-              Manage your team
-            </h2>
-          </div>
-          <div class="flex-initial w-64 data-table-search-filter mb-6">
-            <span>search:</span><input type="search" @input="filterTeams">
-          </div>
-        </div>
-        <div class="w-full bg-gray-200" style="height:1px;"/>
-        <div class="flex flex-col mt-4 mb-2 w-full px-6 mt-6">
-          <label v-if="!teamMembers || teamMembers.length < 1" class="font-bold text-black opacity-70 mb-3">Ready to add
-            your first team
-            member? Add them here!</label>
-          <label v-else class="font-bold text-black opacity-70 mb-3">Want to add a new member? Add them here!</label>
-
-          <div class="flex flex-row items-center justify-start w-full">
-            <label class="mr-4 font-normal">Email</label>
-            <input
-                v-model="teamMemberEmail"
-                class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
-                placeholder="e.g. jane@gmail.com"
-                type="text"
-            >
-
-            <label class="ml-4 mr-4 font-normal">Role</label>
-            <select
-                v-model="teamMemberRole"
-                class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
-                style="min-width: 120px; max-width: 220px;"
-            >
-              <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
-              <option selected value="editor">
-                Editor
-              </option>
-            </select>
-          </div>
-
-          <div v-if="error" class="error py-4 px-6 mt-4 text-sm text-white align-center justify-center">
-            {{ error }}
-          </div>
-
-          <button
-              class="w-full flex py-3 px-6 mt-4 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              type="button"
-              @click="addTeamMember(teamMemberEmail, teamMemberRole); teamMemberEmail = '';"
-          >
-            Add team member
-          </button>
-
-        </div>
-        <DataTable v-bind="teamsTableParams"/>
-      </div>
     </div>
 
     <!-- Reset Email Address -->
@@ -288,9 +233,7 @@ import {Permission} from "~/plugins/permission-utils";
 import ImageComponent from "~/components/page-management/ImageComponent.vue";
 import VisibilityComponent from "~/components/page-management/VisibilityComponent.vue";
 import StatusComponent from "~/components/page-management/StatusComponent.vue";
-import ActionsComponentTeamMember from "~/components/team-members/ActionsComponent.vue";
 import '@andresouzaabreu/vue-data-table/dist/DataTable.css';
-import EventBus from '~/plugins/eventbus';
 import ActionsComponent from "~/components/page-management/ActionsComponent.vue";
 
 export default Vue.extend({
@@ -301,7 +244,6 @@ export default Vue.extend({
   layout: 'dashboard',
   middleware: 'authenticated',
   data: () => ({
-    filteredTeamMembers: [] as ProfileMember[],
     filteredProfiles: [] as EditorProfile[],
     profiles: [] as EditorProfile[],
     selectedProductId: null as string | null,
@@ -338,10 +280,6 @@ export default Vue.extend({
         showWatermark: false,
       }
     },
-    teamMemberEmail: '' as string,
-    teamMemberRole: 'editor' as string,
-
-    teamMembers: [] as ProfileMember[],
     error: '',
     passwordError: '',
     passwordEmail: '' as string | null | undefined,
@@ -385,30 +323,6 @@ export default Vue.extend({
     };
   },
   computed: {
-    teamsTableParams(): Object {
-      return {
-        showPerPage: false,
-        sortingMode: "single",
-        showSearchFilter: false,
-        showDownloadButton: false,
-        showEntriesInfo: false,
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        data: this.filteredTeamMembers,
-        columns: [
-          {
-            key: "email"
-          },
-          {
-            key: "role",
-          },
-          {
-            key: "actions",
-            component: ActionsComponentTeamMember,
-            sortable: false
-          }
-        ]
-      };
-    },
     profilesTableParams(): Object {
       return {
         showPerPage: false,
@@ -474,33 +388,14 @@ export default Vue.extend({
   },
 
   async mounted() {
-    await this.getTeamMembers();
     this.profiles = await this.$axios.$post('/profiles', {
       token: this.$store.getters['auth/getToken'],
       includePaymentInfoAndAnalytics: true
     });
     this.filteredProfiles = this.profiles;
-
-    EventBus.$on("getTeamMembers", () => {
-      this.getTeamMembers();
-    });
-
-    EventBus.$on("addTeamMembers", ({email, role}: ProfileMember) => {
-      this.addTeamMember(email, role);
-    });
   },
 
   methods: {
-    filterTeams(event: any) {
-      const target = event.target;
-      const filterSearch = target.value.toLowerCase();
-      const teams = this.teamMembers;
-      if (filterSearch) {
-        this.filteredTeamMembers = teams.filter(x => x.email.toLowerCase().includes(filterSearch));
-      } else {
-        this.filteredTeamMembers = this.teamMembers;
-      }
-    },
     filterProfiles(event: any) {
       const target = event.target;
       const filterSearch = target.value.toLowerCase();
@@ -517,37 +412,6 @@ export default Vue.extend({
       });
 
       window.location.assign(response.data);
-    },
-    async getTeamMembers(): Promise<void> {
-      if (!this.teamMembers) {
-        this.teamMembers = [];
-      }
-
-      this.teamMembers.length = 0;
-
-      const token = this.$store.getters['auth/getToken'];
-
-      this.teamMembers = (await this.$axios.post('/team', {
-        token
-      })).data;
-      this.filteredTeamMembers = this.teamMembers;
-    },
-
-    async addTeamMember(email: string, role: string): Promise<void> {
-      const token = this.$store.getters['auth/getToken'];
-      try {
-        await this.$axios.post('/team/add', {
-          token,
-          email,
-          role
-        });
-        this.error = '';
-      } catch (err: any) {
-        console.log(err.response);
-        this.error = err.response.data.error;
-      }
-
-      await this.getTeamMembers();
     },
 
     async initCheckout() {

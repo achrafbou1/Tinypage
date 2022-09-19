@@ -30,8 +30,8 @@ export default Vue.extend({
   methods: {
     onMemberRoleUpdate(email: string, role: string) {
 
-      EventBus.$emit('addTeamMembers', {email, role});
-      EventBus.$emit('getTeamMembers');
+      EventBus.$emit('addTeamMembersPageOnly', {email, role});
+      EventBus.$emit('getTeamMembersPageOnly');
     },
   }
 });
