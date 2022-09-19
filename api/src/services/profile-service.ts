@@ -9,18 +9,14 @@ import {QueryResult} from "pg";
 import {DatabaseError} from 'pg-protocol/dist/messages';
 import {ScreenshotUtils} from "../utils/screenshot-utils";
 import {Options as PageresOptions} from "pageres";
-import {TeamService} from "./team-service";
 
 /**
  * This service takes care of transactional tasks related to Profiles.
  */
 export class ProfileService extends DatabaseService {
 
-    private readonly teamService: TeamService;
-
     constructor(databaseManager: DatabaseManager) {
         super(databaseManager);
-        this.teamService = new TeamService(databaseManager);
     }
 
     /**
@@ -270,7 +266,7 @@ export class ProfileService extends DatabaseService {
     }
 
     /**
-     * Returns the amounts on a account.
+     * Returns the amounts on an account.
      *
      * @param userId The user id associated with the profiles.
      */
