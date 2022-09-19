@@ -30,7 +30,7 @@ export default Vue.extend({
         email: this.data.email,
         profileId: this.data.profileId
       });
-      EventBus.$emit('getTeamMembers');
+      EventBus.$emit('getTeamMembersPageOnly');
     },
   }
 });

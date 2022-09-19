@@ -201,6 +201,7 @@ export class ProfileService extends DatabaseService {
         if (queryResult.rowCount < 1)
             throw new HttpError(StatusCodes.CONFLICT, "The profile couldn't be added because the handle is already being used.");
 
+
         return DbTypeConverter.toProfile(queryResult.rows[0]);
     }
 
@@ -265,7 +266,7 @@ export class ProfileService extends DatabaseService {
     }
 
     /**
-     * Returns the amounts on a account.
+     * Returns the amounts on an account.
      *
      * @param userId The user id associated with the profiles.
      */
