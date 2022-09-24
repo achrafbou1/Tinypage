@@ -249,17 +249,10 @@ export class ProfileService extends DatabaseService {
      * @param profileId
      * @param themeId
      */
-    async setActiveTheme(profileId
-                             :
-                             string, themeId
-                             :
-                             string
-    ):
-        Promise<Profile> {
+    async setActiveTheme(profileId: string, themeId: string): Promise<Profile> {
         let queryResult = await this.pool.query<DbProfile>("update app.profiles set theme_id=$1 where id=$2 returning *", [themeId, profileId]);
 
-        if (queryResult.rowCount < 1
-        )
+        if (queryResult.rowCount < 1)
             throw new HttpError(StatusCodes.NOT_FOUND, "The profile couldn't be found.");
 
         return DbTypeConverter.toProfile(queryResult.rows[0]);
@@ -270,22 +263,12 @@ export class ProfileService extends DatabaseService {
      *
      * @param userId The user id associated with the profiles.
      */
-    async getProfileCount(userId
-                              :
-                              string
-    ):
-        Promise<number> {
-        return (await
-                this
-                    .pool.query<{ count: number }>("select count(*) from app.profiles where user_id=$1", [userId])
-        ).rows[0].count;
+    async getProfileCount(userId: string): Promise<number> {
+        return (await this.pool.query<{ count: number }>("select count(*) from app.profiles " +
+            "where user_id=$1", [userId])).rows[0].count;
     }
 
-    async countPublishedProfiles(userId
-                                     :
-                                     string
-    ):
-        Promise<number> {
+    async countPublishedProfiles(userId: string): Promise<number> {
         let queryResult = await this.pool.query<{ count: number }>("select count(*) from app.profiles where user_id=$1 and visibility != 'unpublished'", [userId]);
 
         return queryResult.rows[0].count;
@@ -306,24 +289,13 @@ export class ProfileService extends DatabaseService {
      * @param customDomain
      * @param metadata
      */
-    async updateProfile(
-        profileId
-            :
-            string,
-        imageUrl ?: string,
-        headline ?: string,
-        subtitle ?: string,
-        handle ?: string,
-        visibility ?: string,
-        showWatermark ?: boolean,
-        customCss ?: string,
-        customHtml ?: string,
-        customDomain
-            :
-            string | null | undefined = null,
-        metadata
-            :
-            any = null
+    async updateProfile(profileId: string, imageUrl ?: string, headline ?: string, subtitle ?: string, handle?: string,
+                        visibility ?: string,
+                        showWatermark ?: boolean,
+                        customCss ?: string,
+                        customHtml ?: string,
+                        customDomain: string | null | undefined = null,
+                        metadata: any = null
     ):
         Promise<Profile> {
 
@@ -377,18 +349,10 @@ export class ProfileService extends DatabaseService {
      * @param userId
      * @param profileId
      */
-    async deleteProfile(userId
-                            :
-                            string, profileId
-                            :
-                            string
-    ):
-        Promise<Profile> {
+    async deleteProfile(userId: string, profileId: string): Promise<Profile> {
         let profilesResult = await this.listProfiles(userId);
 
-        let profileRow
-            :
-            Profile | undefined = profilesResult.find(x => x.id === profileId);
+        let profileRow: Profile | undefined = profilesResult.find(x => x.id === profileId);
 
         if (!profileRow) {
             throw new HttpError(StatusCodes.NOT_FOUND, "The user doesn't own this profile.");
@@ -419,21 +383,14 @@ export class ProfileService extends DatabaseService {
      * @param profileId
      * @param privacyModeEnabled
      */
-    async setPrivacyMode(profileId
-                             :
-                             string, privacyModeEnabled
-                             :
-                             boolean
-    ):
-        Promise<Profile> {
+    async setPrivacyMode(profileId: string, privacyModeEnabled: boolean): Promise<Profile> {
         let queryResult = await this.pool.query<DbProfile>(`update app.profiles
                                                             set metadata = jsonb_set(metadata::jsonb, '{privacyMode}', $1, true)
                                                             where id = $2
                                                             returning *;`,
             [JSON.stringify(privacyModeEnabled), profileId]);
 
-        if (queryResult.rowCount < 1
-        ) {
+        if (queryResult.rowCount < 1) {
             throw new HttpError(StatusCodes.INTERNAL_SERVER_ERROR, "Unable to update the profile because of an internal error.");
         }
 
@@ -446,12 +403,8 @@ export class ProfileService extends DatabaseService {
      * You can only get a max of 500 results.
      * @param limit
      */
-    async getTopProfiles(limit ?: number)
-        :
-        Promise<(Profile & { totalViews: number, totalClicks: number })[]> {
-        if (!
-            limit
-        ) {
+    async getTopProfiles(limit ?: number): Promise<(Profile & { totalViews: number, totalClicks: number })[]> {
+        if (!limit) {
             limit = 25;
         }
 

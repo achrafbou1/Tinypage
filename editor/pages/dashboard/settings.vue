@@ -391,22 +391,22 @@
               Editor
             </option>
           </select>
+          <button
+              class="ml-4 mr-4 py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl
+              font-bold justify-center align-center"
+              type="button"
+              @click="addTeamMember(teamMemberEmail, teamMemberRole); teamMemberEmail = '';"
+          >
+            Add team member
+          </button>
         </div>
 
         <div v-if="error" class="error py-4 px-6 mt-4 text-sm text-white align-center justify-center">
           {{ error }}
         </div>
-
-        <button
-            class="w-full flex py-3 px-6 mt-4 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-            type="button"
-            @click="addTeamMember(teamMemberEmail, teamMemberRole); teamMemberEmail = '';"
-        >
-          Add team member
-        </button>
-
+        <DataTable v-bind="teamsTableParams"/>
       </div>
-      <DataTable v-bind="teamsTableParams"/>
+
     </div>
 
     <!-- Import / Export Profile -->
