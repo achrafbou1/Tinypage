@@ -1,13 +1,6 @@
 <template>
   <div class="buttons">
     <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-sm"
-        @click="selectProfile"
-    >
-      <font-awesome-icon icon="fa-solid fa-check"/>
-      Select
-    </button>
-    <button
         v-if="!data.status || data.status === 'free'"
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-sm"
         @click="initCheckout"
@@ -35,7 +28,6 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import EventBus from "~/plugins/eventbus";
 
 export default Vue.extend({
   name: 'ActionsComponent',
@@ -46,9 +38,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    selectProfile() {
-      EventBus.$emit('selectProfile', {profileId: this.data.id});
-    },
     async initCheckout() {
       try {
         const token = this.$store.getters['auth/getToken'];
