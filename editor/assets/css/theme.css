@@ -43,3 +43,15 @@ html {
     box-sizing: border-box;
     outline: none;
 }
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: transparent !important;
+}
+
+.table td, .table th {
+    border-top: 1px solid black !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, .075) !important;
+}
