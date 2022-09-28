@@ -199,6 +199,7 @@ export class SubscriptionService extends DatabaseService {
                 }
             }
         }
+        return ReplyUtils.success("Successfully unsubscribed");
     }
 
     async setCardInfo(user: SensitiveUser, card?: { number: string | null; expDate: string | null; cvc: string | null; }) {
