@@ -16,14 +16,6 @@
       <font-awesome-icon icon="fa-solid fa-cloud-arrow-down"/>
       Downgrade
     </button>
-    <button
-        v-if="data.status === 'pro'"
-        class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm"
-        @click="downgrade"
-    >
-      <font-awesome-icon icon="fa-solid fa-cloud-arrow-down"/>
-      Downgrade
-    </button>
   </div>
 </template>
 <script lang="ts">
