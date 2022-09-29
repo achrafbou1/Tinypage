@@ -8,7 +8,7 @@
     </div>
 
     <div class="overflow-x-hidden overflow-y-hidden w-full">
-      <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8">
+      <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8 px-6">
         <div class="flex space-x-96 flex-row">
           <div>
             <h2 class="text-black font-bold text-lg w-full px-6">
