@@ -1,15 +1,11 @@
 export const state = () => ({
   token: null,
-  email: ''
+  currentPermission: null,
 });
 
 export const getters = {
   getToken (state) {
     return state.token;
-  },
-
-  getEmail (state) {
-    return state.email;
   }
 };
 
@@ -31,14 +27,14 @@ export const mutations = {
     this.$cookies.set('auth_token', '', {
       path: '/',
       maxAge: 0
-    });
+    })
   },
 
   setToken (state, token) {
-    state.token = token;
+    state.token = token
   },
 
-  setEmail (state, email) {
-    state.email = email;
+  setCurrentPermission (state, perm) {
+    state.perm = perm
   }
 };
