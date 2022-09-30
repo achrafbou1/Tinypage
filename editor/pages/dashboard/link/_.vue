@@ -109,7 +109,7 @@
         <VueEditor
             v-if="pendingLink.type === 'text'"
             v-model="pendingLink.subtitle"
-            class="mb-20"
+            class="mb-20 vue-editor"
         />
 
         <textarea
@@ -1122,3 +1122,8 @@ export default Vue.extend({
   }
 });
 </script>
+<style>
+.ql-container.ql-snow, .vue-editor {
+  max-width: 662px;
+}
+</style>

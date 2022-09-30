@@ -59,8 +59,16 @@ export default {
   */
   plugins: [
     {
+      src: '~plugins/fontawesome.js',
+      ssr: true
+    },
+    {
       src: '~plugins/draggable.js',
       ssr: true
+    },
+    {
+      src: '~plugins/vue-modal.js',
+      ssr: false
     },
     {
       src: '~plugins/cssjson.ts',

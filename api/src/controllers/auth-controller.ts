@@ -151,6 +151,10 @@ export class AuthController extends Controller {
      */
     async GetGoogleCreateLink(request: FastifyRequest, reply: FastifyReply) {
         let nonce = SecurityUtils.generateNonce();
+        if(config.envName === "beta") {
+            reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("Signups are disabled on the beta site. Please contact us if you wish to have access."));
+            return;
+        }
         let token = jwt.sign({
             nonce: nonce,
             type: <TokenType>"google_oauth"
@@ -598,6 +602,10 @@ export class AuthController extends Controller {
      */
     async EmailCreateUser(request: FastifyRequest<EmailCreateUserRequest>, reply: FastifyReply) {
         try {
+            if(config.envName === "beta") {
+                reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("Signups are disabled on the beta site. Please contact us if you wish to have access."));
+                return;
+            }
             let body = request.body;
 
             if (!body.email) {

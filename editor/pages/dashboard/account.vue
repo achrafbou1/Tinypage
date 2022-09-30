@@ -1,5 +1,5 @@
 <template>
-  <section class="flex flex-col p-8 items-center overflow-x-hidden overflow-y-scroll">
+  <div class="flex flex-col p-8 items-center overflow-x-hidden overflow-y-scroll">
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
       <img alt="settings svg" class="w-8" src="/icons/Person.svg">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
@@ -7,132 +7,19 @@
       </h1>
     </div>
 
-    <!-- Select billing tier -->
-    <div class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-start w-full mb-8">
-      <h2 class="text-black font-bold text-lg w-full">
-        Manage Subscription
-      </h2>
-      <p class="text-black font-bold opacity-70 max-w-xl">
-        Want to upgrade or manage your subscription? Use the dropdown below.
-        (You will be navigated to our checkout page.)
-      </p>
-      <div class="flex flex-col mt-4 mb-2 w-full">
-        <label class="font-bold opacity-70 text-black mb-3" for="tierSelect">Account tier</label>
-        <div class="flex flex-col lg:flex-row items-center justify-start space-y-4 lg:space-y-0 lg:space-x-4 w-full">
-          <select
-              id="tierSelect"
-              v-model="selectedProductId"
-              :disabled="godmode"
-              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl font-bold border w-full lg:w-auto flex-grow lg:max-w-md"
-          >
-            <option v-if="subInfo.purchase_type === 'free'" :value="null">None</option>
-            <option v-for="subInfo of availableSubscriptions" v-if="availableSubscriptions" :key="subInfo.id"
-                    :value="subInfo.id"
-            >
-              {{ subInfo.name }}
-            </option>
-            <option v-if="godmode" value="godmode">God Mode</option>
-          </select>
-
-          <button
-              v-if="loaded"
-              v-show="(subInfo.purchase_type === 'free' || (subInfo.purchase_type === 'one_time' && selectedPurchaseType === 'recurring')) && selectedProductId && selectedProductId !== subInfo.product_id"
-              :disabled="godmode"
-              class="w-full lg:w-auto flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              type="button"
-              @click="initCheckout"
-          >
-            Checkout
-          </button>
-
-          <button
-              v-if="loaded || godmode"
-              v-show="subInfo.purchase_type === 'recurring' || godmode"
-              class="w-full lg:w-auto flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              type="button"
-              @click="manageSubscription"
-          >
-            Manage Subscription
-          </button>
+    <div class="overflow-x-hidden overflow-y-hidden w-full">
+      <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8 px-6">
+        <div class="flex space-x-96 flex-row">
+          <div>
+            <h2 class="text-black font-bold text-lg w-full px-6">
+              Manage your pages
+            </h2>
+          </div>
+          <div class="flex-initial w-64 data-table-search-filter mb-6">
+            <span>search:</span><input type="search" @input="filterProfiles">
+          </div>
         </div>
-        <br>
-        <p v-if="loaded && godmode">
-          Your account has god mode enabled.
-        </p>
-      </div>
-    </div>
-
-    <!-- Team/seats controls -->
-    <div class="flex flex-col py-6 bg-white shadow rounded-2xl justify-center items-start w-full mb-8">
-      <h2 class="text-black font-bold text-lg w-full px-6 mb-6">
-        Manage your team
-      </h2>
-      <div class="w-full bg-gray-200" style="height:1px;"/>
-      <div
-          v-for="member in teamMembers"
-          :key="member.id"
-          class="flex flex-row py-2 px-8 w-full items-center justify-start hover:bg-opaqueBlack border border-gray-200 border-t-0 border-l-0 border-r-0"
-      >
-        <p class="font-bold text-black text-lg mr-auto">
-          {{ member.email }}
-        </p>
-        <p class="font-bold text-black text-lg mr-auto">
-          {{ member.profileHandle }}
-        </p>
-        <button
-            class="py-1 px-2 mb-1 mr-2 rounded-full text-white bg-red-400 text-sm font-extrabold leading-tight grow"
-            @click="removeTeamMember(member.email, member.profileId)"
-        >
-          Remove
-        </button>
-        <div
-            class="py-1 px-2 mb-1 rounded-full text-green-500 bg-green-200 text-sm font-extrabold leading-tight grow"
-        >
-          <select
-              v-model="member.role"
-              class="text-green-500 bg-green-200"
-              style="min-width: 120px; max-width: 161px;"
-              @change="onMemberRoleUpdate(member.email, member.role)"
-          >
-            <option selected value="editor">Editor</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex flex-col mt-4 mb-2 w-full px-6 mt-6">
-        <label v-if="!teamMembers || teamMembers.length <=1" class="font-bold text-black opacity-70 mb-3">Ready to add
-          your first team
-          member? Add them here!</label>
-        <label v-else class="font-bold text-black opacity-70 mb-3">Want to add a new member? Add them here!</label>
-
-        <div class="flex flex-row items-center justify-start w-full">
-          <label class="mr-4 font-normal">Email</label>
-          <input
-              v-model="teamMemberEmail"
-              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
-              placeholder="e.g. jane@gmail.com"
-              type="text"
-          >
-
-          <label class="ml-4 mr-4 font-normal">Role</label>
-          <select
-              v-model="teamMemberRole"
-              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
-              style="min-width: 120px; max-width: 220px;"
-          >
-            <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
-            <option selected value="editor">Editor</option>
-          </select>
-        </div>
-
-        <button
-            class="w-full flex py-3 px-6 mt-4 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-            type="button"
-            @click="addTeamMember(teamMemberEmail, teamMemberRole); teamMemberEmail = '';"
-        >
-          Add team member
-        </button>
-
+        <DataTable v-bind="profilesTableParams"/>
       </div>
     </div>
 
@@ -311,7 +198,9 @@
             Are you sure?
           </h2>
 
-          <p class="text-gray-600 text-sm">There is NO UNDO for this operation! All your profiles will be deleted!</p>
+          <p class="text-gray-600 text-sm">
+            There is NO UNDO for this operation! All your profiles will be deleted!
+          </p>
 
           <button
               class="mt-4 p-3 text-center text-md text-white bg-red-700 hover:bg-red-400 rounded-2xl font-bold"
@@ -331,20 +220,79 @@
         </div>
       </div>
     </transition>
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
+// @ts-ignore
+import DataTable from '@andresouzaabreu/vue-data-table';
+
 import Vue from "vue";
+// eslint-disable-next-line import/named
+import {MetaInfo} from "vue-meta";
 import {StatusCodes} from "http-status-codes";
 import {Permission} from "~/plugins/permission-utils";
+import ImageComponent from "~/components/page-management/ImageComponent.vue";
+import VisibilityComponent from "~/components/page-management/VisibilityComponent.vue";
+import StatusComponent from "~/components/page-management/StatusComponent.vue";
+import '@andresouzaabreu/vue-data-table/dist/DataTable.css';
+import ActionsComponent from "~/components/page-management/ActionsComponent.vue";
 
 export default Vue.extend({
   name: 'DashboardAccount',
+  components: {
+    DataTable
+  },
   layout: 'dashboard',
   middleware: 'authenticated',
+  data: () => ({
+    filteredProfiles: [] as EditorProfile[],
+    profiles: [] as EditorProfile[],
+    selectedProductId: null as string | null,
+    selectedPurchaseType: undefined as DbProduct["purchase_type"],
+    currentPermission: Permission.FREE,
+    availableSubscriptions: [] as {
+      id?: string,
+      name: string,
+      metadata: any,
+      order: number,
+      price: any
+    }[],
 
-  head() {
+    godmode: false,
+
+    subInfo: {} as (DbSubscription | DbProduct) & { product: unknown | null, price: unknown | null },
+
+    loaded: false,
+    resetPasswordModalActive: false,
+    deleteUserModalActive: false,
+    originalHandle: '',
+
+    user: {
+      name: '',
+      emailHash: '',
+      email: '',
+      activeProfile: {
+        imageUrl: '',
+        headline: '',
+        subtitle: '',
+        handle: '',
+        customDomain: '',
+        visibility: '',
+        showWatermark: false,
+      }
+    },
+    error: '',
+    passwordError: '',
+    passwordEmail: '' as string | null | undefined,
+    resetNewEmail: '',
+    showWatermarkNotice: false,
+    app_name: process.env.APP_NAME,
+
+    alerts: {},
+  }),
+
+  head(): MetaInfo {
     return {
       title: 'Account Settings - ' + this.$customSettings.productName,
       meta: [
@@ -376,66 +324,51 @@ export default Vue.extend({
       ],
     };
   },
-
-  data() {
-    return {
-      selectedProductId: null as string | null,
-      selectedPurchaseType: undefined as DbProduct["purchase_type"],
-      currentPermission: Permission.FREE,
-      availableSubscriptions: [] as {
-        id?: string,
-        name: string,
-        metadata: any,
-        order: number,
-        price: any
-      }[],
-
-      godmode: false,
-
-      subInfo: {} as (DbSubscription | DbProduct) & { product: unknown | null, price: unknown | null },
-
-      loaded: false,
-      resetPasswordModalActive: false,
-      deleteUserModalActive: false,
-      originalHandle: '',
-
-      user: {
-        name: '',
-        emailHash: '',
-        email: '',
-        activeProfile: {
-          imageUrl: '',
-          headline: '',
-          subtitle: '',
-          handle: '',
-          customDomain: '',
-          visibility: '',
-          showWatermark: false,
-        }
-      },
-
-      teamMemberEmail: '',
-      teamMemberRole: 'editor',
-
-      teamMembers: [
-        {
-          userId: '0',
-          profileId: '0',
-          profileHandle: 'loading...',
-          email: 'loading...',
-          role: ''
-        }
-      ],
-
-      error: '',
-      passwordError: '',
-      passwordEmail: '' as string | null | undefined,
-      resetNewEmail: '',
-      showWatermarkNotice: false,
-      app_name: process.env.APP_NAME,
-
-      alerts: {},
-    };
+  computed: {
+    profilesTableParams(): Object {
+      return {
+        showPerPage: false,
+        showSearchFilter: false,
+        sortingMode: "single",
+        showDownloadButton: false,
+        showEntriesInfo: false,
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        data: this.filteredProfiles.sort((a, b) => a.handle.localeCompare(b.handle)),
+        columns: [
+          {
+            key: "imageUrl",
+            title: "Avatar Photo",
+            component: ImageComponent,
+            sortable: false
+          },
+          {
+            key: "headline",
+            sortable: false
+          },
+          {
+            key: "handle",
+          },
+          {
+            key: "visibility",
+            component: VisibilityComponent,
+          },
+          {
+            key: "status",
+            component: StatusComponent,
+          },
+          {
+            key: "pageViews",
+            title: "Total Views"
+          },
+          {
+            key: "actions",
+            title: "Actions",
+            component: ActionsComponent,
+            sortable: false
+          }
+        ]
+      };
+    },
   },
 
   watch: {
@@ -446,41 +379,30 @@ export default Vue.extend({
     },
     selectedProductId: {
       handler(val) {
-        this.selectedPurchaseType = this.availableSubscriptions.find(x => x.id == val)?.price?.type;
+        this.selectedPurchaseType = this.availableSubscriptions.find(x => x.id === val)?.price?.type;
       }
     }
   },
 
   async beforeMount() {
-    if (process.env.NODE_ENV === 'production') {
-      await this.getUserData();
+    await this.getUserData();
 
-      this.availableSubscriptions = (await this.$axios.post('/products', {})).data
+    this.availableSubscriptions = (await this.$axios.post('/products', {})).data;
 
-      await this.checkSubscription();
-    }
+    await this.checkSubscription();
     this.loaded = true;
 
   },
 
   async mounted() {
-    this.getTeamMembers().catch();
+    this.profiles = await this.$axios.$post('/profiles', {
+      token: this.$store.getters['auth/getToken'],
+      includePaymentInfoAndAnalytics: true
+    });
+    this.filteredProfiles = this.profiles;
   },
 
   methods: {
-    async assignGoogleAccount() {
-      const response = await this.$axios.post('/auth/google/assign', {
-        token: this.$store.getters['auth/getToken']
-      });
-
-      window.location.assign(response.data);
-    },
-    async onMemberRoleUpdate(email: string, role: string) {
-
-      await this.addTeamMember(email, role);
-      await this.getTeamMembers();
-    },
-
     async getTeamMembers() {
       if (!this.teamMembers)
         this.teamMembers = [];
@@ -505,24 +427,28 @@ export default Vue.extend({
 
       await this.getTeamMembers();
     },
-
-    async removeTeamMember(email: string, profileId: string) {
-      const token = this.$store.getters['auth/getToken'];
-
-      await this.$axios.post('/team/remove', {
-        token,
-        email,
-        profileId
+    filterProfiles(event: any) {
+      const target = event.target;
+      const filterSearch = target.value.toLowerCase();
+      const profiles = this.profiles;
+      if (filterSearch) {
+        this.filteredProfiles = profiles.filter(x => x.handle.toLowerCase().includes(filterSearch));
+      } else {
+        this.filteredProfiles = this.profiles;
+      },
+    async assignGoogleAccount() {
+      const response = await this.$axios.post('/auth/google/assign', {
+        token: this.$store.getters['auth/getToken']
       });
 
-      await this.getTeamMembers();
+      window.location.assign(response.data);
     },
 
     async initCheckout() {
       try {
         const token = this.$store.getters['auth/getToken'];
 
-        let response = await this.$axios.post('/stripe/create-checkout-session', {
+        const response = await this.$axios.post('/stripe/create-checkout-session', {
           token,
           productId: this.selectedProductId
         });
@@ -537,7 +463,7 @@ export default Vue.extend({
       try {
         const token = this.$store.getters['auth/getToken'];
 
-        let response = await this.$axios.post('/stripe/create-portal-session', {
+        const response = await this.$axios.post('/stripe/create-portal-session', {
           token
         });
 
@@ -555,14 +481,15 @@ export default Vue.extend({
       });
 
       this.currentPermission = Permission.parse(this.subInfo.tier);
+      this.$store.commit('auth/setCurrentPermission', this.currentPermission);
 
       if (this.subInfo.product_id) {
         this.selectedProductId = this.subInfo.product_id;
 
-        let product = <any>this.subInfo.product;
+        const product: any = this.subInfo.product;
 
         if (!product.active) {
-          let find = this.availableSubscriptions.find(x => x.id === this.selectedProductId);
+          const find = this.availableSubscriptions.find(x => x.id === this.selectedProductId);
 
           if (find) {
             find.name += " (Legacy)";
@@ -571,11 +498,7 @@ export default Vue.extend({
       }
 
       this.availableSubscriptions = this.availableSubscriptions.filter(sub => {
-        let permission = Permission.parse(sub.metadata.permission);
-
-        if (sub.price.type === 'recurring' && permission.permLevel === this.currentPermission.permLevel) {
-          return false;
-        }
+        const permission = Permission.parse(sub.metadata.permission);
 
         return this.currentPermission.permLevel <= permission.permLevel;
       });
@@ -711,7 +634,7 @@ export default Vue.extend({
 
     async downloadGDPRPackage() {
       if (process.client) {
-        let token = this.$store.getters['auth/getToken'];
+        const token = this.$store.getters['auth/getToken'];
 
         const response = await this.$axios.post('/user/data-package', {
           token
@@ -719,7 +642,7 @@ export default Vue.extend({
 
         let filename = "data.json";
         const disposition = response.headers['content-disposition'];
-        if (disposition && disposition.indexOf('filename') !== -1) {
+        if (disposition && disposition.includes('filename')) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(disposition);
           if (matches != null && matches[1]) {
@@ -754,5 +677,17 @@ export default Vue.extend({
 
 input, select {
   @apply font-bold;
+}
+
+.error {
+  @apply bottom-0 rounded-lg shadow border border-gray-200;
+  color: mintcream;
+  background-color: #ff4a4a;
+  padding: 7px;
+  z-index: 25;
+}
+
+.data-table {
+  height: 50%;
 }
 </style>

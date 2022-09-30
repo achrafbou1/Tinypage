@@ -8,6 +8,9 @@ import {HttpError} from "../utils/http-error";
 import {StatusCodes} from "http-status-codes";
 import {Permission, PermissionUtils} from "../utils/permission-utils";
 import {config} from "../config/config";
+import {ReplyUtils} from "../utils/reply-utils";
+import {Auth} from "../utils/auth";
+import {FastifyReply} from "fastify";
 
 /**
  * Handles payment stuff.
@@ -56,6 +59,25 @@ export class SubscriptionService extends DatabaseService {
             zipCode: customer.address?.postal_code,
             country: customer.address?.country,
         };
+    }
+
+    async createOrUpdateSubscription(user: User, eventObject: any, create: boolean) {
+        let item = eventObject.plan.product;
+        let product = await this.stripe.products.retrieve(item);
+        let tier = product?.metadata.permission;
+        let allowDowngrade = false;
+        if (eventObject.cancel_at) {
+            tier = 'free';
+            allowDowngrade = true;
+        }
+
+
+        if (tier) {
+            await this.setDbSubscriptionTier(user, tier, allowDowngrade, create, eventObject, product.id);
+            await this.checkProfilesForOverLimit(user.id);
+        } else {
+            console.error("[customer.subscription.updated] Couldn't set subscription for user: " + user.id + " to tier " + tier);
+        }
     }
 
     async getProducts() {
@@ -131,6 +153,55 @@ export class SubscriptionService extends DatabaseService {
         return paymentInfo;
     }
 
+    async deleteSubscription(profileId: string, user: SensitiveUser, reply: FastifyReply) {
+        try {
+            let customer = await this.getOrCreateStripeCustomer(user);
+
+            if (!customer || customer.deleted) {
+                reply.status(StatusCodes.NOT_FOUND);
+                return ReplyUtils.error("A stripe customer does not exist for the provided user.");
+            }
+
+            const ownsProfile = await Auth.checkProfileOwnership(this.pool, profileId, user.id, false);
+
+            if (!ownsProfile) {
+                reply.status(StatusCodes.UNAUTHORIZED);
+                return ReplyUtils.error("You do not own this profile.");
+            }
+
+            const queryResult = await this.pool.query<{ subscription_id: string }>("select subscription_id from enterprise.subscriptions WHERE profile_id=$1 AND tier='pro'", [profileId]);
+            if (queryResult.rowCount < 1) {
+                reply.status(StatusCodes.UNAUTHORIZED);
+                return ReplyUtils.error("This profile is not subscribed.");
+            }
+            try {
+            const deleted = await this.stripe.subscriptions.del(
+                queryResult.rows[0].subscription_id
+            );
+                if (deleted.cancel_at_period_end) {
+                    reply.status(StatusCodes.UNAUTHORIZED);
+                    return ReplyUtils.success("Successfully downgraded !");
+                }
+            } catch (err: any) {
+                if (err.code === "resource_missing") {
+                    reply.status(StatusCodes.NOT_FOUND);
+                    return ReplyUtils.success("Subscription not found.");
+                }
+                console.log(err);
+            }
+
+
+        } catch (e) {
+            if (e instanceof HttpError) {
+                if (e.statusCode !== StatusCodes.NOT_FOUND) {
+                    reply.code(e.statusCode);
+                    return ReplyUtils.error(e.message, e);
+                }
+            }
+        }
+        return ReplyUtils.success("Successfully unsubscribed");
+    }
+
     async setCardInfo(user: SensitiveUser, card?: { number: string | null; expDate: string | null; cvc: string | null; }) {
         let customer = await this.getOrCreateStripeCustomer(user);
 
@@ -201,7 +272,7 @@ export class SubscriptionService extends DatabaseService {
                 tier: currentPermission.name,
                 product_id: null,
                 created_on: null,
-                purchase_type: 'one_time'
+                purchase_type: 'recurring'
             };
         }
 
@@ -236,9 +307,12 @@ export class SubscriptionService extends DatabaseService {
      * @param user
      * @param tier
      * @param allowDowngrade
+     * @param create
+     * @param eventObject
      * @param productId
      */
-    async setDbSubscriptionTier(user: User, tier: SubscriptionTier, allowDowngrade: boolean, productId?: string) {
+    async setDbSubscriptionTier(user: User, tier: SubscriptionTier, allowDowngrade: boolean, create: boolean, eventObject: any, productId?: string) {
+        const subscriptionId = eventObject.object === 'subscription' ? eventObject.id : null;
         if (!allowDowngrade) {
             let oldPerm = await PermissionUtils.getCurrentPermission(user.id);
             let newPerm = Permission.parse(tier);
@@ -248,15 +322,35 @@ export class SubscriptionService extends DatabaseService {
                 return;
             }
         }
-
-        let queryResult = await this.pool.query<DbUser>("insert into enterprise.subscriptions(user_id, tier, product_id, last_updated) values ($1, $2, $3, $4) on conflict(user_id) do update set user_id=$1, tier=$2, product_id=$3, last_updated=$4",
-            [
+        let queryResult;
+        if (create) {
+            const profileId = eventObject.metadata.profileId;
+            queryResult = await this.pool.query<DbUser>("insert into enterprise.subscriptions(user_id, tier, product_id, last_updated, subscription_id, profile_id) values ($1, $2, $3, $4, $5, $6) ON CONFLICT (profile_id) DO UPDATE SET user_id=$1, tier=$2, product_id=$3, last_updated=$4, subscription_id=$5, profile_id=$6",
+                [
+                    user.id,
+                    tier,
+                    productId,
+                    new Date(),
+                    subscriptionId,
+                    profileId
+                ]);
+        } else {
+            let updateQuery = "update enterprise.subscriptions set user_id=$1, tier=$2, product_id=$3, last_updated=$4";
+            let updateValues = [
                 user.id,
                 tier,
                 productId,
                 new Date()
-            ]);
-
+            ];
+            if (subscriptionId) {
+                updateQuery += " where subscription_id=$5";
+                updateValues.push(subscriptionId);
+            } else {
+                updateQuery += " where user_id=$1";
+            }
+            queryResult = await this.pool.query<DbUser>(updateQuery,
+                updateValues);
+        }
         if (queryResult.rowCount <= 0) {
             throw new HttpError(StatusCodes.NOT_FOUND, "The user couldn't be found.");
         }
@@ -359,9 +453,9 @@ export class SubscriptionService extends DatabaseService {
             await this.pool.query("update app.profiles set visibility='unpublished' where profiles.user_id=$1", [userId]);
         } else {
             let number = await this.countPublishedProfiles(userId);
-
-            if (number > perm.pageCount) {
-                let queryResult = await this.pool.query<{ id: string }>("select id from app.profiles where profiles.user_id=$1 limit $2", [userId, perm.pageCount]);
+            let numOfAllowedPages = await this.getNumOfAllowedPages(perm, userId);
+            if (number > numOfAllowedPages) {
+                let queryResult = await this.pool.query<{ id: string }>("select id from app.profiles where profiles.user_id=$1 limit $2", [userId, numOfAllowedPages]);
                 await this.pool.query("update app.profiles set visibility='unpublished' where profiles.id != all($1) and user_id=$2", [queryResult.rows, userId]);
             }
         }
@@ -370,6 +464,14 @@ export class SubscriptionService extends DatabaseService {
     private async countPublishedProfiles(userId: string): Promise<number> {
         let queryResult = await this.pool.query<{ count: number }>("select count(*) from app.profiles where user_id=$1 and visibility != 'unpublished'", [userId]);
 
+        return queryResult.rows[0].count;
+    }
+
+    private async getNumOfAllowedPages(perm: Permission, userId: string): Promise<number> {
+        if (perm.name === Permission.GODMODE.name) {
+            return 9999;
+        }
+        let queryResult = await this.pool.query<{ count: number }>("select count(*) from enterprise.subscriptions where user_id=$1 and tier!='free'", [userId]);
         return queryResult.rows[0].count;
     }
 }
