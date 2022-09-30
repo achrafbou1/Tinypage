@@ -54,52 +54,54 @@
     <!--    </div>-->
 
     <!-- Manage SSO -->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
-        <h2 class="text-black font-bold text-lg w-full">
-          Manage SSO
-        </h2>
-        <p class="text-black opacity-70 font-semibold">
-          Link up your social media accounts for easy single sign-on access.
-        </p>
+    <div class="flex flex-row">
+      <div
+          class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-center w-1/2 mb-8 text-center mr-1">
+        <div class="flex flex-col mr-auto w-full">
+          <h2 class="text-black font-bold text-lg w-full my-2">
+            Manage SSO
+          </h2>
+          <p class="text-black opacity-70 font-semibold mb-3">
+            Link up your social media accounts for easy single sign-on access.
+          </p>
+        </div>
+        <div>
+          <a
+              class="flex flex-row items-center font-bold justify-center cursor-pointer rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"
+              style="border-width:3px;border-style:solid;"
+              @click="assignGoogleAccount()"
+          >
+            <img class="w-5 mr-4" src="/icons/google-icon.png">
+            Link with Google
+          </a>
+          <!--        <a-->
+          <!--          class="flex flex-row items-center font-bold justify-center rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"-->
+          <!--          style="border-width:3px;border-style:solid;"-->
+          <!--          @click="assignGitHubAccount()"-->
+          <!--        >-->
+          <!--          <img src="/icons/google-icon.png" class="w-5 mr-4">-->
+          <!--          Link with GitHub-->
+          <!--        </a>-->
+        </div>
       </div>
-      <div>
-        <a
-            class="flex flex-row items-center font-bold justify-center cursor-pointer rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"
-            style="border-width:3px;border-style:solid;"
-            @click="assignGoogleAccount()"
-        >
-          <img class="w-5 mr-4" src="/icons/google-icon.png" alt="Link with Google">
-          Link with Google
-        </a>
-        <!--        <a-->
-        <!--          class="flex flex-row items-center font-bold justify-center rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"-->
-        <!--          style="border-width:3px;border-style:solid;"-->
-        <!--          @click="assignGitHubAccount()"-->
-        <!--        >-->
-        <!--          <img src="/icons/google-icon.png" class="w-5 mr-4">-->
-        <!--          Link with GitHub-->
-        <!--        </a>-->
-      </div>
-    </div>
 
-    <!-- Request GDPR package-->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
-        <h2 class="text-black font-bold text-lg w-full">
-          Request GDPR Package
-        </h2>
-        <p class="text-black font-bold opacity-70">
-          Download a data package containing all of your recorded data.
-        </p>
+      <!-- Request GDPR package-->
+      <div class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-center w-1/2 mb-8 text-center">
+        <div class="flex flex-col mr-auto w-full">
+          <h2 class="text-black font-bold text-lg w-full my-2">
+            Request GDPR Package
+          </h2>
+          <p class="text-black opacity-70 font-semibold mb-3">Download a data package containing all of your recorded
+            data.</p>
+        </div>
+        <button
+            class="flex flex-row w-full lg:w-auto lg:mt-0 ml-2 px-6 py-3 text-sm text-white text-center bg-green-600 hover:bg-green-400 rounded-2xl font-bold w-1/3 justify-center align-center"
+            type="button"
+            @click="downloadGDPRPackage"
+        >
+          Download
+        </button>
       </div>
-      <button
-          class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex px-6 py-3 text-sm text-white text-center bg-green-600 hover:bg-green-400 rounded-2xl font-bold w-1/3 justify-center align-center"
-          type="button"
-          @click="downloadGDPRPackage"
-      >
-        Download
-      </button>
     </div>
 
     <!-- Reset Password -->
@@ -401,6 +403,30 @@ export default Vue.extend({
   },
 
   methods: {
+    async getTeamMembers() {
+      if (!this.teamMembers)
+        this.teamMembers = [];
+
+      this.teamMembers.length = 0;
+
+      const token = this.$store.getters['auth/getToken'];
+
+      this.teamMembers = (await this.$axios.post('/team', {
+        token
+      })).data;
+    },
+
+    async addTeamMember(email: string, role: string) {
+      const token = this.$store.getters['auth/getToken'];
+
+      await this.$axios.post('/team/add', {
+        token,
+        email,
+        role
+      });
+
+      await this.getTeamMembers();
+    },
     filterProfiles(event: any) {
       const target = event.target;
       const filterSearch = target.value.toLowerCase();
@@ -409,8 +435,7 @@ export default Vue.extend({
         this.filteredProfiles = profiles.filter(x => x.handle.toLowerCase().includes(filterSearch));
       } else {
         this.filteredProfiles = this.profiles;
-      }
-    },
+      },
     async assignGoogleAccount() {
       const response = await this.$axios.post('/auth/google/assign', {
         token: this.$store.getters['auth/getToken']

@@ -379,7 +379,6 @@
               placeholder="e.g. jane@gmail.com"
               type="text"
           >
-
           <label class="ml-4 mr-4 font-normal">Role</label>
           <select
               v-model="teamMemberRole"
@@ -408,7 +407,6 @@
       </div>
 
     </div>
-
     <!-- Import / Export Profile -->
     <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
       <div class="flex flex-col mr-auto w-full lg:w-1/2">
