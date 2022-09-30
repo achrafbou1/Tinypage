@@ -358,36 +358,6 @@
       </button>
     </div>
 
-    <!-- Manage SSO -->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
-        <h2 class="text-black font-bold text-lg w-full">
-          Manage SSO
-        </h2>
-        <p class="text-black opacity-70 font-semibold">
-          Link up your social media accounts for easy single sign-on access.
-        </p>
-      </div>
-      <div>
-        <a
-            class="flex flex-row items-center font-bold justify-center cursor-pointer rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"
-            style="border-width:3px;border-style:solid;"
-            @click="assignGoogleAccount()"
-        >
-          <img class="w-5 mr-4" src="/icons/google-icon.png">
-          Link with Google
-        </a>
-        <!--        <a-->
-        <!--          class="flex flex-row items-center font-bold justify-center rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"-->
-        <!--          style="border-width:3px;border-style:solid;"-->
-        <!--          @click="assignGitHubAccount()"-->
-        <!--        >-->
-        <!--          <img src="/icons/google-icon.png" class="w-5 mr-4">-->
-        <!--          Link with GitHub-->
-        <!--        </a>-->
-      </div>
-    </div>
-
     <!-- Import / Export Profile -->
     <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
       <div class="flex flex-col mr-auto w-full lg:w-1/2">
@@ -563,7 +533,7 @@
             Make sure to check your spam folder.</p>
 
           <p v-if="passwordError" class="text-gray-800 text-sm">
-            <i class="fas fa-exclamation-triangle"/>
+            <em class="fas fa-exclamation-triangle"/>
             {{ passwordError }}
           </p>
           <button
@@ -883,14 +853,6 @@ export default Vue.extend({
       this.$nuxt.$loading.finish();
 
       window.location.replace("/dashboard");
-    },
-
-    async assignGoogleAccount() {
-      const response = await this.$axios.post('/auth/google/assign', {
-        token: this.$store.getters['auth/getToken']
-      });
-
-      window.location.assign(response.data);
     },
   }
 });
