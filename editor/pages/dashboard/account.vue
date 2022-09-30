@@ -456,6 +456,7 @@ export default Vue.extend({
       });
 
       this.currentPermission = Permission.parse(this.subInfo.tier);
+      this.$store.commit('auth/setCurrentPermission', this.currentPermission);
 
       if (this.subInfo.product_id) {
         this.selectedProductId = this.subInfo.product_id;
