@@ -51,3 +51,12 @@ html {
 .table-hover tbody tr:hover {
     background-color: rgba(0, 0, 0, .075) !important;
 }
+
+.btn-primary {
+    background-color: #478ecc !important;
+}
+
+.page-item.active .page-link {
+    background-color: #478ecc !important;
+    border-color: #478ecc !important;
+}
