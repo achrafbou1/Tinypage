@@ -35,6 +35,6 @@ export const mutations = {
   },
 
   setCurrentPermission (state, perm) {
-    state.perm = perm
+    state.currentPermission = perm
   }
 };
