@@ -54,12 +54,13 @@
     <!--    </div>-->
 
     <!-- Manage SSO -->
-    <div class="flex flex-row">
+    <div class="flex flex-row justify-between">
       <div
-          class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-center w-1/2 mb-8 text-center mr-1"
+          class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-center mb-8 text-center"
+          style="width: 47%"
       >
-        <div class="flex flex-col mr-auto w-full">
-          <h2 class="text-black font-bold text-lg w-full my-2">
+        <div class="flex flex-col mr-auto">
+          <h2 class="text-black font-bold text-lg my-2">
             Manage SSO
           </h2>
           <p class="text-black opacity-70 font-semibold mb-3">
@@ -87,9 +88,12 @@
       </div>
 
       <!-- Request GDPR package-->
-      <div class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-center w-1/2 mb-8 text-center">
-        <div class="flex flex-col mr-auto w-full">
-          <h2 class="text-black font-bold text-lg w-full my-2">
+      <div
+          class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-center mb-8 text-center"
+          style="width: 47%"
+      >
+        <div class="flex flex-col mr-auto">
+          <h2 class="text-black font-bold text-lg my-2">
             Request GDPR Package
           </h2>
           <p class="text-black opacity-70 font-semibold mb-3">Download a data package containing all of your recorded
