@@ -56,7 +56,8 @@
     <!-- Manage SSO -->
     <div class="flex flex-row">
       <div
-          class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-center w-1/2 mb-8 text-center mr-1">
+          class="flex flex-col p-6 bg-white shadow rounded-2xl justify-center items-center w-1/2 mb-8 text-center mr-1"
+      >
         <div class="flex flex-col mr-auto w-full">
           <h2 class="text-black font-bold text-lg w-full my-2">
             Manage SSO
@@ -260,7 +261,7 @@ export default Vue.extend({
     }[],
 
     godmode: false,
-
+    teamMembers: [],
     subInfo: {} as (DbSubscription | DbProduct) & { product: unknown | null, price: unknown | null },
 
     loaded: false,
@@ -403,9 +404,10 @@ export default Vue.extend({
   },
 
   methods: {
-    async getTeamMembers() {
-      if (!this.teamMembers)
+    async getTeamMembers(): Promise<void> {
+      if (!this.teamMembers) {
         this.teamMembers = [];
+      }
 
       this.teamMembers.length = 0;
 
@@ -435,7 +437,8 @@ export default Vue.extend({
         this.filteredProfiles = profiles.filter(x => x.handle.toLowerCase().includes(filterSearch));
       } else {
         this.filteredProfiles = this.profiles;
-      },
+      }
+    },
     async assignGoogleAccount() {
       const response = await this.$axios.post('/auth/google/assign', {
         token: this.$store.getters['auth/getToken']
@@ -632,7 +635,7 @@ export default Vue.extend({
       }
     },
 
-    async downloadGDPRPackage() {
+    async downloadGDPRPackage(): Promise<void> {
       if (process.client) {
         const token = this.$store.getters['auth/getToken'];
 
