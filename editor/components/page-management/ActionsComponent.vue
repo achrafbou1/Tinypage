@@ -1,7 +1,7 @@
 <template>
   <div class="buttons">
     <button
-        v-if="(!data.status || data.status === 'free') && !$store.currentPermission.name !== 'godmode'"
+        v-if="(!data.status || data.status === 'free') && !$store.currentPermission?.name !== 'godmode'"
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-sm"
         @click="initCheckout"
     >
@@ -9,7 +9,7 @@
       Upgrade
     </button>
     <button
-        v-if="data.status === 'pro' && !$store.currentPermission.name !== 'godmode'"
+        v-if="data.status === 'pro' && !$store.currentPermission?.name !== 'godmode'"
         class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm"
         @click="downgrade"
     >
