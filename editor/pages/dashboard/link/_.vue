@@ -13,7 +13,16 @@
         v-show="intent !=='view'"
         class="flex flex-col mb-4 justify-start w-full"
     >
-      <label class="font-semibold mb-2">Element type</label>
+      <div class="flex flex-row">
+        <label class="font-semibold mb-2">Element type</label>
+        <input
+            id="checkbox-1"
+            v-model="pendingLink.hidden"
+            class="mr-1 ml-4 mb-2 w-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            type="checkbox"
+        >
+        <label class="font-light mb-2">Hide</label>
+      </div>
       <select
           v-model="pendingLink.type"
           class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
@@ -58,7 +67,17 @@
         v-show="intent !=='view'"
         class="flex flex-col mb-4 justify-start w-full"
     >
-      <label class="font-semibold mb-2">Label</label>
+      <div class="flex flex-row">
+        <label class="font-semibold mb-2">Label</label>
+        <input
+            v-show="pendingLink.type === 'link' || pendingLink.type === 'vcard'"
+            id="checkbox-1"
+            v-model="pendingLink.metadata.hiddenLabel"
+            class="mr-1 ml-4 mb-2 w-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            type="checkbox"
+        >
+        <label v-show="pendingLink.type === 'link' || pendingLink.type === 'vcard'" class="font-light mb-2">Hide</label>
+      </div>
 
       <input
           ref="label"
@@ -71,30 +90,9 @@
 
     <!-- Label -->
     <div
-        v-show="intent !=='view'"
-        class="flex flex-col mb-4 justify-start w-full"
-    >
-      <label class="font-semibold mb-2">Hide element</label>
-      <input
-          id="checkbox-1"
-          v-model="pendingLink.hidden"
-          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-          type="checkbox"
-      >
-    </div>
 
-    <div
-        v-show="intent !=='view' && (pendingLink.type === 'link' || pendingLink.type === 'vcard')"
         class="flex flex-col mb-4 justify-start w-full"
-    >
-      <label class="font-semibold mb-2">Hide label</label>
-      <input
-          id="checkbox-1"
-          v-model="pendingLink.metadata.hiddenLabel"
-          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-          type="checkbox"
-      >
-    </div>
+    />
 
     <!-- Subtitle -->
     <div
