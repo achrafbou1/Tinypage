@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col items-center h-full  flex-shrink-0">
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
-      <img :src="`${$customSettings.icons.mainIcon}`" alt="House icon" class="w-8" style="width:65px;height:65px;">
+      <img :src="`${$customSettings.icons.mainIcon}`" alt="House icon" class="w-8">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
         Tinypage
       </h1>
