@@ -23,3 +23,7 @@ html {
     box-sizing: border-box;
     outline: none;
 }
+
+input[type="checkbox"]:focus {
+    --tw-ring-shadow: none !important;
+}
