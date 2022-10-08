@@ -44,6 +44,9 @@ html {
     outline: none;
 }
 
+input[type="checkbox"]:focus {
+    --tw-ring-shadow: none !important;
+    
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: transparent !important;
 }
