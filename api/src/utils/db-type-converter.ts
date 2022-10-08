@@ -2,7 +2,17 @@
  * Contains many utility functions for converting from DB Types to Typescript Types.
  */
 
+import {camelCase, isArray, isObject, transform} from "lodash";
+
 export class DbTypeConverter {
+
+    static snakeToCamel(dto: ProfileWithAnalytics | Object): ProfileWithAnalytics {
+        return transform(dto, (acc: any, value: string | Object, key, target) => {
+            const camelKey = isArray(target) ? key : camelCase(key);
+
+            acc[camelKey] = isObject(value) && !(value instanceof Date) ? DbTypeConverter.snakeToCamel(value) : value;
+        });
+    }
 
     static toUser(user: DbUser): User {
         return {

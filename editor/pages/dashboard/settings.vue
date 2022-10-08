@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col p-8 items-center overflow-x-hidden overflow-y-scroll">
     <div class="flex flex-row items-center justify-start mb-4 space-x-4 mb-4">
-      <img class="w-8" src="/icons/Settings.svg">
+      <img class="w-8" src="/icons/Settings.svg" alt="Settings">
       <h1 class="text-black font-extrabold tracking-tight text-3xl w-full flex flex-row items-start lg:items-center">
         Page Settings
       </h1>
@@ -18,7 +18,13 @@
           </div>
         </div>
       </transition>
-
+      <div v-if="profileUsage.published === profileUsage.allowed" class="warning">
+        Unpublished pages are used for design and testing at no charge. To publish your page, please add a page
+        <NuxtLink style="text-decoration: underline;" to="/dashboard/page-management">
+          here
+        </NuxtLink>
+        then set it's visibility to "Public" on the page settings.
+      </div>
       <h2 class="text-black font-bold text-xl w-full mb-2">
         Site details
       </h2>
@@ -68,6 +74,7 @@
             <select
                 id="visibility"
                 v-model="user.activeProfile.visibility"
+                :disabled="profileUsage.published === profileUsage.allowed"
                 class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
             >
               <option value="unpublished">
@@ -223,7 +230,8 @@
           Customize your preview link
         </h2>
         <div class="flex flex-col w-full lg:w-1/2 mr-3 mb-3 lg:mb-0">
-          <label class="font-bold opacity-70 text-sm text-black" for="image_url_2">Image URL (We recommend using a 16:9 image)</label>
+          <label class="font-bold opacity-70 text-sm text-black" for="image_url_2">Image URL (We recommend using a 16:9
+            image)</label>
           <input
               id="image_url"
               v-model="user.activeProfile.metadata.previewImageUrl"
@@ -324,70 +332,81 @@
     </div>
 
     <!-- Leave page -->
-    <div v-if="user.activeProfile.userId !== user.id" class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8" >
+    <div
+        v-if="user.activeProfile.userId !== user.id"
+        class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8"
+    >
       <div class="flex flex-col mr-auto w-full lg:w-full">
         <h2 class="text-black font-bold text-lg w-full">
           Leave this page
         </h2>
-        <p class="text-black opacity-70 font-semibold">Leave this page (only works for pages you've been invited to).</p>
+        <p class="text-black opacity-70 font-semibold">
+          Leave this page (only works for pages you've been invited to).
+        </p>
       </div>
       <button
           class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
           type="button"
-          @click="leavePageModalActive = true; setDeleteProfileModalActive(false);"
+          @click="$modal.show('leave-page'); $modal.hide('delete-page');"
       >
         Leave this page
       </button>
     </div>
 
-    <!-- Delete site -->
-    <div v-if="user.activeProfile.userId === user.id" class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-full">
-        <h2 class="text-black font-bold text-lg w-full">
-          Delete this page
-        </h2>
-        <p class="text-black opacity-70 font-semibold">Done with this page? Click the button on your right to delete
-          this page and all related content.</p>
+    <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8">
+      <div class="flex space-x-48 flex-row">
+        <div>
+          <h2 class="text-black font-bold text-lg w-full px-6">
+            Manage your team
+          </h2>
+        </div>
+        <div class="flex-initial w-64 data-table-search-filter mb-6">
+          <span>search:</span><input type="search" @input="filterTeams">
+        </div>
       </div>
-      <button
-          class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
-          type="button"
-          @click="setDeleteProfileModalActive(true); leavePageModalActive = false;"
-      >
-        Delete this page
-      </button>
-    </div>
+      <div class="w-full bg-gray-200" style="height:1px;"/>
+      <div class="flex flex-col mt-4 mb-2 w-full px-6 mt-6">
+        <label v-if="!teamMembers || teamMembers.length < 1" class="font-bold text-black opacity-70 mb-3">Ready to add
+          your first team
+          member? Add them here!</label>
+        <label v-else class="font-bold text-black opacity-70 mb-3">Want to add a new member? Add them here!</label>
 
-    <!-- Manage SSO -->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
-        <h2 class="text-black font-bold text-lg w-full">
-          Manage SSO
-        </h2>
-        <p class="text-black opacity-70 font-semibold">
-          Link up your social media accounts for easy single sign-on access.
-        </p>
-      </div>
-      <div>
-        <a
-            class="flex flex-row items-center font-bold justify-center cursor-pointer rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"
-            style="border-width:3px;border-style:solid;"
-            @click="assignGoogleAccount()"
-        >
-          <img class="w-5 mr-4" src="/icons/google-icon.png">
-          Link with Google
-        </a>
-        <!--        <a-->
-        <!--          class="flex flex-row items-center font-bold justify-center rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"-->
-        <!--          style="border-width:3px;border-style:solid;"-->
-        <!--          @click="assignGitHubAccount()"-->
-        <!--        >-->
-        <!--          <img src="/icons/google-icon.png" class="w-5 mr-4">-->
-        <!--          Link with GitHub-->
-        <!--        </a>-->
-      </div>
-    </div>
+        <div class="flex flex-row items-center justify-start w-full">
+          <label class="mr-4 font-normal">Email</label>
+          <input
+              v-model="teamMemberEmail"
+              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
+              placeholder="e.g. jane@gmail.com"
+              type="text"
+          >
+          <label class="ml-4 mr-4 font-normal">Role</label>
+          <select
+              v-model="teamMemberRole"
+              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
+              style="min-width: 120px; max-width: 220px;"
+          >
+            <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
+            <option selected value="editor">
+              Editor
+            </option>
+          </select>
+          <button
+              class="ml-4 mr-4 py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl
+              font-bold justify-center align-center"
+              type="button"
+              @click="addTeamMember(teamMemberEmail, teamMemberRole); teamMemberEmail = '';"
+          >
+            Add team member
+          </button>
+        </div>
 
+        <div v-if="error" class="error py-4 px-6 mt-4 text-sm text-white align-center justify-center">
+          {{ error }}
+        </div>
+        <DataTable v-bind="teamsTableParams"/>
+      </div>
+
+    </div>
     <!-- Import / Export Profile -->
     <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
       <div class="flex flex-col mr-auto w-full lg:w-1/2">
@@ -424,74 +443,35 @@
       </div>
     </div>
 
-    <!-- Import from Linktree -->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
+    <!-- Delete site -->
+    <div
+        v-if="user.activeProfile.userId === user.id"
+        class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8"
+    >
+      <div class="flex flex-col mr-auto w-full lg:w-full">
         <h2 class="text-black font-bold text-lg w-full">
-          Import from Linktree
+          Delete this page
         </h2>
-        <p class="text-black opacity-70 font-semibold">
-          Replace all of your profile links with links from your linktree profile.
-        </p>
-        <div class="flex flex-row rounded-2xl border border-solid border-gray-300 text-sm mt-2 overflow-hidden">
-          <span
-              class="flex p-2 bg-gray-100 border text-gray-900 border-solid border-gray-300 border-t-0 border-l-0 border-b-0"
-          >https://linktr.ee/</span>
-          <input
-              id="linktreeUrl"
-              autocomplete="off"
-              class="p-2 flex-grow"
-              placeholder="e.g. janedoe"
-              type="text"
-          >
-        </div>
+        <p class="text-black opacity-70 font-semibold">Done with this page? Click the button on your right to delete
+          this page and all related content.</p>
       </div>
-      <div class="flex flex-col space-y-2">
-        <button
-            v-if="alerts.linktreeImported === null"
-            class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
-            type="button"
-            @click="importLinktree"
-        >
-          Import
-        </button>
-        <div
-            v-if="alerts.linktreeImported !== null && alerts.linktreeImported"
-            class="flex flex-col lg:flex-row justify-center items-center p-3 rounded-2xl bg-green-300 shadow max-w-xs mt-4"
-        >
-          <p class="text-black opacity-70 font-semibold">
-            Successfully imported Linktree links
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-7/12">
-        <h2 class="text-black font-bold text-lg w-full">
-          Account settings
-        </h2>
-        <p class="text-black opacity-70 font-semibold">
-          Need to configure the account managing your micro-sites?
-        </p>
-      </div>
-      <n-link
-          class="w-full lg:w-auto mt-4 lg:mt-0 ml-2 flex p-3 px-6 text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold w-1/3 justify-center align-center"
-          to="/dashboard/account"
+      <button
+          class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
+          type="button"
+          @click="$modal.hide('leave-page'); $modal.show('delete-page');"
       >
-        Manage
-      </n-link>
+        Delete this page
+      </button>
     </div>
 
-    <transition name="fade">
+    <modal name="delete-page">
       <!-- Confirm site deletion modal -->
       <div
-          v-if="deleteProfileModalActive"
-          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
-          style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
-          @click="setDeleteProfileModalActive(false)"
+          class="flex items-center justify-center"
+          style="backdrop-filter: saturate(180%) blur(5px);"
+          @click="$modal.hide('delete-page')"
       >
-        <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
+        <div class="flex flex-col p-6 mt-6 bg-white rounded-2xl w-full max-w-lg" @click.stop>
           <h2 class="text-black font-semibold text-xl">
             Are you sure?
           </h2>
@@ -501,30 +481,29 @@
           <button
               class="mt-4 w-full p-4 text-center text-md text-black bg-red-600 hover:bg-red-700 text-white rounded-2xl font-semibold"
               type="button"
-              @click="deleteProfile"
+              @click="deletePage"
           >
-            Yes, delete this site
+            Yes, delete this page
           </button>
           <button
               class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 text-white hover:bg-gray-700 rounded-2xl font-semibold"
               type="button"
-              @click="deleteProfileModalActive = false"
+              @click="$modal.hide('delete-page')"
           >
             Cancel
           </button>
         </div>
       </div>
-    </transition>
+    </modal>
 
-    <transition name="fade">
+    <modal name="leave-page">
       <!-- Confirm site deletion modal -->
       <div
-          v-if="leavePageModalActive"
-          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
-          style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
-          @click="leavePageModalActive = false"
+          class="flex items-center justify-center"
+          style="backdrop-filter: saturate(180%) blur(5px);"
+          @click="$modal.hide('leave-page')"
       >
-        <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
+        <div class="flex flex-col p-6 mt-8 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
           <h2 class="text-black font-semibold text-xl">
             Are you sure?
           </h2>
@@ -538,113 +517,89 @@
           <button
               class="mt-4 w-full p-4 text-center text-md text-black bg-gray-400 hover:bg-gray-700 text-white rounded-2xl font-semibold"
               type="button"
-              @click="leavePageModalActive = false"
+              @click="$modal.hide('leave-page')"
           >
             Cancel
           </button>
         </div>
       </div>
-    </transition>
-
-    <transition name="fade">
-      <!-- Password reset confirmation modal -->
-      <div
-          v-if="resetPasswordModalActive"
-          class="h-screen absolute top-1/2 left-0 right-0 bottom-0 z-50 flex items-center justify-center"
-          style="background: rgba(0,0,0,.5); backdrop-filter: saturate(180%) blur(5px);"
-          @click="resetPasswordModalActive = false"
-      >
-        <div class="flex flex-col p-6 bg-white shadow rounded-2xl w-full max-w-lg" @click.stop>
-          <h2 class="text-black font-semibold text-xl">
-            {{ passwordError ? 'Error on password request!' : 'Password reset requested' }}
-          </h2>
-          <p v-if="!passwordError" class="text-gray-800 text-sm">A password reset link has been sent to your account
-            email inbox successfully.
-            Make sure to check your spam folder.</p>
-
-          <p v-if="passwordError" class="text-gray-800 text-sm">
-            <i class="fas fa-exclamation-triangle"/>
-            {{ passwordError }}
-          </p>
-          <button
-              class="mt-4 p-3 text-center text-md text-black bg-blue-600 hover:bg-blue-400 rounded-2xl font-semibold"
-              type="button"
-              @click="resetPasswordModalActive = false"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </transition>
+    </modal>
 
   </section>
 </template>
 
 <script lang="ts">
+// @ts-ignore
+import DataTable from '@andresouzaabreu/vue-data-table';
 import Vue from "vue";
 import {StatusCodes} from "http-status-codes";
+// eslint-disable-next-line import/named
+import {MetaInfo} from "vue-meta";
+import ActionsComponentTeamMember from "~/components/team-members/page-team-members/ActionsComponent.vue";
+import EventBus from "~/plugins/eventbus";
 
 export default Vue.extend({
   name: 'DashboardSettings',
+  components: {
+    DataTable
+  },
   layout: 'dashboard',
   middleware: 'authenticated',
 
-  data() {
-    return {
-      showHTML: false,
-      leavePageModalActive: false,
-      loaded: false,
-      resetPasswordModalActive: false,
-      deleteProfileModalActive: false,
-      originalHandle: '',
-      user: {
+  data: () => ({
+    teamMemberEmail: '' as string,
+    teamMemberRole: 'editor' as string,
+    teamMembers: [] as ProfileMember[],
+    filteredTeamMembers: [] as ProfileMember[],
+    showHTML: false,
+    loaded: false,
+    originalHandle: '',
+    user: {
+      id: '',
+      name: '',
+      emailHash: '',
+      activeProfile: {
         id: '',
-        name: '',
-        emailHash: '',
-        activeProfile: {
-          id: '',
-          imageUrl: '',
-          headline: '',
-          subtitle: '',
-          handle: '',
-          customDomain: '',
-          visibility: '',
-          showWatermark: false,
-          rendererUrl: process.env.RENDERER_URL,
-          userId: '',
-          metadata: {
-            privacyMode: false as boolean | null | undefined,
-            unlisted: false as boolean | null | undefined,
-            coverImage: null as boolean | null | undefined,
-            pageHtml: null as boolean | null | undefined,
-            shareMenu: true as boolean | null | undefined,
-            showAvatar: true as boolean | null | undefined,
-            previewImageUrl: '',
-            previewTitle: '',
-            previewDescription: ''
-          },
-        }
-      },
-
-      error: '',
-      passwordError: '',
-      showWatermarkNotice: false,
-      app_name: this.$customSettings.productName,
-      rendererUrl: process.env.RENDERER_URL,
-
-      profileUsage: {
-        published: 0,
-        allowed: 0
-      },
-
-      alerts: {
-        googleLinked: null as boolean | null,
-        linktreeImported: null as boolean | null,
+        imageUrl: '',
+        headline: '',
+        subtitle: '',
+        handle: '',
+        customDomain: '',
+        visibility: '',
+        showWatermark: false,
+        rendererUrl: process.env.RENDERER_URL,
+        userId: '',
+        metadata: {
+          privacyMode: false as boolean | null | undefined,
+          unlisted: false as boolean | null | undefined,
+          coverImage: null as boolean | null | undefined,
+          pageHtml: null as boolean | null | undefined,
+          shareMenu: true as boolean | null | undefined,
+          showAvatar: true as boolean | null | undefined,
+          previewImageUrl: '',
+          previewTitle: '',
+          previewDescription: ''
+        },
       }
-    };
-  },
+    },
 
-  head() {
+    error: '' as string,
+    passwordError: '',
+    showWatermarkNotice: false,
+    rendererUrl: process.env.RENDERER_URL,
+
+    profileUsage: {
+      published: 0,
+      allowed: 0
+    },
+
+    alerts: {
+      googleLinked: null as boolean | null,
+      linktreeImported: null as boolean | null,
+    }
+  }),
+
+  head(): MetaInfo {
     return {
       title: 'Page Settings - ' + this.$customSettings.productName,
       meta: [
@@ -676,12 +631,33 @@ export default Vue.extend({
       ],
     };
   },
-
   computed: {
-    getTXTRecord() {
-      const profileId = this.$data.user.activeProfile.id;
-
-      return "sl-verification-id=" + profileId;
+    app_name(): string {
+      return this.$customSettings.productName;
+    },
+    teamsTableParams(): Object {
+      return {
+        showPerPage: false,
+        sortingMode: "single",
+        showSearchFilter: false,
+        showDownloadButton: false,
+        showEntriesInfo: false,
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        data: this.filteredTeamMembers,
+        columns: [
+          {
+            key: "email"
+          },
+          {
+            key: "role",
+          },
+          {
+            key: "actions",
+            component: ActionsComponentTeamMember,
+            sortable: false
+          }
+        ]
+      };
     }
   },
 
@@ -694,19 +670,66 @@ export default Vue.extend({
   },
 
   async mounted() {
+    await this.getTeamMembers();
     await this.getUserData();
-    if (process.env.NODE_ENV === 'production') {
-
-      if (this.$route.query.googleLinked) {
-        this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
-      }
-
-      await this.updateProfileUsage();
+    if (this.$route.query.googleLinked) {
+      this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
     }
+
+    await this.updateProfileUsage();
     this.loaded = true;
+
+    EventBus.$on("getTeamMembersPageOnly", () => {
+      this.getTeamMembers();
+    });
+
+    EventBus.$on("addTeamMembersPageOnly", ({email, role}: ProfileMember) => {
+      this.addTeamMember(email, role);
+    });
   },
 
   methods: {
+    async addTeamMember(email: string, role: string): Promise<void> {
+      const token = this.$store.getters['auth/getToken'];
+      try {
+        await this.$axios.post('/team/add', {
+          token,
+          email,
+          role
+        });
+        this.error = '';
+      } catch (err: any) {
+        console.log(err.response);
+        this.error = err.response.data.error;
+      }
+
+      await this.getTeamMembers();
+    },
+    async getTeamMembers(): Promise<void> {
+      if (!this.teamMembers) {
+        this.teamMembers = [];
+      }
+
+      this.teamMembers.length = 0;
+
+      const token = this.$store.getters['auth/getToken'];
+
+      this.teamMembers = (await this.$axios.post('/team', {
+        token,
+        pageOnly: true
+      })).data;
+      this.filteredTeamMembers = this.teamMembers;
+    },
+    filterTeams(event: any) {
+      const target = event.target;
+      const filterSearch = target.value.toLowerCase();
+      const teams = this.teamMembers;
+      if (filterSearch) {
+        this.filteredTeamMembers = teams.filter(x => x.email.toLowerCase().includes(filterSearch));
+      } else {
+        this.filteredTeamMembers = this.teamMembers;
+      }
+    },
     async leavePage() {
       const profileId = this.user.activeProfile.id;
       const token = this.$store.getters['auth/getToken'];
@@ -721,7 +744,7 @@ export default Vue.extend({
         random: true,
         newProfileId: -1
       });
-      this.$router.go();
+      window.location.reload();
     },
     async updateProfileUsage() {
       const token = this.$store.getters['auth/getToken'];
@@ -731,7 +754,7 @@ export default Vue.extend({
       }) as { published: number, allowed: number };
     },
 
-    getFormattedProfileUsage(): string {
+    getFormattedProfileUsage() {
       return `(${this.profileUsage.published}/${this.profileUsage.allowed} pages public)`;
     },
 
@@ -813,17 +836,6 @@ export default Vue.extend({
       }
     },
 
-    async importLinktree() {
-      const linktreeInput: HTMLInputElement = (document.getElementById('linktreeUrl')) as HTMLInputElement;
-      const linktreeHandle: string = linktreeInput.value;
-      const result = await this.$axios.$post('/profile/linktree_import', {
-        token: this.$store.getters['auth/getToken'],
-        handle: linktreeHandle
-      });
-      linktreeInput.value = '';
-      this.$data.alerts.linktreeImported = true;
-    },
-
     async saveChanges() {
       // Update profile
       try {
@@ -855,7 +867,7 @@ export default Vue.extend({
 
           this.$root.$emit('refreshUserProfileView');
         }
-      } catch (err) {
+      } catch (err: any) {
         if (err.response) {
           if (err.response.status === StatusCodes.CONFLICT) {
             console.error("This handle is already being used by another profile.");
@@ -869,11 +881,7 @@ export default Vue.extend({
       }
     },
 
-    setDeleteProfileModalActive(active: boolean) {
-      this.deleteProfileModalActive = active;
-    },
-
-    async deleteProfile() {
+    async deletePage() {
       this.$nuxt.$loading.start();
 
       await this.$axios.$post('/profile/delete', {
@@ -883,14 +891,6 @@ export default Vue.extend({
       this.$nuxt.$loading.finish();
 
       window.location.replace("/dashboard");
-    },
-
-    async assignGoogleAccount() {
-      const response = await this.$axios.post('/auth/google/assign', {
-        token: this.$store.getters['auth/getToken']
-      });
-
-      window.location.assign(response.data);
     },
   }
 });
@@ -911,5 +911,17 @@ export default Vue.extend({
 
 iframe.widgetFrame {
   margin-left: 0 !important;
+}
+
+.warning {
+  @apply bottom-0 rounded-lg shadow border border-gray-200;
+  color: mintcream;
+  background-color: #ff9900;
+  padding: 7px;
+  z-index: 25;
+}
+
+.vm--modal {
+  background: none;
 }
 </style>

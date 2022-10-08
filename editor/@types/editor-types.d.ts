@@ -1,5 +1,13 @@
 type ModalIntent = "create" | "edit";
 
+interface ProfileMember {
+    userId: string,
+    profileId: string,
+    role: string,
+    profileHandle: string,
+    email: string
+}
+
 interface LinkVisit {
     link: any,
     views: any
