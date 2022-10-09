@@ -182,7 +182,7 @@ export default Vue.extend({
           } else if (err.response.status === StatusCodes.BAD_REQUEST) {
             this.error = `Error: ${err.response.data.error}`;
           } else {
-            this.error = err.response?.error ?? 'The server was unable to create your account. Please try again later.';
+            this.error = err.response?.data.error ?? 'The server was unable to create your account. Please try again later.';
           }
 
           console.error(this.error);
