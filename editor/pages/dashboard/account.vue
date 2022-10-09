@@ -360,6 +360,7 @@ export default Vue.extend({
           {
             key: "status",
             component: StatusComponent,
+            sortable: false
           },
           {
             key: "pageViews",
