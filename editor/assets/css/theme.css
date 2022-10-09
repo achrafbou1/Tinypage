@@ -54,9 +54,15 @@ html {
 
 .btn-primary {
     background-color: #478ecc !important;
+    border-color: #478ecc !important;
 }
 
 .page-item.active .page-link {
     background-color: #478ecc !important;
     border-color: #478ecc !important;
+    color: white !important;
+}
+
+.page-link {
+    color: #478ecc !important;
 }
