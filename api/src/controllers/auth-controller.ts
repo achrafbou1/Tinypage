@@ -152,7 +152,7 @@ export class AuthController extends Controller {
     async GetGoogleCreateLink(request: FastifyRequest, reply: FastifyReply) {
         let nonce = SecurityUtils.generateNonce();
         if(config.envName === "beta") {
-            reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("Signups are disabled on the beta site. Please contact us if you wish to have access."));
+            reply.status(StatusCodes.UNAUTHORIZED).send(ReplyUtils.error("This is our beta site and is by invite only. Please check Discord for beta access."));
             return;
         }
         let token = jwt.sign({
