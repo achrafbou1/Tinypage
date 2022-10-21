@@ -20,7 +20,7 @@
       </transition>
       <div v-if="profileUsage.published === profileUsage.allowed" class="warning">
         Unpublished pages are used for design and testing at no charge. To publish your page, please add a page
-        <NuxtLink style="text-decoration: underline;" to="/dashboard/page-management">
+        <NuxtLink style="text-decoration: underline;" to="/dashboard/account">
           here
         </NuxtLink>
         then set it's visibility to "Public" on the page settings.
