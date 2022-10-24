@@ -656,7 +656,7 @@ function changeSlide(next = true, index) {
                                     ${customCss}
                                 </style>
                                 <div style="overflow: hidden; ${style}"
-                                     class="rounded-2xl w-full font-medium mt-4"
+                                     class="w-full font-medium mt-4"
                                 >
                                     <div class="ql-editor">
                                         ${text}

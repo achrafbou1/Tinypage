@@ -71,3 +71,7 @@ input[type="checkbox"]:focus {
 .page-link {
     color: #478ecc !important;
 }
+
+.ql-container.ql-snow, .vue-editor {
+    max-width: 662px;
+}

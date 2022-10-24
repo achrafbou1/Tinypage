@@ -330,7 +330,6 @@
         Failed to link Google!
       </p>
     </div>
-
     <!-- Leave page -->
     <div
         v-if="user.activeProfile.userId !== user.id"
@@ -442,7 +441,6 @@
         </button>
       </div>
     </div>
-
     <!-- Delete site -->
     <div
         v-if="user.activeProfile.userId === user.id"
@@ -461,6 +459,28 @@
           @click="$modal.hide('leave-page'); $modal.show('delete-page');"
       >
         Delete this page
+      </button>
+    </div>
+
+    <!-- Leave page -->
+    <div
+        v-if="user.activeProfile.userId !== user.id"
+        class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8"
+    >
+      <div class="flex flex-col mr-auto w-full lg:w-full">
+        <h2 class="text-black font-bold text-lg w-full">
+          Leave this page
+        </h2>
+        <p class="text-black opacity-70 font-semibold">
+          Leave this page (only works for pages you've been invited to).
+        </p>
+      </div>
+      <button
+          class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
+          type="button"
+          @click="$modal.show('leave-page'); $modal.hide('delete-page');"
+      >
+        Leave this page
       </button>
     </div>
 
@@ -835,7 +855,6 @@ export default Vue.extend({
         document.body.removeChild(link);
       }
     },
-
     async saveChanges() {
       // Update profile
       try {
