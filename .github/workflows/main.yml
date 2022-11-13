@@ -97,7 +97,7 @@ jobs:
         run: docker push $REGISTRY/editor:main
 
       - name: Purge digitalocean container registry
-        run: doctl registry garbage-collection start --include-untagged-manifests $REGISTRY
+        run: doctl registry garbage-collection start --include-untagged-manifests --force $REGISTRY
 
   deploy:
     runs-on: ubuntu-latest
