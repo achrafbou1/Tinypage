@@ -96,6 +96,9 @@ jobs:
         if: ${{ steps.changes.outputs.editor == 'true' }}
         run: docker push $REGISTRY/editor:main
 
+      - name: Purge digitalocean container registry
+        run: doctl registry garbage-collection start --include-untagged-manifests $REGISTRY
+
   deploy:
     runs-on: ubuntu-latest
     environment: main
@@ -214,5 +217,3 @@ jobs:
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:main
             fi
-      - name: Purge digitalocean container registry
-        run: doctl registry garbage-collection start --include-untagged-manifests $REGISTRY
