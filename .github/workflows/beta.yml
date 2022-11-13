@@ -96,7 +96,7 @@ jobs:
         run: docker push $REGISTRY/editor:beta
 
       - name: Purge digitalocean container registry
-        run: doctl registry garbage-collection start --include-untagged-manifests --force $REGISTRY
+        run: doctl registry garbage-collection start --include-untagged-manifests --force tinypage
 
   deploy:
     runs-on: ubuntu-latest
