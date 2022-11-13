@@ -214,3 +214,5 @@ jobs:
             -e RENDERER_PORT=${{ secrets.RENDERER_PORT }} \
             $REGISTRY/renderer:main
             fi
+      - name: Purge digitalocean container registry
+        run: doctl registry garbage-collection start --include-untagged-manifests $REGISTRY

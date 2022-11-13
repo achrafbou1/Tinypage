@@ -389,8 +389,6 @@
         </button>
       </div>
     </div>
-
-    <transition name="fade">
     <!-- Delete site -->
     <div
         v-if="user.activeProfile.userId === user.id"
