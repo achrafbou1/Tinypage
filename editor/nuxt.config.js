@@ -20,6 +20,16 @@ export default {
     color: '#478ecc',
     height: '3px'
   },
+  watchers: {
+    chokidar: {
+      usePolling: true,
+      useFsEvents: false
+    },
+    webpack: {
+      aggregateTimeout: 300,
+      poll: 1000
+    }
+  },
 
   server: {
     host: process.env.SERVER_HOST ?? '0.0.0.0',

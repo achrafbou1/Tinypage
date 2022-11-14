@@ -227,67 +227,12 @@
             class="p-2 mt-2 w-full text-sm border-solid border-gray-300 rounded-2xl border"
             @change="onSocialIconTypeChange($event, siSettings)"
         >
-          <option disabled selected>
+          <option key="icon-select-label" disabled selected>
             Select an icon
           </option>
 
-          <option value="phone">
-            Phone
-          </option>
-          <option value="text">
-            Text
-          </option>
-          <option value="email">
-            Email
-          </option>
-
-          <option value="applemusic">
-            Apple Music
-          </option>
-          <option value="cuplr">
-            Cuplr
-          </option>
-          <option value="discord">
-            Discord
-          </option>
-          <option value="facebook">
-            Facebook
-          </option>
-          <option value="instagram">
-            Instagram
-          </option>
-          <option value="linkedin">
-            LinkedIn
-          </option>
-          <option value="pinterest">
-            Pinterest
-          </option>
-          <option value="soundcloud">
-            SoundCloud
-          </option>
-          <option value="spotify">
-            Spotify
-          </option>
-          <option value="tiktok">
-            Tiktok
-          </option>
-          <option value="twitch">
-            Twitch
-          </option>
-          <option value="twitter">
-            Twitter
-          </option>
-          <option value="whatsapp">
-            WhatsApp
-          </option>
-          <option value="youtube">
-            YouTube
-          </option>
-          <option value="zoom">
-            Zoom
-          </option>
-          <option value="custom">
-            Custom
+          <option v-for="(icon, i) in socialIconsList" :key="'icon' + i" :value="icon">
+            {{ icon }}
           </option>
         </select>
 
@@ -643,7 +588,92 @@ export default Vue.extend({
       items: [{url: ''}]
     };
 
+    const socialIconsList = ["applemusic-branded-filled",
+      "email-filled",
+      "paypal-branded-outlined",
+      "soundcloud-outlined",
+      "twitch-branded-filled",
+      "whatsapp-filled",
+      "applemusic-branded-outlined",
+      "email-outlined",
+      "paypal-branded-outlined2",
+      "spotify-branded-filled",
+      "twitch-branded-outlined",
+      "whatsapp-outlined",
+      "applemusic-filled",
+      "facebook-branded-filled",
+      "paypal-filled",
+      "spotify-branded-outlined",
+      "twitch-filled",
+      "youtube-branded-filled",
+      "applemusic-outlined",
+      "facebook-branded-outlined",
+      "paypal-outlined",
+      "spotify-filled",
+      "twitch-outlined",
+      "youtube-branded-outlined",
+      "cashapp-branded-filled",
+      "facebook-filled",
+      "phone-filled",
+      "spotify-outlined",
+      "twitter-branded-filled",
+      "youtube-filled",
+      "cashapp-branded-outlined",
+      "facebook-outlined",
+      "phone-outlined",
+      "telegram-branded-filled",
+      "twitter-branded-outlined",
+      "youtube-outlined",
+      "cashapp-filled",
+      "instagram-branded-filled",
+      "phone-outlined2",
+      "telegram-branded-outlined",
+      "twitter-filled",
+      "zoom-branded-filled",
+      "cashapp-outlined",
+      "instagram-branded-outlined",
+      "pinterest-branded-filled",
+      "telegram-filled",
+      "twitter-outlined",
+      "zoom-branded-outlined",
+      "cuplr-filled",
+      "instagram-filled",
+      "pinterest-branded-outlined",
+      "telegram-outlined",
+      "venmo-branded-filled",
+      "zoom-filled",
+      "cuplr-outlined",
+      "instagram-outlined",
+      "pinterest-filled",
+      "text",
+      "venmo-branded-outlined",
+      "zoom-outlined",
+      "discord-branded-filled",
+      "linkedin-branded-filled",
+      "pinterest-outlined",
+      "tiktok-branded-filled",
+      "venmo-filled",
+      "discord-branded-outlined",
+      "linkedin-branded-outlined",
+      "soundcloud-branded-filled",
+      "tiktok-branded-outlined",
+      "venmo-outlined",
+      "discord-filled",
+      "linkedin-filled",
+      "soundcloud-branded-outlined",
+      "tiktok-filled",
+      "whatsapp-branded-filled",
+      "discord-outlined",
+      "linkedin-outlined",
+      "soundcloud-filled",
+      "tiktok-outlined",
+      "whatsapp-branded-outlined",
+      "custom"
+    ];
+    socialIconsList.sort();
+
     return {
+      socialIconsList,
       jsColorOptions: "{alphaChannel: true, format: 'rgba'}",
       rendererUrl: process.env.RENDERER_URL,
       id: '',
@@ -974,13 +1004,16 @@ export default Vue.extend({
       const val = selectElement.value;
 
       switch (val) {
-        case "phone":
+        case "phone-filled":
+        case "phone-outlined":
+        case "phone-outlined2":
           siSettings.url = "tel:+1";
           break;
         case "text":
           siSettings.url = "sms:+1";
           break;
-        case "email":
+        case "email-filled":
+        case "email-outlined":
           siSettings.url = "mailto:";
           break;
         default:
