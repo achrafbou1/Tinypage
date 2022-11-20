@@ -221,18 +221,43 @@
         </div>
 
         <select
-            v-model="siSettings.type"
+            :id="`select-${index}`"
+            v-model="selectedIcon[index]"
             class="p-2 mt-2 w-full text-sm border-solid border-gray-300 rounded-2xl border"
-            @change="onSocialIconTypeChange($event, siSettings)"
+            @change="onSocialIconTypeChange($event, siSettings, index)"
         >
-          <option key="icon-select-label" disabled selected>
+          <option key="icon-select-label" disabled>
             Select an icon
           </option>
 
-          <option v-for="(icon, i) in socialIconsList" :key="'icon' + i" :value="icon">
+          <option
+              v-for="(icon, i) in Object.keys(socialIconsList)"
+              :key="'icon' + i"
+              :value="icon"
+          >
             {{ icon }}
           </option>
         </select>
+
+        <div class="mt-2 flex flex-row space-x-3">
+          <div
+              v-for="(iconVariant, i) in socialIconsList[selectedIcon[index]]"
+              :key="'filteredIcon-' + i"
+          >
+            <input
+                v-model="siSettings.type"
+                :value="iconVariant"
+                name="icon-type"
+                class="text-sm border-solid border-gray-300 rounded-2xl border"
+                type="radio"
+            >
+            <img
+                v-if="iconVariant && iconVariant !== 'custom'"
+                class="object-contain h-12"
+                :src="require(`@/assets/svg-social-icons/${iconVariant}.svg`)"
+            >
+          </div>
+        </div>
 
         <div class="mt-2">
           <label class="font-semibold">URL</label>
@@ -586,7 +611,7 @@ export default Vue.extend({
       items: [{url: ''}]
     };
 
-    const socialIconsList = ["applemusic-branded-filled",
+    let socialIconsListTemp = ["applemusic-branded-filled",
       "email-filled",
       "paypal-branded-outlined",
       "soundcloud-outlined",
@@ -668,10 +693,19 @@ export default Vue.extend({
       "whatsapp-branded-outlined",
       "custom"
     ];
-    socialIconsList.sort();
+    socialIconsListTemp.sort();
+    const socialIconsList: any = {};
+    socialIconsListTemp = socialIconsListTemp.map(x => {
+      const iconName: string = x.split('-')[0];
+      const iconVariants: string[] = socialIconsListTemp.filter(y => y.startsWith(iconName));
+      const resultObj: any = {};
+      socialIconsList[iconName] = iconVariants;
+      return resultObj;
+    });
 
     return {
       socialIconsList,
+      selectedIcon: {} as any,
       jsColorOptions: "{alphaChannel: true, format: 'rgba'}",
       rendererUrl: process.env.RENDERER_URL,
       id: '',
@@ -682,7 +716,6 @@ export default Vue.extend({
       user: '',
       error: '',
       intent: '',
-
       isLoaded: false,
 
       style: null as string | null | undefined,
@@ -707,7 +740,6 @@ export default Vue.extend({
       sortedLinks: new Array<EditorLink>()
     };
   },
-
   head() {
     return {
       title: 'Link panel - ' + this.$customSettings.productName,
@@ -753,9 +785,9 @@ export default Vue.extend({
       this.intent = 'create';
     }
 
-    for (let i = 0; i < this.links.length; i++) {
-      if (this.links[i].id == this.id) {
-        this.pendingLink = this.links[i];
+    for (const element of this.links) {
+      if (element.id === this.id) {
+        this.pendingLink = element;
         this.style = this.pendingLink.style;
         this.customCss = this.pendingLink.customCss;
         break;
@@ -793,6 +825,9 @@ export default Vue.extend({
     if (this.pendingLink.type === 'link' || this.pendingLink.type === 'vcard') {
       this.buttonImageUrl = this.pendingLink.metadata.buttonImageUrl ?? '';
       this.buttonImageFullWidth = this.pendingLink.metadata.buttonImageFullWidth ?? false;
+    }
+    for (const [index, icon] of this.pendingLink.metadata?.socialIcons?.entries()) {
+      this.selectedIcon[index] = icon.type.split('-')[0];
     }
   },
 
@@ -992,7 +1027,7 @@ export default Vue.extend({
       }
     },
 
-    onSocialIconTypeChange(event: Event, siSettings: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }) {
+    onSocialIconTypeChange(event: Event, siSettings: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }, index: string) {
       const selectElement = event.target as HTMLSelectElement;
 
       if (!selectElement) {
@@ -1000,7 +1035,7 @@ export default Vue.extend({
       }
 
       const val = selectElement.value;
-
+      this.selectedIcon[index] = val;
       switch (val) {
         case "phone-filled":
         case "phone-outlined":

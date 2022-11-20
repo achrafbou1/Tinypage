@@ -393,7 +393,7 @@ function changeSlide(next = true, index) {
                             for (let i = 0; i < socialIcons.length; i++) {
                                 let siSettings = socialIcons[i];
                                 if (!siSettings.type)
-                                    siSettings.type = "email";
+                                    siSettings.type = "email-filled";
 
                                 if (!siSettings.color)
                                     siSettings.color = "#000000";
@@ -404,18 +404,15 @@ function changeSlide(next = true, index) {
                                 let svgData = "";
                                 let labelData = "";
 
-                                switch (siSettings.type) {
-                                    case "custom":
-                                        if (siSettings.customSvg)
-                                            svgData = siSettings.customSvg;
-                                        else
-                                            svgData = fs.readFileSync(`${__dirname}/static/icons/question-mark.svg`).toString('utf-8');
-                                        break;
-                                    default:
-                                        // Prevents directory traversal
-                                        const safePath = path.normalize(siSettings.type).replace(/^(\.\.(\/|\\|$))+/, '');
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/svg-social-icons/${safePath}.svg`).toString('utf-8');
-                                        break;
+                                if (siSettings.type === "custom") {
+                                    if (siSettings.customSvg)
+                                        svgData = siSettings.customSvg;
+                                    else
+                                        svgData = fs.readFileSync(`${__dirname}/static/icons/question-mark.svg`).toString('utf-8');
+                                } else {
+                                    // Prevents directory traversal
+                                    const safePath = path.normalize(siSettings.type).replace(/^(\.\.(\/|\\|$))+/, '');
+                                    svgData = fs.readFileSync(`${__dirname}/static/icons/svg-social-icons/${safePath}.svg`).toString('utf-8');
                                 }
 
                                 let scale = null;
@@ -437,7 +434,7 @@ function changeSlide(next = true, index) {
                                         </div>`;
                                 }
 
-                                const svgDataHtml =  cheerio.load(svgData, null, false);
+                                const svgDataHtml = cheerio.load(svgData, null, false);
                                 svgDataHtml("title").remove();
                                 svgDataHtml("svg").attr("style", `color:${siSettings.color};`);
                                 if (scale) {
@@ -533,7 +530,8 @@ function changeSlide(next = true, index) {
                                 >
                                     ${buttonImageHtml}
                                     <span class="font-medium text-gray-900 sl-label"
-                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span
+                                            style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                 </div>
                             </a>
                         `;
@@ -672,7 +670,8 @@ function changeSlide(next = true, index) {
                                         }</style>
                                     <div class="embed-container mt-4" style="${style}">
                                         <iframe title="youtube"
-                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2" allowfullscreen
+                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
+                                                allowfullscreen
                                         ></iframe>
                                     </div>
                                 `;
@@ -913,11 +912,13 @@ function changeSlide(next = true, index) {
                     >
 
                     <!-- Open Graph-->
-                    <meta property="og:title" content="${profile.metadata.previewTitle ?? profile.headline + ' - ' + config.appName}">
+                    <meta property="og:title"
+                          content="${profile.metadata.previewTitle ?? profile.headline + ' - ' + config.appName}">
                     <meta property="og:description"
                           content="${profile.metadata.previewDescription ?? profile.subtitle} | Powered by ${config.appName}"
                     >
-                    <meta property="og:image" content="${profile.metadata.previewImageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}">
+                    <meta property="og:image"
+                          content="${profile.metadata.previewImageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}">
                     <meta property="og:type" content="website">
 
                     <!-- Twitter Cards -->

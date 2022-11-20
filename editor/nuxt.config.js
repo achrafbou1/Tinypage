@@ -21,10 +21,6 @@ export default {
     height: '3px'
   },
   watchers: {
-    chokidar: {
-      usePolling: true,
-      useFsEvents: false
-    },
     webpack: {
       aggregateTimeout: 300,
       poll: 1000
