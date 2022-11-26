@@ -244,17 +244,17 @@
               v-for="(iconVariant, i) in socialIconsList[selectedIcon[index]]"
               :key="'filteredIcon-' + i"
           >
-            <input
-                v-model="siSettings.type"
-                :value="iconVariant"
-                name="icon-type"
-                class="text-sm border-solid border-gray-300 rounded-2xl border"
-                type="radio"
-            >
-            <img
+            <label :for="'icon-type-' + i"><img
                 v-if="iconVariant && iconVariant !== 'custom'"
                 class="object-contain h-12"
                 :src="require(`@/assets/svg-social-icons/${iconVariant}.svg`)"
+            ></label>
+            <input
+                :id="'icon-type-' + i"
+                v-model="siSettings.type"
+                :value="iconVariant"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                type="radio"
             >
           </div>
         </div>
@@ -698,6 +698,7 @@ export default Vue.extend({
     socialIconsListTemp = socialIconsListTemp.map(x => {
       const iconName: string = x.split('-')[0];
       const iconVariants: string[] = socialIconsListTemp.filter(y => y.startsWith(iconName));
+      iconVariants.reverse();
       const resultObj: any = {};
       socialIconsList[iconName] = iconVariants;
       return resultObj;
@@ -826,8 +827,10 @@ export default Vue.extend({
       this.buttonImageUrl = this.pendingLink.metadata.buttonImageUrl ?? '';
       this.buttonImageFullWidth = this.pendingLink.metadata.buttonImageFullWidth ?? false;
     }
-    for (const [index, icon] of this.pendingLink.metadata?.socialIcons?.entries()) {
-      this.selectedIcon[index] = icon.type.split('-')[0];
+    if (this.pendingLink.metadata?.socialIcons) {
+      for (const [index, icon] of this.pendingLink.metadata?.socialIcons?.entries()) {
+        this.selectedIcon[index] = icon.type.split('-')[0];
+      }
     }
   },
 
@@ -1058,6 +1061,8 @@ export default Vue.extend({
     },
 
     addSocialIcon() {
+      const index = Object.keys(this.socialIcons).length;
+      this.selectedIcon[index] = "custom";
       this.socialIcons.push({
         color: "rgba(0, 0, 0, 1)",
         scale: 40,
@@ -1075,6 +1080,10 @@ export default Vue.extend({
 
     deleteSocialIcon(index: number) {
       this.socialIcons.splice(index, 1);
+      console.log(this.selectedIcon);
+      this.selectedIcon[index] = Object.values(this.selectedIcon)[index + 1];
+      this.$delete(this.selectedIcon, (index + 1).toString());
+      console.log(this.selectedIcon);
     },
 
     moveSocialIcon(index: number, direction: "up" | "down") {
