@@ -282,6 +282,7 @@
           <div class="flex flex-row mt-3 mb-3 ml-2">
             <label class="font-semibold mt-2 mb-2 mr-2">Icon Color</label>
             <input
+                :id="'color-' + index"
                 v-model="siSettings.color"
                 :data-jscolor="jsColorOptions"
                 class="rounded-lg bg-white text-sm text-gray-700"
@@ -303,6 +304,7 @@
           <div class="flex flex-row mt-3 mb-3 ml-2 end">
             <label class="font-semibold mt-2 mb-2 mr-2">Label Color</label>
             <input
+                :id="'labelcolor-' + index"
                 v-model="siSettings.labelColor"
                 :data-jscolor="jsColorOptions"
                 class="rounded-lg bg-white text-sm text-gray-700"
@@ -1037,6 +1039,9 @@ export default Vue.extend({
         return;
       }
 
+      const labelColorInput: any = (document.getElementById('labelcolor-' + index) as HTMLInputElement);
+      const colorInput: any = (document.getElementById('color-' + index) as HTMLInputElement);
+
       const val = selectElement.value;
       this.selectedIcon[index] = val;
       switch (val) {
@@ -1053,7 +1058,16 @@ export default Vue.extend({
           siSettings.url = "mailto:";
           break;
         default:
-          siSettings.url = "";
+
+          siSettings.labelColor = "rgba(0, 0, 0, 1)";
+          if (labelColorInput) {
+            labelColorInput.jscolor.fromString(siSettings.labelColor);
+          }
+
+          siSettings.color = "rgba(0, 0, 0, 1)";
+          if (colorInput) {
+            colorInput.jscolor.fromString(siSettings.color);
+          }
           break;
       }
 
