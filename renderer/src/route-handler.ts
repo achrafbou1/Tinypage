@@ -436,7 +436,17 @@ function changeSlide(next = true, index) {
 
                                 const svgDataHtml = cheerio.load(svgData, null, false);
                                 svgDataHtml("title").remove();
-                                svgDataHtml("svg").attr("style", `color:${siSettings.color};`);
+                                if (!siSettings.type.includes('branded')) {
+                                    // Fill color if not a branded icon
+                                    svgDataHtml("path").first().attr("style", `fill:${siSettings.color};`);
+                                    if (!siSettings.type.includes('outlined')) {
+                                        svgDataHtml("path:nth-child(2)").attr("style", "fill: white;");
+                                    } else {
+                                        svgDataHtml("path").attr("style", `fill:${siSettings.color}`);
+                                        svgDataHtml("polygon").attr("style", `fill:${siSettings.color}`);
+                                    }
+                                }
+
                                 if (scale) {
                                     svgDataHtml("svg").attr("height", scale.toString());
                                     svgDataHtml("svg").attr("width", scale.toString());

@@ -850,6 +850,11 @@ export default Vue.extend({
   },
 
   methods: {
+    checkFirstIconIfChanged(siSettings: { type: string }, i: number) {
+      if (this.socialIconsList[this.selectedIcon[i]] && !this.socialIconsList[this.selectedIcon[i]].includes(siSettings.type) && i === 0) {
+        siSettings.type = this.socialIconsList[this.selectedIcon[0]][0];
+      }
+    },
     onElementTypeChanged() {
       this.$refs.label.focus();
     },
@@ -1034,7 +1039,7 @@ export default Vue.extend({
       }
     },
 
-    onSocialIconTypeChange(event: Event, siSettings: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }, index: string) {
+    onSocialIconTypeChange(event: Event, siSettings: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }, index: number) {
       const selectElement = event.target as HTMLSelectElement;
 
       if (!selectElement) {
@@ -1047,16 +1052,13 @@ export default Vue.extend({
       const val = selectElement.value;
       this.selectedIcon[index] = val;
       switch (val) {
-        case "phone-filled":
-        case "phone-outlined":
-        case "phone-outlined2":
+        case "phone":
           siSettings.url = "tel:+1";
           break;
         case "text":
           siSettings.url = "sms:+1";
           break;
-        case "email-filled":
-        case "email-outlined":
+        case "email":
           siSettings.url = "mailto:";
           break;
         default:
@@ -1074,6 +1076,7 @@ export default Vue.extend({
       }
 
       siSettings.label = selectElement.options[selectElement.selectedIndex].text;
+      this.checkFirstIconIfChanged(siSettings, index);
     },
 
     addSocialIcon() {
