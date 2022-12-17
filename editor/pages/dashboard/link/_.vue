@@ -246,13 +246,13 @@
               v-for="(iconVariant, i) in socialIconsList[selectedIcon[index]]"
               :key="'filteredIcon-' + i"
           >
-            <label :for="'icon-type-' + i"><img
+            <label :for="`icon-type-${index}-${i}`"><img
                 v-if="iconVariant && iconVariant !== 'custom'"
                 class="object-contain h-12"
                 :src="require(`@/assets/svg-social-icons/${iconVariant}.svg`)"
             ></label>
             <input
-                :id="'icon-type-' + i"
+                :id="`icon-type-${index}-${i}`"
                 v-model="siSettings.type"
                 :value="iconVariant"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
@@ -653,7 +653,6 @@ export default Vue.extend({
       "youtube-outlined",
       "cashapp-filled",
       "instagram-branded-filled",
-      "phone-outlined2",
       "telegram-branded-outlined",
       "twitter-filled",
       "zoom-branded-filled",
@@ -672,7 +671,8 @@ export default Vue.extend({
       "cuplr-outlined",
       "instagram-outlined",
       "pinterest-filled",
-      "text",
+      "text-outlined",
+      "text-filled",
       "venmo-branded-outlined",
       "zoom-outlined",
       "discord-branded-filled",
@@ -851,8 +851,8 @@ export default Vue.extend({
 
   methods: {
     checkFirstIconIfChanged(siSettings: { type: string }, i: number) {
-      if (this.socialIconsList[this.selectedIcon[i]] && !this.socialIconsList[this.selectedIcon[i]].includes(siSettings.type) && i === 0) {
-        siSettings.type = this.socialIconsList[this.selectedIcon[0]][0];
+      if (this.socialIconsList[this.selectedIcon[i]] && !this.socialIconsList[this.selectedIcon[i]].includes(siSettings.type)) {
+        siSettings.type = this.socialIconsList[this.selectedIcon[i]][0];
       }
     },
     onElementTypeChanged() {
@@ -1062,7 +1062,7 @@ export default Vue.extend({
           siSettings.url = "mailto:";
           break;
         default:
-
+          siSettings.url = "";
           siSettings.labelColor = "rgba(0, 0, 0, 1)";
           if (labelColorInput) {
             labelColorInput.jscolor.fromString(siSettings.labelColor);
