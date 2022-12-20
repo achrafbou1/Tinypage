@@ -171,7 +171,7 @@
         <input
             v-model="dividerSettings.color"
             :data-jscolor="jsColorOptions"
-            class="p-3 mb-5 w-full rounded-lg bg-white text-sm text-gray-700"
+            class="p-3 mb-5 w-full border-solid border-gray-300 rounded-2xl border bg-white text-sm text-gray-700"
             placeholder="e.g. #FFF"
         >
 
@@ -185,7 +185,7 @@
     </div>
 
     <!-- Social Icon Settings -->
-    <div v-show="intent!=='view' && pendingLink.type === 'social'" class="flex flex-col mb-4 justify-start w-full">
+    <div v-show="intent!=='view' && pendingLink.type === 'social'" class="flex flex-col mb-4 justify-start w-full ">
       <div class="flex flex-col lg:flex-row items-center justify-center items-center w-full mb-4">
         <div
             class="flex-grow text-center text-lg px-4 py-4 font-bold text-white rounded-2xl hover:bg-blue-400 bg-gdp mb-4 lg:mb-0 cursor-pointer"
@@ -195,7 +195,7 @@
         </div>
       </div>
 
-      <div v-for="(siSettings, index) of socialIcons" class="p-4 m-2 border-2 rounded-2xl">
+      <div v-for="(siSettings, index) of socialIcons" class="p-4 m-2 bg-white shadow rounded-2xl border">
         <div class="flex flex-row justify-start items-center">
           <label class="font-semibold align-middle mr-5">Icon {{ index + 1 }}</label>
 
@@ -272,46 +272,62 @@
         </div>
 
         <div class="flex flex-row">
-          <div class="flex flex-row mt-3 mb-3">
-            <label class="font-semibold mt-2 mb-2 mr-2">Scale (px)</label>
-            <input
-                v-model="siSettings.scale"
-                class="p-3 rounded-lg bg-white text-sm text-gray-700"
-                type="number"
-            >
+          <div class="flex flex-row mt-3 mb-3 items-center">
+            <div>
+              <label class="font-semibold mt-2 mb-2 mr-3">Scale (px)</label>
+            </div>
+            <div>
+              <input
+                  v-model="siSettings.scale"
+                  class="p-3 bg-white text-sm text-gray-700 border-solid border-gray-300 rounded-2xl border w-3/4"
+                  type="number"
+              >
+            </div>
           </div>
 
-          <div class="flex flex-row mt-3 mb-3 ml-2">
-            <label class="font-semibold mt-2 mb-2 mr-2">Icon Color</label>
-            <input
-                :id="'color-' + index"
-                v-model="siSettings.color"
-                :data-jscolor="jsColorOptions"
-                class="rounded-lg bg-white text-sm text-gray-700"
-                placeholder="e.g. #FFF"
-            >
+          <div class="flex flex-row items-center">
+            <div>
+              <label class="font-semibold mr-2">Icon Color</label>
+            </div>
+            <div>
+              <input
+                  :id="'color-' + index"
+                  v-model="siSettings.color"
+                  :data-jscolor="jsColorOptions"
+                  class="p-3 bg-white text-sm text-gray-700 border-solid border-gray-300 rounded-2xl border"
+                  placeholder="e.g. #FFF"
+              >
+            </div>
           </div>
         </div>
 
         <div class="flex flex-row">
-          <div class="flex flex-row mt-3 mb-3">
-            <label class="font-semibold mt-2 mb-2 mr-2">Label</label>
-            <input
-                v-model="siSettings.label"
-                class="p-3 rounded-lg bg-white text-sm text-gray-700"
-                type="text"
-            >
+          <div class="flex flex-row items-center">
+            <div>
+              <label class="font-semibold mt-2 mb-2 mr-12">Label</label>
+            </div>
+            <div>
+              <input
+                  v-model="siSettings.label"
+                  class="p-3 bg-white text-sm text-gray-700 border-solid border-gray-300 rounded-2xl border w-3/4"
+                  type="text"
+              >
+            </div>
           </div>
 
-          <div class="flex flex-row mt-3 mb-3 ml-2 end">
-            <label class="font-semibold mt-2 mb-2 mr-2">Label Color</label>
-            <input
-                :id="'labelcolor-' + index"
-                v-model="siSettings.labelColor"
-                :data-jscolor="jsColorOptions"
-                class="rounded-lg bg-white text-sm text-gray-700"
-                placeholder="e.g. #FFF"
-            >
+          <div class="flex flex-row mt-3 mb-3 items-center">
+            <div>
+              <label class="font-semibold mt-2 mb-2 mr-2">Label Color</label>
+            </div>
+            <div>
+              <input
+                  :id="'labelcolor-' + index"
+                  v-model="siSettings.labelColor"
+                  :data-jscolor="jsColorOptions"
+                  class="p-3 bg-white text-sm text-gray-700 border-solid border-gray-300 rounded-2xl border"
+                  placeholder="e.g. #FFF"
+              >
+            </div>
           </div>
         </div>
 
