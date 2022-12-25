@@ -97,7 +97,7 @@
     <!-- Subtitle -->
     <div
         v-show="intent!=='view' && showOption(pendingLink.type, 'subtitle')"
-        class="flex flex-col mb-4 justify-start w-full"
+        class="flex flex-col mb-4 justify-start w-full bg-white shadow rounded-xl p-6"
     >
       <label v-if="pendingLink.type === 'text'" class="font-semibold mb-2">Text</label>
       <label v-else-if="pendingLink.type === 'html'" class="font-semibold mb-2">HTML</label>
@@ -285,7 +285,7 @@
 
           <div class="flex flex-row items-center">
             <div>
-              <label class="font-semibold mr-2">Icon Color</label>
+              <label class="font-semibold mr-3">Icon Color</label>
             </div>
             <div>
               <input
@@ -315,7 +315,7 @@
 
           <div class="flex flex-row mt-3 mb-3 items-center">
             <div>
-              <label class="font-semibold mt-2 mb-2 mr-2">Label Color</label>
+              <label class="font-semibold mt-2 mb-2 mr-1">Label Color</label>
             </div>
             <div>
               <input
