@@ -62,14 +62,6 @@
     <li>A static file host (ex: Netlify GCDN)</li>
 </ul>
 
-<p>Once you have the following established, it's time to begin installing & configuring your local instance.</p>
-
-```bash
-cd Singlelink-Client
-touch config.js
-echo "{'database':'','secret':'','port':80}" >> config.js
-```
-
 <h2 id="frequently-asked-questions">Frequently asked questions</h2>
 <p>Coming soon...</p>
 
