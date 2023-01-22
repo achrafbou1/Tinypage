@@ -93,7 +93,7 @@ cd api;npm install;cd ../editor;npm install;cd ../renderer;npm install;cd ../
 ```bash
 npm run setup
 ```
-4. Launch <a target="_blank" href="https://singlelink.co">Singlelink</a> with hot-reloading enabled
+4. Launch <a target="_blank" href="https://tinypage.app">Tinypage</a> with hot-reloading enabled
 
 Start the API in one terminal:
 
