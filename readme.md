@@ -119,7 +119,7 @@ cd renderer; PORT=8081 API_URL=http://localhost:5566 npm run dev
 <img src="editor/static/screenshot-03.png"/>
 
 ## Roadmap
-See our <a href="https://github.com/achrafbou1/Tinypage/issues" target="_blank">open issues</a> to see what we're building next, alongside a list of known bugs and suggestions. <br>Don't see what you're looking for? <a href="https://github.com/Neutron-Creative/Singlelink/issues/new" target="_blank">Submit an issue!</a>
+See our <a href="https://github.com/achrafbou1/Tinypage/issues" target="_blank">open issues</a> to see what we're building next, alongside a list of known bugs and suggestions. <br>Don't see what you're looking for? <a href="https://github.com/achrafbou1/Tinypage/issues/new" target="_blank">Submit an issue!</a>
 
 ## Support
 Need help? Our <a href="https://discord.com/invite/CrK96b6J" target="_blank">community support </a> is online 9AM-5PM EST M-F, and our <a href="mailto:support@neutroncreative.com">enterprise support team</a> is available 24/7/365 via (<a href="mailto:support@neutroncreative.com">email</a> or <a href="tel:+19196530790">phone</a>). Please don't hesitate to get in touch, we love to help and we're often able to resolve issues within the hour!
