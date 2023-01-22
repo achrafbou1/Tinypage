@@ -150,7 +150,6 @@ Special thanks to the <a target="_blank" href="https://singlelink.co">Singlelink
 
 ### Tinypage team members
 <a href="https://github.com/MieleMadness" title="Philip Miele, Founder & Marketing specialist" target="_blank"><img width="80" src="https://www.gravatar.com/avatar/649e9e784e5b5d5ad2c530049738ba12"/></a>
-
 <a href="https://github.com/achrafbou1" title="Achraf Boutat, Co-founder & Software Engineer" target="_blank"><img width="80" src="https://en.gravatar.com/userimage/230818844/649e9e784e5b5d5ad2c530049738ba12.jpg?size=200"/></a>
 
 <br><br>
