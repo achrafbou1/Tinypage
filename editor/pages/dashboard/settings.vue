@@ -74,7 +74,6 @@
             <select
                 id="visibility"
                 v-model="user.activeProfile.visibility"
-                :disabled="profileUsage.published === profileUsage.allowed"
                 class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
             >
               <option value="unpublished">
