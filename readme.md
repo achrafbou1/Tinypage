@@ -122,9 +122,11 @@ cd renderer; PORT=8081 API_URL=http://localhost:5566 npm run dev
 See our <a href="https://github.com/achrafbou1/Tinypage/issues" target="_blank">open issues</a> to see what we're building next, alongside a list of known bugs and suggestions. <br>Don't see what you're looking for? <a href="https://github.com/achrafbou1/Tinypage/issues/new" target="_blank">Submit an issue!</a>
 
 ## Support
-Need help? Our <a href="https://discord.com/invite/CrK96b6J" target="_blank">community support </a> is online 9AM-5PM EST M-F, and our <a href="mailto:support@neutroncreative.com">enterprise support team</a> is available 24/7/365 via (<a href="mailto:support@neutroncreative.com">email</a> or <a href="tel:+19196530790">phone</a>). Please don't hesitate to get in touch, we love to help and we're often able to resolve issues within the hour!
+Need help? Our <a href="https://discord.com/invite/CrK96b6J" target="_blank">community support </a> is online 9AM-5PM EST M-F, and our <a href="mailto:hello@tinypage.app">enterprise support team</a> is available 24/7/365 via (<a href="mailto:hello@tinypage.app">email</a>,  through our <a href="https://www.facebook.com/groups/266036178433119/?ref=share_group_link">Facebook page</a>). Please don't hesitate to get in touch, we love to help and we're often able to resolve issues within the hour!
 
 ## Contributing
+You can visit our <a href="https://feedback.tnypg.com/boards/feature-requests">Feedback page</a> to request any additional features or report bugs:
+
 Being open-source, we welcome and encourage all contributions to our project.
 
 To make your first contribution, follow these steps:
@@ -138,7 +140,7 @@ To make your first contribution, follow these steps:
 ## Acknowledgements
 Special thanks to the <a target="_blank" href="https://singlelink.co">Singlelink</a> team for starting out the project and it's core features.
 ### Our partners & sponsors
-- <a href="https://www.browserstack.com/" target="_blank">BrowserStack</a> (cross-broswer UI/UX testing, sponsor)
+- <a href="https://www.browserstack.com/" target="_blank">BrowserStack</a> (cross-browser UI/UX testing, sponsor)
 - <a href="https://digitalocean.com/" target="_blank">DigitalOcean</a> (cloud hosting for developers, partner)
 
 ### Singlelink team members
