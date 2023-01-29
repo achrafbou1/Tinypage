@@ -105,7 +105,6 @@ export class StripeCallbacksController extends Controller {
                 break;
 
             case 'customer.subscription.deleted': {
-                // If the subscription was a downgrade, resubscribe, otherwise, cancel
                 await this.subService.setDbSubscriptionTier(user, 'free', true, false, eventObject);
                 await this.subService.checkProfilesForOverLimit(user.id);
             }
@@ -135,12 +134,8 @@ export class StripeCallbacksController extends Controller {
             }
                 break;
 
-            // For cases where the product is a one-time payment
             case 'checkout.session.completed': {
-                let dehydratedSession: any = event.data.object;
-
-                let session = await this.stripe.checkout.sessions.retrieve(dehydratedSession.id, {expand: ["line_items"]});
-
+                let session = await this.stripe.checkout.sessions.retrieve(eventObject.id, {expand: ["line_items"]});
                 if (session.line_items) {
                     let lineItem = session.line_items.data[0];
                     let price = lineItem.price;
@@ -153,7 +148,12 @@ export class StripeCallbacksController extends Controller {
 
                         if (tier) {
                             await PermissionUtils.addProductPurchase(user, tier, product.id);
+                            await this.subService.checkProfilesForOverLimit(user.id);
+                        }
 
+                        if (session.mode === "payment") {
+                            const paymentIntent = await this.stripe.paymentIntents.retrieve(<string>session.payment_intent);
+                            await this.subService.setDbSubscriptionTier(user, tier, false, true, paymentIntent, product.id);
                             await this.subService.checkProfilesForOverLimit(user.id);
                         }
                     }

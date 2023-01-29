@@ -21,7 +21,8 @@ interface DeleteSubscriptionRequest extends SensitiveAuthenticatedRequest {
 
 interface CreateCheckoutSessionRequest extends SensitiveAuthenticatedRequest {
     Body: {
-        profileId: string
+        profileId: string,
+        priceId: string
     } & SensitiveAuthenticatedRequest["Body"];
 }
 
@@ -93,7 +94,7 @@ export class SubscriptionController extends Controller {
 
     async CreateCheckoutSession(request: FastifyRequest<CreateCheckoutSessionRequest>, reply: FastifyReply) {
         try {
-            let profileId = request.body.profileId;
+            let {priceId, profileId} = request.body;
 
             let customer = await this.subService.getOrCreateStripeCustomer(request.body.authUser);
 
@@ -102,23 +103,15 @@ export class SubscriptionController extends Controller {
                 return ReplyUtils.error("A stripe customer does not exist for the provided user.");
             }
 
-            const products = await this.stripe.products.list({
-                limit: 1,
-            });
-            const pagePlan = products.data.find(x => x.name === 'Page plan');
+            const products = await this.stripe.products.list();
+            const product = products.data.find(x => x.name === 'Page plan');
 
-            if (!pagePlan) {
+            if (!product) {
                 reply.status(StatusCodes.NOT_FOUND);
                 return ReplyUtils.error("No corresponding stripe plan was found.");
             }
 
-            let prices = (await this.stripe.prices.list({
-                active: true,
-                expand: ['data.product'],
-                product: pagePlan.id,
-            })).data;
-
-            let price = prices.length > 0 ? prices[0] : null;
+            let price = await this.stripe.prices.retrieve(priceId);
 
             if (!price) {
                 reply.status(StatusCodes.NOT_FOUND);
@@ -155,11 +148,20 @@ export class SubscriptionController extends Controller {
                     quantity: 1
                 }],
                 mode: mode,
-                subscription_data: {
-                    metadata: {
-                        profileId
+                ...(mode === 'subscription' && {
+                    subscription_data: {
+                        metadata: {
+                            profileId
+                        }
                     }
-                },
+                }),
+                ...(mode === 'payment' && {
+                    payment_intent_data: {
+                        metadata: {
+                            profileId
+                        }
+                    }
+                }),
                 allow_promotion_codes: true,
                 success_url: `${config.editorUrl}/dashboard/account`,
                 cancel_url: `${config.editorUrl}/dashboard/account`,
