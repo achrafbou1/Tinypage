@@ -9,7 +9,9 @@ import {CustomDomainHandler} from "./utils/custom-domain-handler";
  */
 export class SingleLinkServer {
     fastify = fastifyInit({
-        logger: true,
+        logger: {
+            prettyPrint: true,
+        },
         ignoreTrailingSlash: true,
         trustProxy: config.allowXForwardHeader
     });
@@ -68,6 +70,12 @@ export class SingleLinkServer {
         this.fastify.register(require('fastify-cors'), {
             origin: '*',
             exposedHeaders: ['Content-Disposition']
+        });
+
+        this.fastify.setErrorHandler((error, request, reply) => {
+            this.fastify.log.error(error);
+            // fastify will use parent error handler to handle this
+            reply.send(error);
         });
 
         this.fastify.register(require('fastify-raw-body'), {

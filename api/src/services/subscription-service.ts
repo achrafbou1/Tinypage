@@ -175,12 +175,19 @@ export class SubscriptionService extends DatabaseService {
                 return ReplyUtils.error("This profile is not subscribed.");
             }
             try {
-            const deleted = await this.stripe.subscriptions.del(
-                queryResult.rows[0].subscription_id
-            );
-                if (deleted.cancel_at_period_end) {
-                    reply.status(StatusCodes.UNAUTHORIZED);
-                    return ReplyUtils.success("Successfully downgraded !");
+                const subscriptionId = queryResult.rows[0].subscription_id;
+                if (subscriptionId) {
+                    const deleted = await this.stripe.subscriptions.del(
+                        queryResult.rows[0].subscription_id
+                    );
+                    if (deleted.cancel_at_period_end) {
+                        reply.status(StatusCodes.UNAUTHORIZED);
+                        return ReplyUtils.success("Successfully downgraded !");
+                    }
+                } else {
+                    // In case of one-time payments
+                    await this.setDbSubscriptionTier(user, 'free', true, false, {});
+                    await this.checkProfilesForOverLimit(user.id);
                 }
             } catch (err: any) {
                 if (err.code === "resource_missing") {
@@ -404,7 +411,7 @@ export class SubscriptionService extends DatabaseService {
                 metadata: {
                     product: "Tinypage"
                 }
-            }, undefined);
+            });
 
             await this.setStripeId(user.id, newCustomer.id);
 
