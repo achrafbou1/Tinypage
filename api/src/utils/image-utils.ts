@@ -35,7 +35,7 @@ export class ImageUtils {
             });
 
             const scheme = config.s3Bucket.useSSL ? 'https' : 'http';
-            const port = config.s3Bucket.endPoint === 'localhost' ? `:${config.s3Bucket.port}` : "";
+            const port = config.s3Bucket.endPoint === 'localhost' || config.s3Bucket.endPoint === 'minio' ? `:${config.s3Bucket.port}` : "";
             this.publicBucketURL = `${scheme}://${config.s3Bucket.endPoint + port}/${config.s3Bucket.publicBucketName}`;
 
             this.bucketEnabled = await Promise.all([this.minio.bucketExists(config.s3Bucket.privateBucketName), this.minio.bucketExists(config.s3Bucket.publicBucketName)]);
