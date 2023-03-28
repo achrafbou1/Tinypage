@@ -7,6 +7,8 @@ import ejs from "ejs";
 
 import fs, {promises as fsPromises} from "fs";
 import * as cheerio from "cheerio";
+import {Utils} from "./utils/utils";
+import {CheerioAPI} from "cheerio";
 import path from "path";
 
 interface MicrositeRequest extends FastifyRequest {
@@ -434,22 +436,35 @@ function changeSlide(next = true, index) {
                                         </div>`;
                                 }
 
-                                const svgDataHtml = cheerio.load(svgData, null, false);
-                                svgDataHtml("title").remove();
-                                if (!siSettings.type.includes('branded')) {
-                                    // Fill color if not a branded icon
-                                    svgDataHtml("path").first().attr("style", `fill:${siSettings.color};`);
-                                    if (!siSettings.type.includes('outlined')) {
-                                        svgDataHtml("path:nth-child(2)").attr("style", "fill: white;");
-                                    } else {
-                                        svgDataHtml("path").attr("style", `fill:${siSettings.color}`);
-                                        svgDataHtml("polygon").attr("style", `fill:${siSettings.color}`);
-                                    }
-                                }
+                                let svgDataHtml: CheerioAPI;
 
-                                if (scale) {
-                                    svgDataHtml("svg").attr("height", scale.toString());
-                                    svgDataHtml("svg").attr("width", scale.toString());
+                                if (Utils.stringIsAValidUrl(svgData)) {
+                                    svgDataHtml = cheerio.load("<div></div>", null, false);
+                                    svgDataHtml("div").attr("style", `background-image:url(${svgData});
+                                    height: ${scale.toString()}px;
+                                    width: ${scale.toString()}px;
+                                    display: block;
+                                    background-color: ${siSettings.color};
+                                    background-repeat: no-repeat;
+                                    background-size: cover;
+                                    background-position: bottom center, 50%, 50%;`);
+                                } else {
+                                    svgDataHtml = cheerio.load(svgData, null, false);
+                                    svgDataHtml("title").remove();
+                                    if (!siSettings.type.includes('branded')) {
+                                        // Fill color if not a branded icon
+                                        svgDataHtml("path").first().attr("style", `fill:${siSettings.color};`);
+                                        if (!siSettings.type.includes('outlined')) {
+                                            svgDataHtml("path:nth-child(2)").attr("style", "fill: white;");
+                                        } else {
+                                            svgDataHtml("path").attr("style", `fill:${siSettings.color}`);
+                                            svgDataHtml("polygon").attr("style", `fill:${siSettings.color}`);
+                                        }
+                                    }
+                                    if (scale) {
+                                        svgDataHtml("svg").attr("height", scale.toString());
+                                        svgDataHtml("svg").attr("width", scale.toString());
+                                    }
                                 }
                                 svgData = svgDataHtml.html();
                                 // language=HTML

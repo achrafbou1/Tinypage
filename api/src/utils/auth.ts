@@ -13,16 +13,22 @@ import {StatusCodes} from "http-status-codes";
 import {DbTypeConverter} from "./db-type-converter";
 import {DatabaseService} from "../services/database-service";
 import {SecurityUtils} from "./security-utils";
+import {File} from "fastify-multer/lib/interfaces";
+import multer from "fastify-multer";
+import os from "os";
 
 /**
  * A Fastify request that has been properly authenticated via a JWT token.
  * It contains user and profile data provided by the token itself and is parsed in the route's preHandler.
  */
+
 export interface AuthenticatedRequest extends RequestGenericInterface {
+    files?: File[],
     Body: {
         token: string,
         authUser: User,
         authProfile: Profile
+        data?: string
     };
 }
 
@@ -55,6 +61,12 @@ export interface AdminRequest extends RequestGenericInterface {
  */
 export class Auth {
 
+    static uploader = multer({dest: os.tmpdir()});
+
+    static ValidateWithDataAndSvgIconsUpload: RouteShorthandOptions = {
+        preHandler: [<preHandlerHookHandler>this.uploader.array('svgIcons', 12), <preHandlerHookHandler>Auth.validateAuthWithData],
+    };
+
     /**
      * Authenticate only, do not pass in an AuthenticatedRequest. This has better performance
      * since the server does not need to communicate with the database.
@@ -70,6 +82,7 @@ export class Auth {
     static ValidateWithData: RouteShorthandOptions = {
         preHandler: <preHandlerHookHandler>Auth.validateAuthWithData,
     };
+
 
     /**
      * Authenticate and pass in an AuthenticatedRequest instead of just validating. Useful when
@@ -159,7 +172,14 @@ export class Auth {
      * @param done
      */
     static validateAuthWithData(request: FastifyRequest<AuthenticatedRequest>, reply: FastifyReply, done: Function) {
-        let body = request.body;
+
+        if (request.headers['content-type']?.includes('multipart/form-data') && request.body.data
+        ) {
+            // File upload is the only case we need to switch to multipart/form-data
+            // we expect the body to contain a 'data' property with file metadata
+            request.body = JSON.parse(request.body.data);
+        }
+        const body = request.body;
         let token: string | null | undefined = body?.token;
 
         if (!token) {

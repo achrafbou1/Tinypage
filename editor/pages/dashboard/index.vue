@@ -14,6 +14,7 @@
         This micro-site doesn't have any links to display.<br>Click the button below to create one! 👇
       </div>
       <n-link
+          v-if="links.length < 200"
           id="add-new-link-btn"
           class="button"
           to="/dashboard/link/"
@@ -21,6 +22,9 @@
       >
         Add new element
       </n-link>
+      <div v-else>
+        You cannot have more than 200 elements.
+      </div>
 
       <draggable
           v-if="links && links.length > 0"

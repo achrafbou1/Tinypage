@@ -3,11 +3,21 @@ import AWS from 'aws-sdk';
 import {config} from "./config/config";
 import {Controller} from "./controllers/controller";
 import {CustomDomainHandler} from "./utils/custom-domain-handler";
+import multer from 'fastify-multer';
+import {File} from "fastify-multer/lib/interfaces";
+import {JobSystem} from "./jobs/job-system";
+
+declare module 'fastify' {
+    interface FastifyRequest {
+        files?: File[]
+    }
+}
 
 /**
  * The server contains a Fastify instance and a list of Controllers, which registers routes with Fastify.
  */
-export class SingleLinkServer {
+
+export class TinypageServer {
     fastify = fastifyInit({
         logger: {
             prettyPrint: true,
@@ -41,7 +51,7 @@ export class SingleLinkServer {
     /**
      * Starts the fastify server with the controllers provided.
      */
-    startServer() {
+    async startServer() {
         this.fastify.listen(config.port, config.host, (err: Error | null, address: string) => {
             if (err)
                 throw err;
@@ -57,6 +67,7 @@ export class SingleLinkServer {
     }
 
     registerDefaultRoutes() {
+        this.fastify.register(multer.contentParser);
         this.fastify.register(require('fastify-favicon'), {
             path: `${__dirname}/../assets/`
         });
@@ -134,6 +145,7 @@ export class SingleLinkServer {
      */
     async Index(request: FastifyRequest, reply: FastifyReply) {
         reply.type('text/html').status(200);
+        await JobSystem.cleanupUnusedFilesFromSpaces();
 
         // language=HTML
         return `

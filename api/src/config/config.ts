@@ -119,10 +119,17 @@ if (process.env.S3_ENDPOINT) {
 }
 
 /**
- * S3 Bucket Name.
+ * S3 private Bucket Name.
  */
-if (process.env.S3_BUCKETNAME) {
-    config.s3Bucket.bucketName = process.env.S3_BUCKETNAME;
+if (process.env.S3_PRIVATE_BUCKET_NAME) {
+    config.s3Bucket.privateBucketName = process.env.S3_PRIVATE_BUCKET_NAME;
+}
+
+/**
+ * S3 public Bucket Name.
+ */
+if (process.env.S3_PUBLIC_BUCKET_NAME) {
+    config.s3Bucket.publicBucketName = process.env.S3_PUBLIC_BUCKET_NAME;
 }
 
 /**

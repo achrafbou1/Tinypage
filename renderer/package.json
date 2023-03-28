@@ -8,8 +8,8 @@
   "scripts": {
     "copy": "(copyfiles -u 1 \"src/static/**/*\" \"src/templates/**/*\" dist)",
     "start": "node dist/app.js",
-    "build": "tsc && npm run copy",
-    "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
+    "build": "tsc && yarn run copy",
+    "dev": "ts-node-dev --respawn --clear --transpile-only src/app.ts"
   },
   "author": "Neutron Creative Inc.",
   "license": "GPL-3.0-or-later",

@@ -1,6 +1,6 @@
 {
-  "name": "singlelink-editor",
-  "version": "3.1.0",
+  "name": "tinypage-editor",
+  "version": "3.1.1",
   "private": true,
   "scripts": {
     "dev": "nuxt",

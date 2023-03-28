@@ -168,7 +168,8 @@ jobs:
             -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
             -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
             -e S3_ENDPOINT=${{ secrets.S3_ENDPOINT }} \
-            -e S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }} \
+            -e S3_PRIVATE_BUCKET_NAME=${{ secrets.S3_PRIVATE_BUCKET_NAME }} \
+            -e S3_PUBLIC_BUCKET_NAME=${{ secrets.S3_PUBLIC_BUCKET_NAME }} \
             -e S3_PORT=${{ secrets.S3_PORT }} \
             -e S3_USE_SSL=${{ secrets.S3_USE_SSL }} \
             -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \

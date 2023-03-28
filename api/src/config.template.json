@@ -16,7 +16,8 @@
   },
   "s3Bucket": {
     "endPoint": "",
-    "bucketName": "",
+    "privateBucketName": "",
+    "publicBucketName": "",
     "port": 443,
     "useSSL": true,
     "accessKey": "",
