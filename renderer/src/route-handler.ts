@@ -444,7 +444,6 @@ function changeSlide(next = true, index) {
                                     height: ${scale.toString()}px;
                                     width: ${scale.toString()}px;
                                     display: block;
-                                    background-color: ${siSettings.color};
                                     background-repeat: no-repeat;
                                     background-size: cover;
                                     background-position: bottom center, 50%, 50%;`);
