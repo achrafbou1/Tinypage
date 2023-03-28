@@ -23,7 +23,7 @@ export class EnterpriseSettingsService extends DatabaseService {
             metadata: undefined,
             productName: "",
             title: ""
-        }
+        };
     }
 
     private static createEmptySettings(): DbServerSettings {
@@ -31,7 +31,7 @@ export class EnterpriseSettingsService extends DatabaseService {
             mergePublicMarketplace: false,
             messages: {inviteConfirmationEmail: "", passwordResetEmail: "", referralEmail: ""},
             metadata: undefined
-        }
+        };
     }
 
     async setSettings(customization?: DbServerCustomization, settings?: DbServerSettings) {
@@ -46,7 +46,7 @@ export class EnterpriseSettingsService extends DatabaseService {
         return {
             customization: queryResult.rows[0].public_settings,
             settings: queryResult.rows[0].private_settings
-        }
+        };
     }
 
     async getAdminSettings(): Promise<{ customization: DbServerCustomization, settings: DbServerSettings }> {
@@ -58,12 +58,12 @@ export class EnterpriseSettingsService extends DatabaseService {
             return {
                 customization: EnterpriseSettingsService.createEmptyCustomization(),
                 settings: EnterpriseSettingsService.createEmptySettings()
-            }
+            };
 
         return {
             customization: queryResult.rows[0].public_settings,
             settings: queryResult.rows[0].private_settings
-        }
+        };
     }
 
     async getSettings() {
@@ -74,10 +74,10 @@ export class EnterpriseSettingsService extends DatabaseService {
         if (queryResult.rowCount < 1)
             return {
                 customization: EnterpriseSettingsService.createEmptyCustomization(),
-            }
+            };
 
         return {
             customization: queryResult.rows[0].public_settings,
-        }
+        };
     }
 }

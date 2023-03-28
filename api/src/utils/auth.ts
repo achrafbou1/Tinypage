@@ -571,9 +571,7 @@ export class Auth {
     /**
      * Validates ownership of the requested resource.
      */
-    static async checkProfileOwnership(service: DatabaseService, profileId: string, userId: string, includeMemberOf: boolean): Promise<boolean> {
-        const pool = service.pool;
-
+    static async checkProfileOwnership(pool: Pool, profileId: string, userId: string, includeMemberOf: boolean): Promise<boolean> {
         let queryResult;
 
         if (includeMemberOf) {

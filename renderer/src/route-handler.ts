@@ -9,6 +9,7 @@ import fs, {promises as fsPromises} from "fs";
 import * as cheerio from "cheerio";
 import {Utils} from "./utils/utils";
 import {CheerioAPI} from "cheerio";
+import path from "path";
 
 interface MicrositeRequest extends FastifyRequest {
     Querystring: {
@@ -394,7 +395,7 @@ function changeSlide(next = true, index) {
                             for (let i = 0; i < socialIcons.length; i++) {
                                 let siSettings = socialIcons[i];
                                 if (!siSettings.type)
-                                    siSettings.type = "email";
+                                    siSettings.type = "email-filled";
 
                                 if (!siSettings.color)
                                     siSettings.color = "#000000";
@@ -405,66 +406,15 @@ function changeSlide(next = true, index) {
                                 let svgData = "";
                                 let labelData = "";
 
-                                switch (siSettings.type) {
-                                    case "email":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/mail-outline.svg`).toString('utf-8');
-                                        break;
-                                    case "text":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/message.svg`).toString('utf-8');
-                                        break;
-                                    case "phone":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/call-outline.svg`).toString('utf-8');
-                                        break;
-                                    case "facebook":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-facebook.svg`).toString('utf-8');
-                                        break;
-                                    case "discord":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-discord.svg`).toString('utf-8');
-                                        break;
-                                    case "twitter":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-twitter.svg`).toString('utf-8');
-                                        break;
-                                    case "instagram":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-instagram.svg`).toString('utf-8');
-                                        break;
-                                    case "tiktok":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-tiktok.svg`).toString('utf-8');
-                                        break;
-                                    case "spotify":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-spotify.svg`).toString('utf-8');
-                                        break;
-                                    case "youtube":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-youtube.svg`).toString('utf-8');
-                                        break;
-                                    case "applemusic":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-apple-music.svg`).toString('utf-8');
-                                        break;
-                                    case "soundcloud":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-soundcloud.svg`).toString('utf-8');
-                                        break;
-                                    case "linkedin":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-linkedin.svg`).toString('utf-8');
-                                        break;
-                                    case "twitch":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-twitch.svg`).toString('utf-8');
-                                        break;
-                                    case "pinterest":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-pinterest.svg`).toString('utf-8');
-                                        break;
-                                    case "zoom":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-zoom.svg`).toString('utf-8');
-                                        break;
-                                    case "cuplr":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-cuplr.svg`).toString('utf-8');
-                                        break;
-                                    case "whatsapp":
-                                        svgData = fs.readFileSync(`${__dirname}/static/icons/logo-whatsapp.svg`).toString('utf-8');
-                                        break;
-                                    case "custom":
-                                        if (siSettings.customSvg)
-                                            svgData = siSettings.customSvg;
-                                        else
-                                            svgData = fs.readFileSync(`${__dirname}/static/icons/question-mark.svg`).toString('utf-8');
+                                if (siSettings.type === "custom") {
+                                    if (siSettings.customSvg)
+                                        svgData = siSettings.customSvg;
+                                    else
+                                        svgData = fs.readFileSync(`${__dirname}/static/icons/question-mark.svg`).toString('utf-8');
+                                } else {
+                                    // Prevents directory traversal
+                                    const safePath = path.normalize(siSettings.type).replace(/^(\.\.(\/|\\|$))+/, '');
+                                    svgData = fs.readFileSync(`${__dirname}/static/icons/svg-social-icons/${safePath}.svg`).toString('utf-8');
                                 }
 
                                 let scale = null;
@@ -501,7 +451,16 @@ function changeSlide(next = true, index) {
                                 } else {
                                     svgDataHtml = cheerio.load(svgData, null, false);
                                     svgDataHtml("title").remove();
-                                    svgDataHtml("svg").attr("style", `color:${siSettings.color};`);
+                                    if (!siSettings.type.includes('branded')) {
+                                        // Fill color if not a branded icon
+                                        svgDataHtml("path").first().attr("style", `fill:${siSettings.color};`);
+                                        if (!siSettings.type.includes('outlined')) {
+                                            svgDataHtml("path:nth-child(2)").attr("style", "fill: white;");
+                                        } else {
+                                            svgDataHtml("path").attr("style", `fill:${siSettings.color}`);
+                                            svgDataHtml("polygon").attr("style", `fill:${siSettings.color}`);
+                                        }
+                                    }
                                     if (scale) {
                                         svgDataHtml("svg").attr("height", scale.toString());
                                         svgDataHtml("svg").attr("width", scale.toString());

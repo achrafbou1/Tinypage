@@ -19,7 +19,9 @@ declare module 'fastify' {
 
 export class TinypageServer {
     fastify = fastifyInit({
-        logger: true,
+        logger: {
+            prettyPrint: true,
+        },
         ignoreTrailingSlash: true,
         trustProxy: config.allowXForwardHeader
     });
@@ -75,6 +77,13 @@ export class TinypageServer {
             timeWindow: '1 minute'
         });
 
+
+        this.fastify.setErrorHandler((error, request, reply) => {
+            this.fastify.log.error(error);
+            // fastify will use parent error handler to handle this
+            reply.send(error);
+        });
+        
         this.fastify.register(require('fastify-raw-body'), {
             field: 'rawBody', // change the default request.rawBody property name
             global: false, // add the rawBody to every request. **Default true**

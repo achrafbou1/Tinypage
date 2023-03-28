@@ -1,6 +1,6 @@
 {
   "name": "tinypage-api",
-  "version": "3.1.1",
+  "version": "3.5.0",
   "private": true,
   "description": "A single link for everything.",
   "main": "dist/app.js",
@@ -59,12 +59,14 @@
     "is-svg": "4.4.0",
     "jsonwebtoken": "^8.5.1",
     "linktree-scraper": "^0.2.2",
+    "lodash": "^4.17.21",
     "minio": "^7.0.18",
     "mixpanel": "^0.13.0",
     "node-cron": "^3.0.0",
     "object-hash": "^2.2.0",
     "pageres": "^6.2.3",
     "pg": "^8.6.0",
+    "pino-pretty": "^9.1.1",
     "stripe": "^8.171.0"
   },
   "devDependencies": {
@@ -74,6 +76,7 @@
     "@types/bcrypt": "^3.0.0",
     "@types/jest": "^26.0.15",
     "@types/jsonwebtoken": "^8.5.0",
+    "@types/lodash": "^4.14.184",
     "@types/minio": "^7.0.7",
     "@types/mixpanel": "^2.14.2",
     "@types/node": "^14.14.8",

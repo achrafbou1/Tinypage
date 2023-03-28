@@ -13,7 +13,16 @@
         v-show="intent !=='view'"
         class="flex flex-col mb-4 justify-start w-full"
     >
-      <label class="font-semibold mb-2">Element type</label>
+      <div class="flex flex-row">
+        <label class="font-semibold mb-2">Element type</label>
+        <input
+            id="checkbox-1"
+            v-model="pendingLink.hidden"
+            class="mr-1 ml-4 mb-2 w-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            type="checkbox"
+        >
+        <label class="font-light mb-2">Hide</label>
+      </div>
       <select
           v-model="pendingLink.type"
           class="p-2 mt-2 text-sm border-solid border-gray-300 rounded-2xl border"
@@ -58,7 +67,17 @@
         v-show="intent !=='view'"
         class="flex flex-col mb-4 justify-start w-full"
     >
-      <label class="font-semibold mb-2">Label</label>
+      <div class="flex flex-row">
+        <label class="font-semibold mb-2">Label</label>
+        <input
+            v-show="pendingLink.type === 'link' || pendingLink.type === 'vcard'"
+            id="checkbox-1"
+            v-model="pendingLink.metadata.hiddenLabel"
+            class="mr-1 ml-4 mb-2 w-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            type="checkbox"
+        >
+        <label v-show="pendingLink.type === 'link' || pendingLink.type === 'vcard'" class="font-light mb-2">Hide</label>
+      </div>
 
       <input
           ref="label"
@@ -71,35 +90,14 @@
 
     <!-- Label -->
     <div
-        v-show="intent !=='view'"
-        class="flex flex-col mb-4 justify-start w-full"
-    >
-      <label class="font-semibold mb-2">Hide element</label>
-      <input
-          id="checkbox-1"
-          v-model="pendingLink.hidden"
-          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-          type="checkbox"
-      >
-    </div>
 
-    <div
-        v-show="intent !=='view' && (pendingLink.type === 'link' || pendingLink.type === 'vcard')"
         class="flex flex-col mb-4 justify-start w-full"
-    >
-      <label class="font-semibold mb-2">Hide label</label>
-      <input
-          id="checkbox-1"
-          v-model="pendingLink.metadata.hiddenLabel"
-          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-          type="checkbox"
-      >
-    </div>
+    />
 
     <!-- Subtitle -->
     <div
         v-show="intent!=='view' && showOption(pendingLink.type, 'subtitle')"
-        class="flex flex-col mb-4 justify-start w-full"
+        class="flex flex-col mb-4 justify-start w-full bg-white shadow rounded-xl p-6"
     >
       <label v-if="pendingLink.type === 'text'" class="font-semibold mb-2">Text</label>
       <label v-else-if="pendingLink.type === 'html'" class="font-semibold mb-2">HTML</label>
@@ -171,7 +169,7 @@
         <input
             v-model="dividerSettings.color"
             :data-jscolor="jsColorOptions"
-            class="p-3 mb-5 w-full rounded-lg bg-white text-sm text-gray-700"
+            class="p-3 mb-5 w-full border-solid border-gray-300 rounded-2xl border bg-white text-sm text-gray-700"
             placeholder="e.g. #FFF"
         >
 
@@ -185,7 +183,7 @@
     </div>
 
     <!-- Social Icon Settings -->
-    <div v-show="intent!=='view' && pendingLink.type === 'social'" class="flex flex-col mb-4 justify-start w-full">
+    <div v-show="intent!=='view' && pendingLink.type === 'social'" class="flex flex-col mb-4 justify-start w-full ">
       <div class="flex flex-col lg:flex-row items-center justify-center items-center w-full mb-4">
         <div
             v-if="socialIcons.length < 12"
@@ -199,7 +197,7 @@
         </div>
       </div>
 
-      <div v-for="(siSettings, index) of socialIcons" class="p-4 m-2 border-2 rounded-2xl">
+      <div v-for="(siSettings, index) of socialIcons" class="p-4 m-2 bg-white shadow rounded-2xl border">
         <div class="flex flex-row justify-start items-center">
           <label class="font-semibold align-middle mr-5">Icon {{ index + 1 }}</label>
 
@@ -227,73 +225,43 @@
         </div>
 
         <select
-            v-model="siSettings.type"
+            :id="`select-${index}`"
+            v-model="selectedIcon[index]"
             class="p-2 mt-2 w-full text-sm border-solid border-gray-300 rounded-2xl border"
-            @change="onSocialIconTypeChange($event, siSettings)"
+            @change="onSocialIconTypeChange($event, siSettings, index)"
         >
-          <option disabled selected>
+          <option key="icon-select-label" disabled>
             Select an icon
           </option>
 
-          <option value="phone">
-            Phone
-          </option>
-          <option value="text">
-            Text
-          </option>
-          <option value="email">
-            Email
-          </option>
-
-          <option value="applemusic">
-            Apple Music
-          </option>
-          <option value="cuplr">
-            Cuplr
-          </option>
-          <option value="discord">
-            Discord
-          </option>
-          <option value="facebook">
-            Facebook
-          </option>
-          <option value="instagram">
-            Instagram
-          </option>
-          <option value="linkedin">
-            LinkedIn
-          </option>
-          <option value="pinterest">
-            Pinterest
-          </option>
-          <option value="soundcloud">
-            SoundCloud
-          </option>
-          <option value="spotify">
-            Spotify
-          </option>
-          <option value="tiktok">
-            Tiktok
-          </option>
-          <option value="twitch">
-            Twitch
-          </option>
-          <option value="twitter">
-            Twitter
-          </option>
-          <option value="whatsapp">
-            WhatsApp
-          </option>
-          <option value="youtube">
-            YouTube
-          </option>
-          <option value="zoom">
-            Zoom
-          </option>
-          <option value="custom">
-            Custom
+          <option
+              v-for="(icon, i) in Object.keys(socialIconsList)"
+              :key="'icon' + i"
+              :value="icon"
+          >
+            {{ icon }}
           </option>
         </select>
+
+        <div class="mt-2 flex flex-row space-x-3">
+          <div
+              v-for="(iconVariant, i) in socialIconsList[selectedIcon[index]]"
+              :key="'filteredIcon-' + i"
+          >
+            <label :for="`icon-type-${index}-${i}`"><img
+                v-if="iconVariant && iconVariant !== 'custom'"
+                class="object-contain h-12"
+                :src="require(`@/assets/svg-social-icons/${iconVariant}.svg`)"
+            ></label>
+            <input
+                :id="`icon-type-${index}-${i}`"
+                v-model="siSettings.type"
+                :value="iconVariant"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                type="radio"
+            >
+          </div>
+        </div>
 
         <div class="mt-2">
           <label class="font-semibold">URL</label>
@@ -306,44 +274,62 @@
         </div>
 
         <div class="flex flex-row">
-          <div class="flex flex-row mt-3 mb-3">
-            <label class="font-semibold mt-2 mb-2 mr-2">Scale (px)</label>
-            <input
-                v-model="siSettings.scale"
-                class="p-3 rounded-lg bg-white text-sm text-gray-700"
-                type="number"
-            >
+          <div class="flex flex-row mt-3 mb-3 items-center">
+            <div>
+              <label class="font-semibold mt-2 mb-2 mr-3">Scale (px)</label>
+            </div>
+            <div>
+              <input
+                  v-model="siSettings.scale"
+                  class="p-3 bg-white text-sm text-gray-700 border-solid border-gray-300 rounded-2xl border w-3/4"
+                  type="number"
+              >
+            </div>
           </div>
 
-          <div class="flex flex-row mt-3 mb-3 ml-2">
-            <label class="font-semibold mt-2 mb-2 mr-2">Icon Color</label>
-            <input
-                v-model="siSettings.color"
-                :data-jscolor="jsColorOptions"
-                class="rounded-lg bg-white text-sm text-gray-700"
-                placeholder="e.g. #FFF"
-            >
+          <div class="flex flex-row items-center">
+            <div>
+              <label class="font-semibold mr-3">Icon Color</label>
+            </div>
+            <div>
+              <input
+                  :id="'color-' + index"
+                  v-model="siSettings.color"
+                  :data-jscolor="jsColorOptions"
+                  class="p-3 bg-white text-sm text-gray-700 border-solid border-gray-300 rounded-2xl border"
+                  placeholder="e.g. #FFF"
+              >
+            </div>
           </div>
         </div>
 
         <div class="flex flex-row">
-          <div class="flex flex-row mt-3 mb-3">
-            <label class="font-semibold mt-2 mb-2 mr-2">Label</label>
-            <input
-                v-model="siSettings.label"
-                class="p-3 rounded-lg bg-white text-sm text-gray-700"
-                type="text"
-            >
+          <div class="flex flex-row items-center">
+            <div>
+              <label class="font-semibold mt-2 mb-2 mr-12">Label</label>
+            </div>
+            <div>
+              <input
+                  v-model="siSettings.label"
+                  class="p-3 bg-white text-sm text-gray-700 border-solid border-gray-300 rounded-2xl border w-3/4"
+                  type="text"
+              >
+            </div>
           </div>
 
-          <div class="flex flex-row mt-3 mb-3 ml-2 end">
-            <label class="font-semibold mt-2 mb-2 mr-2">Label Color</label>
-            <input
-                v-model="siSettings.labelColor"
-                :data-jscolor="jsColorOptions"
-                class="rounded-lg bg-white text-sm text-gray-700"
-                placeholder="e.g. #FFF"
-            >
+          <div class="flex flex-row mt-3 mb-3 items-center">
+            <div>
+              <label class="font-semibold mt-2 mb-2 mr-1">Label Color</label>
+            </div>
+            <div>
+              <input
+                  :id="'labelcolor-' + index"
+                  v-model="siSettings.labelColor"
+                  :data-jscolor="jsColorOptions"
+                  class="p-3 bg-white text-sm text-gray-700 border-solid border-gray-300 rounded-2xl border"
+                  placeholder="e.g. #FFF"
+              >
+            </div>
           </div>
         </div>
 
@@ -642,7 +628,102 @@ export default Vue.extend({
       items: [{url: ''}]
     };
 
+    let socialIconsListTemp = ["applemusic-branded-filled",
+      "email-filled",
+      "paypal-branded-outlined",
+      "soundcloud-outlined",
+      "twitch-branded-filled",
+      "whatsapp-filled",
+      "applemusic-branded-outlined",
+      "email-outlined",
+      "paypal-branded-outlined2",
+      "spotify-branded-filled",
+      "twitch-branded-outlined",
+      "whatsapp-outlined",
+      "applemusic-filled",
+      "facebook-branded-filled",
+      "paypal-filled",
+      "spotify-branded-outlined",
+      "twitch-filled",
+      "youtube-branded-filled",
+      "applemusic-outlined",
+      "facebook-branded-outlined",
+      "paypal-outlined",
+      "spotify-filled",
+      "twitch-outlined",
+      "youtube-branded-outlined",
+      "cashapp-branded-filled",
+      "facebook-filled",
+      "phone-filled",
+      "spotify-outlined",
+      "twitter-branded-filled",
+      "youtube-filled",
+      "cashapp-branded-outlined",
+      "facebook-outlined",
+      "phone-outlined",
+      "telegram-branded-filled",
+      "twitter-branded-outlined",
+      "youtube-outlined",
+      "cashapp-filled",
+      "instagram-branded-filled",
+      "telegram-branded-outlined",
+      "twitter-filled",
+      "zoom-branded-filled",
+      "cashapp-outlined",
+      "instagram-branded-outlined",
+      "pinterest-branded-filled",
+      "telegram-filled",
+      "twitter-outlined",
+      "zoom-branded-outlined",
+      "cuplr-filled",
+      "instagram-filled",
+      "pinterest-branded-outlined",
+      "telegram-outlined",
+      "venmo-branded-filled",
+      "zoom-filled",
+      "cuplr-outlined",
+      "instagram-outlined",
+      "pinterest-filled",
+      "text-outlined",
+      "text-filled",
+      "venmo-branded-outlined",
+      "zoom-outlined",
+      "discord-branded-filled",
+      "linkedin-branded-filled",
+      "pinterest-outlined",
+      "tiktok-branded-filled",
+      "venmo-filled",
+      "discord-branded-outlined",
+      "linkedin-branded-outlined",
+      "soundcloud-branded-filled",
+      "tiktok-branded-outlined",
+      "venmo-outlined",
+      "discord-filled",
+      "linkedin-filled",
+      "soundcloud-branded-outlined",
+      "tiktok-filled",
+      "whatsapp-branded-filled",
+      "discord-outlined",
+      "linkedin-outlined",
+      "soundcloud-filled",
+      "tiktok-outlined",
+      "whatsapp-branded-outlined",
+      "custom"
+    ];
+    socialIconsListTemp.sort();
+    const socialIconsList: any = {};
+    socialIconsListTemp = socialIconsListTemp.map(x => {
+      const iconName: string = x.split('-')[0];
+      const iconVariants: string[] = socialIconsListTemp.filter(y => y.startsWith(iconName));
+      iconVariants.reverse();
+      const resultObj: any = {};
+      socialIconsList[iconName] = iconVariants;
+      return resultObj;
+    });
+
     return {
+      socialIconsList,
+      selectedIcon: {} as any,
       jsColorOptions: "{alphaChannel: true, format: 'rgba'}",
       rendererUrl: process.env.RENDERER_URL,
       id: '',
@@ -653,7 +734,6 @@ export default Vue.extend({
       user: '',
       error: '',
       intent: '',
-
       isLoaded: false,
 
       style: null as string | null | undefined,
@@ -678,7 +758,6 @@ export default Vue.extend({
       sortedLinks: new Array<EditorLink>()
     };
   },
-
   head() {
     return {
       title: 'Link panel - ' + this.$customSettings.productName,
@@ -724,9 +803,9 @@ export default Vue.extend({
       this.intent = 'create';
     }
 
-    for (let i = 0; i < this.links.length; i++) {
-      if (this.links[i].id == this.id) {
-        this.pendingLink = this.links[i];
+    for (const element of this.links) {
+      if (element.id === this.id) {
+        this.pendingLink = element;
         this.style = this.pendingLink.style;
         this.customCss = this.pendingLink.customCss;
         break;
@@ -765,6 +844,11 @@ export default Vue.extend({
       this.buttonImageUrl = this.pendingLink.metadata.buttonImageUrl ?? '';
       this.buttonImageFullWidth = this.pendingLink.metadata.buttonImageFullWidth ?? false;
     }
+    if (this.pendingLink.metadata?.socialIcons) {
+      for (const [index, icon] of this.pendingLink.metadata?.socialIcons?.entries()) {
+        this.selectedIcon[index] = icon.type.split('-')[0];
+      }
+    }
   },
 
   async mounted() {
@@ -779,6 +863,11 @@ export default Vue.extend({
   },
 
   methods: {
+    checkFirstIconIfChanged(siSettings: { type: string }, i: number) {
+      if (this.socialIconsList[this.selectedIcon[i]] && !this.socialIconsList[this.selectedIcon[i]].includes(siSettings.type)) {
+        siSettings.type = this.socialIconsList[this.selectedIcon[i]][0];
+      }
+    },
     onElementTypeChanged() {
       this.$refs.label.focus();
     },
@@ -980,15 +1069,18 @@ export default Vue.extend({
       }
     },
 
-    onSocialIconTypeChange(event: Event, siSettings: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }) {
+    onSocialIconTypeChange(event: Event, siSettings: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }, index: number) {
       const selectElement = event.target as HTMLSelectElement;
 
       if (!selectElement) {
         return;
       }
 
-      const val = selectElement.value;
+      const labelColorInput: any = (document.getElementById('labelcolor-' + index) as HTMLInputElement);
+      const colorInput: any = (document.getElementById('color-' + index) as HTMLInputElement);
 
+      const val = selectElement.value;
+      this.selectedIcon[index] = val;
       switch (val) {
         case "phone":
           siSettings.url = "tel:+1";
@@ -1001,13 +1093,25 @@ export default Vue.extend({
           break;
         default:
           siSettings.url = "";
+          siSettings.labelColor = "rgba(0, 0, 0, 1)";
+          if (labelColorInput) {
+            labelColorInput.jscolor.fromString(siSettings.labelColor);
+          }
+
+          siSettings.color = "rgba(0, 0, 0, 1)";
+          if (colorInput) {
+            colorInput.jscolor.fromString(siSettings.color);
+          }
           break;
       }
 
       siSettings.label = selectElement.options[selectElement.selectedIndex].text;
+      this.checkFirstIconIfChanged(siSettings, index);
     },
 
     addSocialIcon() {
+      const index = Object.keys(this.socialIcons).length;
+      this.selectedIcon[index] = "custom";
       this.socialIcons.push({
         color: "rgba(0, 0, 0, 1)",
         scale: 40,
@@ -1025,6 +1129,10 @@ export default Vue.extend({
 
     deleteSocialIcon(index: number) {
       this.socialIcons.splice(index, 1);
+      console.log(this.selectedIcon);
+      this.selectedIcon[index] = Object.values(this.selectedIcon)[index + 1];
+      this.$delete(this.selectedIcon, (index + 1).toString());
+      console.log(this.selectedIcon);
     },
 
     moveSocialIcon(index: number, direction: "up" | "down") {

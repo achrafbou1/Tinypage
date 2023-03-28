@@ -18,7 +18,13 @@
           </div>
         </div>
       </transition>
-
+      <div v-if="profileUsage.published === profileUsage.allowed" class="warning">
+        Unpublished pages are used for design and testing at no charge. To publish your page, please add a page
+        <NuxtLink style="text-decoration: underline;" to="/dashboard/account">
+          here
+        </NuxtLink>
+        then set it's visibility to "Public" on the page settings.
+      </div>
       <h2 class="text-black font-bold text-xl w-full mb-2">
         Site details
       </h2>
@@ -323,37 +329,82 @@
         Failed to link Google!
       </p>
     </div>
-
-    <!-- Manage SSO -->
-    <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
-      <div class="flex flex-col mr-auto w-full lg:w-1/2">
+    <!-- Leave page -->
+    <div
+        v-if="user.activeProfile.userId !== user.id"
+        class="flex flex-col p-6 bg-white shadow rounded-2xl w-full mb-8"
+    >
+      <div class="flex flex-col mr-auto w-full lg:w-full">
         <h2 class="text-black font-bold text-lg w-full">
-          Manage SSO
+          Leave this page
         </h2>
         <p class="text-black opacity-70 font-semibold">
-          Link up your social media accounts for easy single sign-on access.
+          Leave this page (only works for pages you've been invited to).
         </p>
       </div>
-      <div>
-        <a
-            class="flex flex-row items-center font-bold justify-center cursor-pointer rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"
-            style="border-width:3px;border-style:solid;"
-            @click="assignGoogleAccount()"
-        >
-          <img class="w-5 mr-4" src="/icons/google-icon.png" alt="Link with Google">
-          Link with Google
-        </a>
-        <!--        <a-->
-        <!--          class="flex flex-row items-center font-bold justify-center rounded-full px-8 py-2 my-2 text-md border-gray-300 hover:border-gray-600"-->
-        <!--          style="border-width:3px;border-style:solid;"-->
-        <!--          @click="assignGitHubAccount()"-->
-        <!--        >-->
-        <!--          <img src="/icons/google-icon.png" class="w-5 mr-4">-->
-        <!--          Link with GitHub-->
-        <!--        </a>-->
-      </div>
+      <button
+          class="w-full lg:w-auto mt-4 flex p-3 px-6 text-white text-center bg-red-600 hover:bg-red-700 rounded-2xl font-bold w-1/3 justify-center align-center"
+          type="button"
+          @click="$modal.show('leave-page'); $modal.hide('delete-page');"
+      >
+        Leave this page
+      </button>
     </div>
 
+    <div class="bg-white py-8 shadow rounded-2xl justify-center items-start w-full mb-8">
+      <div class="flex space-x-48 flex-row">
+        <div>
+          <h2 class="text-black font-bold text-lg w-full px-6">
+            Manage your team
+          </h2>
+        </div>
+        <div class="flex-initial w-64 data-table-search-filter mb-6">
+          <span>search:</span><input type="search" @input="filterTeams">
+        </div>
+      </div>
+      <div class="w-full bg-gray-200" style="height:1px;"/>
+      <div class="flex flex-col mt-4 mb-2 w-full px-6 mt-6">
+        <label v-if="!teamMembers || teamMembers.length < 1" class="font-bold text-black opacity-70 mb-3">Ready to add
+          your first team
+          member? Add them here!</label>
+        <label v-else class="font-bold text-black opacity-70 mb-3">Want to add a new member? Add them here!</label>
+
+        <div class="flex flex-row items-center justify-start w-full">
+          <label class="mr-4 font-normal">Email</label>
+          <input
+              v-model="teamMemberEmail"
+              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
+              placeholder="e.g. jane@gmail.com"
+              type="text"
+          >
+          <label class="ml-4 mr-4 font-normal">Role</label>
+          <select
+              v-model="teamMemberRole"
+              class="px-2 py-3 text-sm border-solid border-gray-300 rounded-2xl border flex-grow"
+              style="min-width: 120px; max-width: 220px;"
+          >
+            <!-- <option value="guest" disabled>Guest (View Only) [Coming Soon]</option>-->
+            <option selected value="editor">
+              Editor
+            </option>
+          </select>
+          <button
+              class="ml-4 mr-4 py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl
+              font-bold justify-center align-center"
+              type="button"
+              @click="addTeamMember(teamMemberEmail, teamMemberRole); teamMemberEmail = '';"
+          >
+            Add team member
+          </button>
+        </div>
+
+        <div v-if="error" class="error py-4 px-6 mt-4 text-sm text-white align-center justify-center">
+          {{ error }}
+        </div>
+        <DataTable v-bind="teamsTableParams"/>
+      </div>
+
+    </div>
     <!-- Import / Export Profile -->
     <div class="flex flex-col lg:flex-row p-6 bg-white shadow rounded-2xl justify-center items-center w-full mb-8">
       <div class="flex flex-col mr-auto w-full lg:w-1/2">
@@ -497,67 +548,77 @@
 </template>
 
 <script lang="ts">
+// @ts-ignore
+import DataTable from '@andresouzaabreu/vue-data-table';
 import Vue from "vue";
 import {StatusCodes} from "http-status-codes";
+// eslint-disable-next-line import/named
+import {MetaInfo} from "vue-meta";
+import ActionsComponentTeamMember from "~/components/team-members/page-team-members/ActionsComponent.vue";
+import EventBus from "~/plugins/eventbus";
 
 export default Vue.extend({
   name: 'DashboardSettings',
+  components: {
+    DataTable
+  },
   layout: 'dashboard',
   middleware: 'authenticated',
 
-  data() {
-    return {
-      showHTML: false,
-      loaded: false,
-      originalHandle: '',
-      user: {
+  data: () => ({
+    teamMemberEmail: '' as string,
+    teamMemberRole: 'editor' as string,
+    teamMembers: [] as ProfileMember[],
+    filteredTeamMembers: [] as ProfileMember[],
+    showHTML: false,
+    loaded: false,
+    originalHandle: '',
+    user: {
+      id: '',
+      name: '',
+      emailHash: '',
+      activeProfile: {
         id: '',
-        name: '',
-        emailHash: '',
-        activeProfile: {
-          id: '',
-          imageUrl: '',
-          headline: '',
-          subtitle: '',
-          handle: '',
-          customDomain: '',
-          visibility: '',
-          showWatermark: false,
-          rendererUrl: process.env.RENDERER_URL,
-          userId: '',
-          metadata: {
-            privacyMode: false as boolean | null | undefined,
-            unlisted: false as boolean | null | undefined,
-            coverImage: null as boolean | null | undefined,
-            pageHtml: null as boolean | null | undefined,
-            shareMenu: true as boolean | null | undefined,
-            showAvatar: true as boolean | null | undefined,
-            previewImageUrl: '',
-            previewTitle: '',
-            previewDescription: ''
-          },
-        }
-      },
-
-      error: '',
-      passwordError: '',
-      showWatermarkNotice: false,
-      app_name: this.$customSettings.productName,
-      rendererUrl: process.env.RENDERER_URL,
-
-      profileUsage: {
-        published: 0,
-        allowed: 0
-      },
-
-      alerts: {
-        googleLinked: null as boolean | null,
-        linktreeImported: null as boolean | null,
+        imageUrl: '',
+        headline: '',
+        subtitle: '',
+        handle: '',
+        customDomain: '',
+        visibility: '',
+        showWatermark: false,
+        rendererUrl: process.env.RENDERER_URL,
+        userId: '',
+        metadata: {
+          privacyMode: false as boolean | null | undefined,
+          unlisted: false as boolean | null | undefined,
+          coverImage: null as boolean | null | undefined,
+          pageHtml: null as boolean | null | undefined,
+          shareMenu: true as boolean | null | undefined,
+          showAvatar: true as boolean | null | undefined,
+          previewImageUrl: '',
+          previewTitle: '',
+          previewDescription: ''
+        },
       }
-    };
-  },
+    },
 
-  head() {
+    error: '' as string,
+    passwordError: '',
+    showWatermarkNotice: false,
+    rendererUrl: process.env.RENDERER_URL,
+
+    profileUsage: {
+      published: 0,
+      allowed: 0
+    },
+
+    alerts: {
+      googleLinked: null as boolean | null,
+      linktreeImported: null as boolean | null,
+    }
+  }),
+
+  head(): MetaInfo {
     return {
       title: 'Page Settings - ' + this.$customSettings.productName,
       meta: [
@@ -589,12 +650,33 @@ export default Vue.extend({
       ],
     };
   },
-
   computed: {
-    getTXTRecord() {
-      const profileId = this.$data.user.activeProfile.id;
-
-      return "sl-verification-id=" + profileId;
+    app_name(): string {
+      return this.$customSettings.productName;
+    },
+    teamsTableParams(): Object {
+      return {
+        showPerPage: false,
+        sortingMode: "single",
+        showSearchFilter: false,
+        showDownloadButton: false,
+        showEntriesInfo: false,
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        data: this.filteredTeamMembers,
+        columns: [
+          {
+            key: "email"
+          },
+          {
+            key: "role",
+          },
+          {
+            key: "actions",
+            component: ActionsComponentTeamMember,
+            sortable: false
+          }
+        ]
+      };
     }
   },
 
@@ -607,6 +689,7 @@ export default Vue.extend({
   },
 
   async mounted() {
+    await this.getTeamMembers();
     await this.getUserData();
     if (this.$route.query.googleLinked) {
       this.$data.alerts.googleLinked = this.$route.query.googleLinked === 'true';
@@ -614,9 +697,58 @@ export default Vue.extend({
 
     await this.updateProfileUsage();
     this.loaded = true;
+
+    EventBus.$on("getTeamMembersPageOnly", () => {
+      this.getTeamMembers();
+    });
+
+    EventBus.$on("addTeamMembersPageOnly", ({email, role}: ProfileMember) => {
+      this.addTeamMember(email, role);
+    });
   },
 
   methods: {
+    async addTeamMember(email: string, role: string): Promise<void> {
+      const token = this.$store.getters['auth/getToken'];
+      try {
+        await this.$axios.post('/team/add', {
+          token,
+          email,
+          role
+        });
+        this.error = '';
+      } catch (err: any) {
+        console.log(err.response);
+        this.error = err.response.data.error;
+      }
+
+      await this.getTeamMembers();
+    },
+    async getTeamMembers(): Promise<void> {
+      if (!this.teamMembers) {
+        this.teamMembers = [];
+      }
+
+      this.teamMembers.length = 0;
+
+      const token = this.$store.getters['auth/getToken'];
+
+      this.teamMembers = (await this.$axios.post('/team', {
+        token,
+        pageOnly: true
+      })).data;
+      this.filteredTeamMembers = this.teamMembers;
+    },
+    filterTeams(event: any) {
+      const target = event.target;
+      const filterSearch = target.value.toLowerCase();
+      const teams = this.teamMembers;
+      if (filterSearch) {
+        this.filteredTeamMembers = teams.filter(x => x.email.toLowerCase().includes(filterSearch));
+      } else {
+        this.filteredTeamMembers = this.teamMembers;
+      }
+    },
     async leavePage() {
       const profileId = this.user.activeProfile.id;
       const token = this.$store.getters['auth/getToken'];
@@ -631,7 +763,7 @@ export default Vue.extend({
         random: true,
         newProfileId: -1
       });
-      this.$router.go();
+      window.location.reload();
     },
     async updateProfileUsage() {
       const token = this.$store.getters['auth/getToken'];
@@ -641,7 +773,7 @@ export default Vue.extend({
       }) as { published: number, allowed: number };
     },
 
-    getFormattedProfileUsage(): string {
+    getFormattedProfileUsage() {
       return `(${this.profileUsage.published}/${this.profileUsage.allowed} pages public)`;
     },
 
@@ -778,14 +910,6 @@ export default Vue.extend({
 
       window.location.replace("/dashboard");
     },
-
-    async assignGoogleAccount() {
-      const response = await this.$axios.post('/auth/google/assign', {
-        token: this.$store.getters['auth/getToken']
-      });
-
-      window.location.assign(response.data);
-    },
   }
 });
 </script>
@@ -805,6 +929,14 @@ export default Vue.extend({
 
 iframe.widgetFrame {
   margin-left: 0 !important;
+}
+
+.warning {
+  @apply bottom-0 rounded-lg shadow border border-gray-200;
+  color: mintcream;
+  background-color: #ff9900;
+  padding: 7px;
+  z-index: 25;
 }
 
 .vm--modal {

@@ -201,6 +201,7 @@ export class ProfileService extends DatabaseService {
         if (queryResult.rowCount < 1)
             throw new HttpError(StatusCodes.CONFLICT, "The profile couldn't be added because the handle is already being used.");
 
+
         return DbTypeConverter.toProfile(queryResult.rows[0]);
     }
 
@@ -209,27 +210,37 @@ export class ProfileService extends DatabaseService {
      *
      * @param userId
      * @param listMemberOf List the profiles that this user is a member of?
+     * @param includePaymentInfoAndAnalytics
      */
-    async listProfiles(userId: string, listMemberOf: boolean = false): Promise<Profile[]> {
-        if (!listMemberOf) {
-            let queryResult = await this.pool.query<DbProfile>("select * from app.profiles where user_id=$1", [userId]);
+    async listProfiles(userId: string, listMemberOf: boolean = false, includePaymentInfoAndAnalytics: boolean = false): Promise<Profile[]> {
+        let query = "select * from app.profiles where user_id=$1";
 
-            if (queryResult.rowCount < 1)
-                throw new HttpError(StatusCodes.NOT_FOUND, "The profiles couldn't be found.");
+        if (listMemberOf) {
+            query = "select * from app.profiles where user_id=$1 or exists(select 1 from enterprise.profile_members where user_id=$1 and profile_id=profiles.id)";
+            if (includePaymentInfoAndAnalytics) {
+                query = "select distinct p.*,s.tier as status from app.profiles as p left join enterprise.subscriptions as s on p.id=s.profile_id where p.user_id=$1 or exists(select 1 from enterprise.profile_members where user_id=$1 and profile_id=p.id)";
+            }
+        }
 
+        let queryResult = await this.pool.query<ProfileWithAnalytics>(query, [userId]);
+
+        if (queryResult.rowCount < 1)
+            throw new HttpError(StatusCodes.NOT_FOUND, "The profiles couldn't be found.");
+
+
+        if (includePaymentInfoAndAnalytics) {
+            const profileIds = queryResult.rows.map(x => x.id);
+            const analyticsQuery = "select referral_id, COUNT(*) as page_views from analytics.visits where type='page' and referral_id = ANY($1::bigint[]) GROUP BY referral_id;";
+            let analyticsQueryResult = await this.pool.query<VisitCount>(analyticsQuery, [profileIds]);
             return queryResult.rows.map(x => {
-                return DbTypeConverter.toProfile(x);
-            });
-        } else {
-            let queryResult = await this.pool.query<DbProfile>("select * from app.profiles where user_id=$1 or exists(select 1 from enterprise.profile_members where user_id=$1 and profile_id=profiles.id)", [userId]);
-
-            if (queryResult.rowCount < 1)
-                throw new HttpError(StatusCodes.NOT_FOUND, "The profiles couldn't be found.");
-
-            return queryResult.rows.map(x => {
-                return DbTypeConverter.toProfile(x);
+                x.page_views = analyticsQueryResult.rows.find(y => x.id === y.referral_id?.toString())?.page_views || "0";
+                return DbTypeConverter.snakeToCamel(x);
             });
         }
+
+        return queryResult.rows.map(x => {
+            return DbTypeConverter.snakeToCamel(x);
+        });
     }
 
     /**
@@ -248,12 +259,13 @@ export class ProfileService extends DatabaseService {
     }
 
     /**
-     * Returns the amounts on a account.
+     * Returns the amounts on an account.
      *
      * @param userId The user id associated with the profiles.
      */
     async getProfileCount(userId: string): Promise<number> {
-        return (await this.pool.query<{ count: number }>("select count(*) from app.profiles where user_id=$1", [userId])).rows[0].count;
+        return (await this.pool.query<{ count: number }>("select count(*) from app.profiles " +
+            "where user_id=$1", [userId])).rows[0].count;
     }
 
     async countPublishedProfiles(userId: string): Promise<number> {
@@ -277,19 +289,15 @@ export class ProfileService extends DatabaseService {
      * @param customDomain
      * @param metadata
      */
-    async updateProfile(
-        profileId: string,
-        imageUrl?: string,
-        headline?: string,
-        subtitle?: string,
-        handle?: string,
-        visibility?: string,
-        showWatermark?: boolean,
-        customCss?: string,
-        customHtml?: string,
-        customDomain: string | null | undefined = null,
-        metadata: any = null
-    ): Promise<Profile> {
+    async updateProfile(profileId: string, imageUrl ?: string, headline ?: string, subtitle ?: string, handle?: string,
+                        visibility ?: string,
+                        showWatermark ?: boolean,
+                        customCss ?: string,
+                        customHtml ?: string,
+                        customDomain: string | null | undefined = null,
+                        metadata: any = null
+    ):
+        Promise<Profile> {
 
         if (handle) {
             let profileResult = await this.pool.query<DbProfile>("select 1 from app.profiles where handle ILIKE $1 and id != $2 limit 1",
@@ -300,7 +308,9 @@ export class ProfileService extends DatabaseService {
             }
         }
 
-        let queryResult: QueryResult<DbProfile>;
+        let queryResult
+            :
+            QueryResult<DbProfile>;
 
         try {
             queryResult = await this.pool.query<DbProfile>("update app.profiles\nset image_url=coalesce($1, image_url),\n    headline=coalesce($2, headline),\n    subtitle=coalesce($3, subtitle),\n    handle=coalesce($4, handle),\n    visibility=coalesce($5, visibility),\n    show_watermark=coalesce($6, show_watermark),\n    custom_css=coalesce($7, custom_css),\n    custom_html=coalesce($8, custom_html),\n    custom_domain=$9,\n    metadata=coalesce($10, metadata)\nwhere id = $11\nreturning *;",
@@ -393,7 +403,7 @@ export class ProfileService extends DatabaseService {
      * You can only get a max of 500 results.
      * @param limit
      */
-    async getTopProfiles(limit?: number): Promise<(Profile & { totalViews: number, totalClicks: number })[]> {
+    async getTopProfiles(limit ?: number): Promise<(Profile & { totalViews: number, totalClicks: number })[]> {
         if (!limit) {
             limit = 25;
         }
