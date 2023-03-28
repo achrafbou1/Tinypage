@@ -188,10 +188,14 @@
     <div v-show="intent!=='view' && pendingLink.type === 'social'" class="flex flex-col mb-4 justify-start w-full">
       <div class="flex flex-col lg:flex-row items-center justify-center items-center w-full mb-4">
         <div
+            v-if="socialIcons.length < 12"
             class="flex-grow text-center text-lg px-4 py-4 font-bold text-white rounded-2xl hover:bg-blue-400 bg-gdp mb-4 lg:mb-0 cursor-pointer"
             @click="addSocialIcon()"
         >
           Add Icon
+        </div>
+        <div v-else>
+          You cannot have more than 12 icons.
         </div>
       </div>
 
@@ -344,14 +348,9 @@
         </div>
 
         <div v-if="siSettings.type === 'custom'" class="flex flex-row">
-          <div class="flex flex-row mt-3 mb-3">
-            <label class="font-semibold mt-2 mb-2 mr-2">Custom SVG</label>
-            <textarea
-                v-model="siSettings.customSvg"
-                class="border border-2 text-white"
-                rows="2"
-                style="font-family: monospace; background-color: #1E1E1E"
-            />
+          <div class="flex flex-col mt-3 mb-3">
+            <label class="font-semibold mt-2 mb-2 mr-2">Custom SVG (Max 10 MB)</label>
+            <span class="text-xs">{{ siSettings.customSvg?.name }}</span>
           </div>
 
           <div
@@ -857,21 +856,29 @@ export default Vue.extend({
 
       try {
         this.addMetadata();
+        const formData = new FormData();
+        for (const siSettings of this.pendingLink.metadata.socialIcons) {
+          formData.append('svgIcons', siSettings.customSvg instanceof File ? siSettings.customSvg : new Blob());
+        }
 
-        await this.$axios.$post('/link/update', {
+        formData.set('data', JSON.stringify({
           token: this.$store.getters['auth/getToken'],
           link: {
             id: this.pendingLink.id,
             label: this.pendingLink.label,
             type: this.pendingLink.type,
             subtitle: this.pendingLink.subtitle,
-            hidden: this.pendingLink.hidden,
             url: this.pendingLink.url,
-            style: this.style,
-            customCss: this.customCss,
+            hidden: this.pendingLink.hidden,
+            style: this.style || '',
+            customCss: this.customCss || '',
             metadata: this.pendingLink.metadata,
             items: JSON.stringify(this.pendingLink.items)
           }
+        }));
+
+        await this.$axios.post('/link/update', formData, {
+          headers: {"Content-Type": "multipart/form-data"}
         });
 
         const index = this.links.findIndex(x => x.id === this.pendingLink.id);
@@ -933,20 +940,29 @@ export default Vue.extend({
       try {
         this.addMetadata();
 
-        const response = await this.$axios.post('/link/create', {
-          token: this.$store.getters['auth/getToken'],
-          link: {
-            id: this.pendingLink.id,
-            label: this.pendingLink.label,
-            type: this.pendingLink.type,
-            subtitle: this.pendingLink.subtitle,
-            url: this.pendingLink.url,
-            hidden: this.pendingLink.hidden,
-            style: this.style || '',
-            customCss: this.customCss || '',
-            metadata: this.pendingLink.metadata,
-            items: JSON.stringify(this.pendingLink.items)
-          }
+        const formData = new FormData();
+        for (const siSettings of this.pendingLink.metadata.socialIcons) {
+          formData.append('svgIcons', siSettings.customSvg instanceof File ? siSettings.customSvg : new Blob());
+        }
+
+        formData.set('data', JSON.stringify({
+              token: this.$store.getters['auth/getToken'],
+              link: {
+                id: this.pendingLink.id,
+                label: this.pendingLink.label,
+                type: this.pendingLink.type,
+                subtitle: this.pendingLink.subtitle,
+                url: this.pendingLink.url,
+                hidden: this.pendingLink.hidden,
+                style: this.style || '',
+                customCss: this.customCss || '',
+                metadata: this.pendingLink.metadata,
+                items: JSON.stringify(this.pendingLink.items)
+              }
+            })
+        );
+        const response = await this.$axios.post('/link/create', formData, {
+          headers: {"Content-Type": "multipart/form-data"}
         });
 
         this.links.push(response.data);
@@ -1051,7 +1067,7 @@ export default Vue.extend({
       this.vCard = await file.text();
     },
 
-    async importCustomSVG(event: Event, siSettings: { customSvg: string }) {
+    importCustomSVG(event: Event, siSettings: { customSvg: File }) {
       const htmlInputEvent = event.target as HTMLInputElement;
       const files = htmlInputEvent.files;
 
@@ -1061,7 +1077,11 @@ export default Vue.extend({
 
       const file = files[0];
 
-      siSettings.customSvg = await file.text();
+      if (file.size > 10485760) {
+        return;
+      }
+
+      siSettings.customSvg = file;
     },
 
     showOption(linkType: LinkType, field: LinkField): boolean {

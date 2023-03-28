@@ -7,7 +7,7 @@ import {StatusCodes} from "http-status-codes";
 import {StringUtils} from "../utils/string-utils";
 import {QueryResult} from "pg";
 import {DatabaseError} from 'pg-protocol/dist/messages';
-import {ScreenshotUtils} from "../utils/screenshot-utils";
+import {ImageUtils} from "../utils/image-utils";
 import {Options as PageresOptions} from "pageres";
 
 /**
@@ -102,10 +102,10 @@ export class ProfileService extends DatabaseService {
             };
             let url = `${config.rendererUrl}/${handle}`;
 
-            return await ScreenshotUtils.getOrCreateScreenshot(
+            return await ImageUtils.getOrCreateScreenshot(
                 url,
                 [`${resolution.x}x${resolution.y}`],
-                ScreenshotUtils.DEFAULT_TTL,
+                ImageUtils.DEFAULT_TTL,
                 false,
                 screenshotOptions
             );
@@ -148,10 +148,10 @@ export class ProfileService extends DatabaseService {
             };
             let url = `${config.rendererUrl}/${handle}${token}`;
 
-            return await ScreenshotUtils.getOrCreateScreenshot(
+            return await ImageUtils.getOrCreateScreenshot(
                 url,
                 [`${final_size.x}x${final_size.y}`],
-                ScreenshotUtils.DEFAULT_TTL,
+                ImageUtils.DEFAULT_TTL,
                 false,
                 screenshotOptions
             );

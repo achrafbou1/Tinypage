@@ -7,6 +7,8 @@ import ejs from "ejs";
 
 import fs, {promises as fsPromises} from "fs";
 import * as cheerio from "cheerio";
+import {Utils} from "./utils/utils";
+import {CheerioAPI} from "cheerio";
 
 interface MicrositeRequest extends FastifyRequest {
     Querystring: {
@@ -484,12 +486,26 @@ function changeSlide(next = true, index) {
                                         </div>`;
                                 }
 
-                                const svgDataHtml =  cheerio.load(svgData, null, false);
-                                svgDataHtml("title").remove();
-                                svgDataHtml("svg").attr("style", `color:${siSettings.color};`);
-                                if (scale) {
-                                    svgDataHtml("svg").attr("height", scale.toString());
-                                    svgDataHtml("svg").attr("width", scale.toString());
+                                let svgDataHtml: CheerioAPI;
+
+                                if (Utils.stringIsAValidUrl(svgData)) {
+                                    svgDataHtml = cheerio.load("<div></div>", null, false);
+                                    svgDataHtml("div").attr("style", `background-image:url(${svgData});
+                                    height: ${scale.toString()}px;
+                                    width: ${scale.toString()}px;
+                                    display: block;
+                                    background-color: ${siSettings.color};
+                                    background-repeat: no-repeat;
+                                    background-size: cover;
+                                    background-position: bottom center, 50%, 50%;`);
+                                } else {
+                                    svgDataHtml = cheerio.load(svgData, null, false);
+                                    svgDataHtml("title").remove();
+                                    svgDataHtml("svg").attr("style", `color:${siSettings.color};`);
+                                    if (scale) {
+                                        svgDataHtml("svg").attr("height", scale.toString());
+                                        svgDataHtml("svg").attr("width", scale.toString());
+                                    }
                                 }
                                 svgData = svgDataHtml.html();
                                 // language=HTML
@@ -580,7 +596,8 @@ function changeSlide(next = true, index) {
                                 >
                                     ${buttonImageHtml}
                                     <span class="font-medium text-gray-900 sl-label"
-                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span
+                                            style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
                                 </div>
                             </a>
                         `;
@@ -719,7 +736,8 @@ function changeSlide(next = true, index) {
                                         }</style>
                                     <div class="embed-container mt-4" style="${style}">
                                         <iframe title="youtube"
-                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2" allowfullscreen
+                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
+                                                allowfullscreen
                                         ></iframe>
                                     </div>
                                 `;
@@ -960,11 +978,13 @@ function changeSlide(next = true, index) {
                     >
 
                     <!-- Open Graph-->
-                    <meta property="og:title" content="${profile.metadata.previewTitle ?? profile.headline + ' - ' + config.appName}">
+                    <meta property="og:title"
+                          content="${profile.metadata.previewTitle ?? profile.headline + ' - ' + config.appName}">
                     <meta property="og:description"
                           content="${profile.metadata.previewDescription ?? profile.subtitle} | Powered by ${config.appName}"
                     >
-                    <meta property="og:image" content="${profile.metadata.previewImageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}">
+                    <meta property="og:image"
+                          content="${profile.metadata.previewImageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}">
                     <meta property="og:type" content="website">
 
                     <!-- Twitter Cards -->

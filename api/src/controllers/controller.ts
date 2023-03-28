@@ -4,7 +4,7 @@ import {Pool} from "pg";
 
 /**
  * Controllers are managed by the server to register routes for Fastify.
- * They can be registered with `SingleLinkServer.addController(controller)`.
+ * They can be registered with `TinypageServer.addController(controller)`.
  *
  * registerRoutes() is called when the Controller is expected to register Fastify routes.
  */

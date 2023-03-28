@@ -114,8 +114,8 @@ export class LinkService extends DatabaseService {
         if (queryResult.rowCount < 1)
             return [];
 
-        return queryResult.rows.map(x => {
-            return DbTypeConverter.toLink(x);
+        return queryResult.rows.map(link => {
+            return DbTypeConverter.toLink(link);
         });
     }
 

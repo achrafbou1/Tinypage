@@ -3,11 +3,20 @@ import AWS from 'aws-sdk';
 import {config} from "./config/config";
 import {Controller} from "./controllers/controller";
 import {CustomDomainHandler} from "./utils/custom-domain-handler";
+import multer from 'fastify-multer';
+import {File} from "fastify-multer/lib/interfaces";
+
+declare module 'fastify' {
+    interface FastifyRequest {
+        files?: File[]
+    }
+}
 
 /**
  * The server contains a Fastify instance and a list of Controllers, which registers routes with Fastify.
  */
-export class SingleLinkServer {
+
+export class TinypageServer {
     fastify = fastifyInit({
         logger: true,
         ignoreTrailingSlash: true,
@@ -55,6 +64,7 @@ export class SingleLinkServer {
     }
 
     registerDefaultRoutes() {
+        this.fastify.register(multer.contentParser);
         this.fastify.register(require('fastify-favicon'), {
             path: `${__dirname}/../assets/`
         });

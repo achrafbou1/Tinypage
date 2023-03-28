@@ -1,5 +1,5 @@
 import {DatabaseManager} from "./data/database-manager";
-import {SingleLinkServer} from "./singlelink-server";
+import {TinypageServer} from "./tinypage-server";
 import {AnalyticsController} from "./controllers/analytics-controller";
 import {LinkController} from "./controllers/link-controller";
 import {ProfileController} from "./controllers/profile-controller";
@@ -16,7 +16,7 @@ import {DbLocks} from "./utils/db-locks";
 import {SubscriptionController} from "./controllers/subscription-controller";
 import {StripeCallbacksController} from "./controllers/stripe-callbacks-controller";
 import {EnterpriseSettingsController} from "./controllers/enterprise-settings-controller";
-import {ScreenshotUtils} from "./utils/screenshot-utils";
+import {ImageUtils} from "./utils/image-utils";
 import {LogUtils} from "./utils/log-utils";
 import {MarketplaceController} from "./controllers/marketplace-controller";
 import {config} from "./config/config";
@@ -26,7 +26,7 @@ import {TeamController} from "./controllers/team-controller";
 
 console.log("Initializing Tinypage Enterprise");
 
-let server: SingleLinkServer = new SingleLinkServer();
+let server: TinypageServer = new TinypageServer();
 let database = new DatabaseManager();
 
 start().then(() => {
@@ -49,7 +49,7 @@ async function start() {
     PermissionUtils.initialize(database.pool);
 
     // Initialize screenshot API
-    await ScreenshotUtils.initialize();
+    await ImageUtils.initialize();
 
     // Initialize Job System
     await JobSystem.initialize(database.pool);

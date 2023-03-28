@@ -9,6 +9,8 @@ import {HttpError} from "../utils/http-error";
 import Mixpanel from "mixpanel";
 import {config} from "../config/config";
 import {IpUtils} from "../utils/ip-utils";
+import {ImageUtils} from "../utils/image-utils";
+
 
 interface CreateLinkRequest extends AuthenticatedRequest {
     Body: {
@@ -42,6 +44,8 @@ export class LinkController extends Controller {
     private readonly linkService: LinkService;
     private readonly mixpanel = config.analytics.mixpanelToken ? Mixpanel.init(config.analytics.mixpanelToken) : null;
 
+    private static readonly MAX_NUM_OF_LINKS_IN_PROFILE = 200;
+
     constructor(fastify: FastifyInstance, databaseManager: DatabaseManager) {
         super(fastify, databaseManager);
 
@@ -49,12 +53,13 @@ export class LinkController extends Controller {
     }
 
     registerRoutes(): void {
-        this.fastify.post<CreateLinkRequest>('/link/create', Auth.ValidateWithData, this.CreateLink.bind(this));
-        this.fastify.post<UpdateLinkRequest>('/link/update', Auth.ValidateWithData, this.UpdateLink.bind(this));
+        this.fastify.post<CreateLinkRequest>('/link/create', Auth.ValidateWithDataAndSvgIconsUpload, this.CreateLink.bind(this));
+        this.fastify.post<UpdateLinkRequest>('/link/update', Auth.ValidateWithDataAndSvgIconsUpload, this.UpdateLink.bind(this));
         this.fastify.post<DeleteLinkRequest>('/link/delete', Auth.ValidateWithData, this.DeleteLink.bind(this));
 
         this.fastify.post<ReorderLinkRequest>('/link/reorder', Auth.ValidateWithData, this.ReorderLink.bind(this));
     }
+
 
     /**
      * Route for /link/create
@@ -77,8 +82,18 @@ export class LinkController extends Controller {
             // ignore profileId field if set and replace with our own
             link.profileId = request.body.authProfile.id;
 
+            const profileLinkCount: number = await this.linkService.getProfileLinkCount(profile.id);
+
             if (!link.sortOrder) {
-                link.sortOrder = await this.linkService.getProfileLinkCount(profile.id);
+                link.sortOrder = profileLinkCount;
+            }
+
+            if (profileLinkCount > LinkController.MAX_NUM_OF_LINKS_IN_PROFILE) {
+                reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReplyUtils.error("You have reached the maximum number of links for this profile"));
+            }
+
+            if (request.files) {
+                await ImageUtils.saveSvgIcons(request.files, link.metadata.socialIcons);
             }
 
             let newLink = await this.linkService.createLink(link);
@@ -124,6 +139,10 @@ export class LinkController extends Controller {
 
             if (!await Auth.checkLinkOwnership(this.linkService, link.id, profile)) {
                 return ReplyUtils.errorOnly(new HttpError(StatusCodes.UNAUTHORIZED, "The profile isn't authorized to access the requested resource"));
+            }
+
+            if (request.files) {
+                await ImageUtils.saveSvgIcons(request.files, link.metadata.socialIcons);
             }
 
             let newLink = await this.linkService.updateLink(link);

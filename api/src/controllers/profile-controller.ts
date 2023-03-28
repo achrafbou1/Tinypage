@@ -440,7 +440,7 @@ export class ProfileController extends Controller {
                 return;
             }
 
-            return this.linkService.listLinks(request.body.authProfile.id);
+            return this.linkService.listLinks(request.body.authProfile.id, true);
         } catch (e) {
             if (e instanceof HttpError) {
                 reply.code(e.statusCode);
