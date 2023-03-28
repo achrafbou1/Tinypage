@@ -77,13 +77,18 @@ export class TinypageServer {
             timeWindow: '1 minute'
         });
 
+        this.fastify.register(require('fastify-cors'), {
+            origin: config.editorUrl,
+            exposedHeaders: ['Content-Disposition']
+        });
+
 
         this.fastify.setErrorHandler((error, request, reply) => {
             this.fastify.log.error(error);
             // fastify will use parent error handler to handle this
             reply.send(error);
         });
-        
+
         this.fastify.register(require('fastify-raw-body'), {
             field: 'rawBody', // change the default request.rawBody property name
             global: false, // add the rawBody to every request. **Default true**
