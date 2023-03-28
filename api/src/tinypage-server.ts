@@ -75,12 +75,6 @@ export class TinypageServer {
             timeWindow: '1 minute'
         });
 
-        // Allow anyone
-        this.fastify.register(require('fastify-cors'), {
-            origin: '*',
-            exposedHeaders: ['Content-Disposition']
-        });
-
         this.fastify.register(require('fastify-raw-body'), {
             field: 'rawBody', // change the default request.rawBody property name
             global: false, // add the rawBody to every request. **Default true**
