@@ -5,6 +5,7 @@ import {Controller} from "./controllers/controller";
 import {CustomDomainHandler} from "./utils/custom-domain-handler";
 import multer from 'fastify-multer';
 import {File} from "fastify-multer/lib/interfaces";
+import {JobSystem} from "./jobs/job-system";
 
 declare module 'fastify' {
     interface FastifyRequest {
@@ -48,7 +49,7 @@ export class TinypageServer {
     /**
      * Starts the fastify server with the controllers provided.
      */
-    startServer() {
+    async startServer() {
         this.fastify.listen(config.port, config.host, (err: Error | null, address: string) => {
             if (err)
                 throw err;
@@ -136,6 +137,7 @@ export class TinypageServer {
      */
     async Index(request: FastifyRequest, reply: FastifyReply) {
         reply.type('text/html').status(200);
+        await JobSystem.cleanupUnusedFilesFromSpaces();
 
         // language=HTML
         return `

@@ -1,5 +1,5 @@
 import {config} from "../config/config";
-import {Client, UploadedObjectInfo} from "minio";
+import {BucketItem, Client, UploadedObjectInfo} from "minio";
 import * as ObjectHash from "object-hash";
 import {StatusCodes} from "http-status-codes";
 import {HttpError} from "./http-error";
@@ -57,7 +57,7 @@ export class ImageUtils {
      * @param files The files to upload
      * @param siSettings Social icons settings
      */
-    static async saveSvgIcons(files: File[], siSettings: { customSvg: string | null }[]) {
+    static async saveSvgIcons(files: File[], siSettings: { customSvg: string | null }[]): Promise<{ customSvg: string | null }[]> {
         const fileUploadRequests: Promise<UploadedObjectInfo>[] = [];
         if (this.minio && this.bucketEnabled) {
             for (const [i, file] of files.entries()) {
@@ -187,6 +187,32 @@ export class ImageUtils {
                 if (err != null)
                     console.error("Error unlinking file: " + err);
             });
+        }
+    }
+
+    static async listFiles(bucket: string, folder: string): Promise<string[]> {
+        return await new Promise((resolve, reject) => {
+            const objectsList: string[] = [];
+            if (this.bucketEnabled && this.minio) {
+                const objectsStream = this.minio.listObjects(config.s3Bucket.publicBucketName, folder);
+                objectsStream.on('data', function (obj: BucketItem) {
+                    objectsList.push(`${ImageUtils.publicBucketURL}/${obj.name}`);
+                });
+                objectsStream.on('error', function (e) {
+                    console.error(e);
+                    reject(e);
+                });
+
+                objectsStream.on('end', function () {
+                    resolve(objectsList);
+                });
+            }
+        });
+    }
+
+    static async deleteFiles(bucket: string, svgIcons: string[]): Promise<void> {
+        if (this.minio && this.bucketEnabled) {
+            return this.minio.removeObjects(bucket, svgIcons);
         }
     }
 }
