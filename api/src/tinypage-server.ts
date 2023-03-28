@@ -77,8 +77,9 @@ export class TinypageServer {
             timeWindow: '1 minute'
         });
 
+        /* This is not safe and needs to change later by forwarding the requester ip in nginx instead of the docker internal ip */
         this.fastify.register(require('fastify-cors'), {
-            origin: config.editorUrl,
+            origin: '*',
             exposedHeaders: ['Content-Disposition']
         });
 
