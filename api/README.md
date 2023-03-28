@@ -2,7 +2,7 @@
 <h1 align="center">
     <br>
     <br>
-    <a href="https://tinypage.app"><img src="static/tinypage-logo.svg" width="225"/></a>
+    <a href="https://tinypage.app"><img src="/editor/static/tinypage-logo.svg" width="225"/></a>
     <br>
     <br>
 </h1>
