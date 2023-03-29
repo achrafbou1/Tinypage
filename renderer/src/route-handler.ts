@@ -322,7 +322,7 @@ export class RouteHandler {
                                 class="w-full sl-item-parent mt-4"
                                 >
                                 <div
-                                    class="rounded-2xl shadow bg-white w-full font-medium mb-3 nc-link sl-item flex items-center justify-center"
+                                    class="rounded-2xl shadow bg-white w-full font-medium mx-auto mb-3 nc-link sl-item flex items-center justify-center"
                                 style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
                                 >
                                 ${buttonImageHtml}
