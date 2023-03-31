@@ -34,7 +34,7 @@
           <button
               type="button"
               class="w-full flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              @click="initCheckout('price_1L9wX4EM2KnB58E0PRlDeLYk')"
+              @click="initCheckout('price_1MrlnDEM2KnB58E0ypj6o4mL')"
           >Get
             started
           </button>
@@ -69,7 +69,7 @@
           <button
               type="button"
               class="w-full flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              @click="initCheckout('price_1MVjYvEM2KnB58E0OYuhWmBJ')"
+              @click="initCheckout('price_1MrlnDEM2KnB58E0wN236g33')"
           >Get
             started
           </button>
@@ -103,7 +103,7 @@
           <button
               type="button"
               class="w-full flex py-3 px-6 text-sm text-white text-center bg-gdp hover:bg-blue-400 rounded-2xl font-bold justify-center align-center"
-              @click="initCheckout('price_1MVjV2EM2KnB58E0B8wEzxEC')"
+              @click="initCheckout('price_1MrlnDEM2KnB58E0oy5lEiUZ')"
           >Get
             started
           </button>
