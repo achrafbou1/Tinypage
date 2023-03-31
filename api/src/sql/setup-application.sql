@@ -122,13 +122,13 @@ create table if not exists app.links
     url              text               default '#' not null,
     sort_order       int       not null,
     label            text      not null,
-    subtitle text,
-    style text,
-    custom_css text,
-    hidden boolean,
-    items jsonb,
-    metadata jsonb not null default '{}',
-    private_metadata jsonb not null default '{}',
+    subtitle         text,
+    style            text,
+    custom_css       text,
+    hidden           boolean,
+    items            jsonb,
+    metadata         jsonb     not null default '{}',
+    private_metadata jsonb     not null default '{}',
     created_on       timestamp not null default current_timestamp
 );
 

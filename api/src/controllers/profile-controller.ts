@@ -93,6 +93,12 @@ interface ILinktreeLink {
     position: number
 }
 
+interface GetProfilesRequest extends AuthenticatedRequest {
+    Body: {
+        includePaymentInfoAndAnalytics?: boolean
+    } & AuthenticatedRequest["Body"];
+}
+
 interface ImportProfileRequest extends AuthenticatedRequest {
     Body: {
         token?: string,
@@ -219,7 +225,7 @@ export class ProfileController extends Controller {
 
                 let toCheck = await this.profileService.getProfileByHandle(params.handle, false);
 
-                if (await Auth.checkProfileOwnership(this.profileService, toCheck.id, dAuthToken.userId, true)) {
+                if (await Auth.checkProfileOwnership(this.pool, toCheck.id, dAuthToken.userId, true)) {
                     profile = toCheck;
                 }
             }
@@ -409,14 +415,14 @@ export class ProfileController extends Controller {
      * @param request
      * @param reply
      */
-    async ListProfiles(request: FastifyRequest<AuthenticatedRequest>, reply: FastifyReply) {
+    async ListProfiles(request: FastifyRequest<GetProfilesRequest>, reply: FastifyReply) {
         try {
             if (!request.body.authProfile) {
                 reply.status(StatusCodes.BAD_REQUEST).send(ReplyUtils.error("This account doesn't have an active profile."));
                 return;
             }
 
-            return this.profileService.listProfiles(request.body.authUser.id, true);
+            return this.profileService.listProfiles(request.body.authUser.id, true, request.body.includePaymentInfoAndAnalytics);
         } catch (e) {
             if (e instanceof HttpError) {
                 reply.code(e.statusCode);

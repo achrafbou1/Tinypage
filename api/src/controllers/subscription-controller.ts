@@ -13,16 +13,16 @@ import {UserService} from "../services/user-service";
 import {ProfileService} from "../services/profile-service";
 import {PermissionUtils} from "../utils/permission-utils";
 
-interface SubscribeRequest extends SensitiveAuthenticatedRequest {
+interface DeleteSubscriptionRequest extends SensitiveAuthenticatedRequest {
     Body: {
-        tier: SubscriptionTier | null | undefined,
-        promoCode?: string
+        profileId: string
     } & SensitiveAuthenticatedRequest["Body"];
 }
 
 interface CreateCheckoutSessionRequest extends SensitiveAuthenticatedRequest {
     Body: {
-        productId: string
+        profileId: string,
+        priceId: string
     } & SensitiveAuthenticatedRequest["Body"];
 }
 
@@ -67,7 +67,7 @@ export class SubscriptionController extends Controller {
         this.fastify.post<AuthenticatedRequest>('/payments/sub-info', Auth.ValidateWithData, this.GetSubInfo.bind(this));
 
         this.fastify.post<CreateCheckoutSessionRequest>('/stripe/create-checkout-session', Auth.ValidateSensitiveWithData, this.CreateCheckoutSession.bind(this));
-        this.fastify.post<SensitiveAuthenticatedRequest>('/stripe/create-portal-session', Auth.ValidateSensitiveWithData, this.CreatePortalSession.bind(this));
+        this.fastify.post<DeleteSubscriptionRequest>('/stripe/delete-subscription', Auth.ValidateSensitiveWithData, this.DeleteSubscription.bind(this));
 
         this.fastify.post<SensitiveAuthenticatedRequest>('/profile/allowed-pages', Auth.ValidateSensitiveWithData, this.GetProfileCount.bind(this));
     }
@@ -94,7 +94,7 @@ export class SubscriptionController extends Controller {
 
     async CreateCheckoutSession(request: FastifyRequest<CreateCheckoutSessionRequest>, reply: FastifyReply) {
         try {
-            let productId = request.body.productId;
+            let {priceId, profileId} = request.body;
 
             let customer = await this.subService.getOrCreateStripeCustomer(request.body.authUser);
 
@@ -103,13 +103,15 @@ export class SubscriptionController extends Controller {
                 return ReplyUtils.error("A stripe customer does not exist for the provided user.");
             }
 
-            let prices = (await this.stripe.prices.list({
-                active: true,
-                expand: ['data.product'],
-                product: productId
-            })).data;
+            const products = await this.stripe.products.list();
+            const product = products.data.find(x => x.name === 'Page plan');
 
-            let price = prices.length > 0 ? prices[0] : null;
+            if (!product) {
+                reply.status(StatusCodes.NOT_FOUND);
+                return ReplyUtils.error("No corresponding stripe plan was found.");
+            }
+
+            let price = await this.stripe.prices.retrieve(priceId);
 
             if (!price) {
                 reply.status(StatusCodes.NOT_FOUND);
@@ -131,6 +133,13 @@ export class SubscriptionController extends Controller {
                     mode = 'subscription';
             }
 
+            const ownsProfile = await Auth.checkProfileOwnership(this.pool, profileId, request.body.authUser.id, false);
+
+            if (!ownsProfile) {
+                reply.status(StatusCodes.UNAUTHORIZED);
+                return ReplyUtils.error("You do not own this profile.");
+            }
+
             let session = await this.stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 customer: customer.id,
@@ -139,6 +148,20 @@ export class SubscriptionController extends Controller {
                     quantity: 1
                 }],
                 mode: mode,
+                ...(mode === 'subscription' && {
+                    subscription_data: {
+                        metadata: {
+                            profileId
+                        }
+                    }
+                }),
+                ...(mode === 'payment' && {
+                    payment_intent_data: {
+                        metadata: {
+                            profileId
+                        }
+                    }
+                }),
                 allow_promotion_codes: true,
                 success_url: `${config.editorUrl}/dashboard/account`,
                 cancel_url: `${config.editorUrl}/dashboard/account`,
@@ -161,46 +184,10 @@ export class SubscriptionController extends Controller {
         }
     }
 
-    async CreatePortalSession(request: FastifyRequest<SensitiveAuthenticatedRequest>, reply: FastifyReply) {
-        try {
-            let customer = await this.subService.getOrCreateStripeCustomer(request.body.authUser);
-
-            if (!customer || customer.deleted) {
-                reply.status(StatusCodes.NOT_FOUND);
-                return ReplyUtils.error("A stripe customer does not exist for the provided user.");
-            }
-
-            let prices = (await this.stripe.prices.list({active: true})).data;
-
-            let lineItems = [];
-
-            for (let pricesKey of prices) {
-                lineItems.push({
-                    price: pricesKey.id,
-                    quantity: 1
-                });
-            }
-
-            let session = await this.stripe.billingPortal.sessions.create({
-                customer: customer.id,
-                return_url: `${config.editorUrl}/dashboard/account`
-            });
-
-            if (!session.url) {
-                reply.code(StatusCodes.INTERNAL_SERVER_ERROR);
-                return ReplyUtils.error("Failed to create portal link.");
-            }
-
-            reply.status(StatusCodes.OK);
-            return session.url;
-        } catch (e) {
-            if (e instanceof HttpError) {
-                if (e.statusCode !== StatusCodes.NOT_FOUND) {
-                    reply.code(e.statusCode);
-                    return ReplyUtils.error(e.message, e);
-                }
-            }
-        }
+    async DeleteSubscription(request: FastifyRequest<DeleteSubscriptionRequest>, reply: FastifyReply) {
+        const profileId = request.body.profileId;
+        reply.status(StatusCodes.OK);
+        return this.subService.deleteSubscription(profileId, request.body.authUser, reply);
     }
 
     async GetProducts(request: FastifyRequest, reply: FastifyReply) {

@@ -12,17 +12,24 @@ create table if not exists enterprise.stripe_history_events
 
 create table if not exists enterprise.subscriptions
 (
-    id       bigserial primary key,
-    user_id      bigint references app.users (id) on delete cascade,
-    tier         text,
-    product_id   text,
+    user_id         bigint references app.users (id) on delete cascade,
+    tier            text,
+    product_id      text,
     subscription_id text,
-    created_on   timestamp not null default current_timestamp,
-    last_updated timestamp not null default current_timestamp
+    profile_id      bigint references app.profiles (id) on delete cascade unique,
+    created_on      timestamp not null default current_timestamp,
+    last_updated    timestamp not null default current_timestamp
 );
+
+--v4 - Payments per page, user_id can be not unique and add primary key column
+alter table enterprise.subscriptions
+    add column if not exists subscription_id text unique,
+    add column if not exists profile_id bigint references app.profiles (id) on delete cascade unique,
+    drop constraint if exists subscriptions_user_id_key;
 
 create index if not exists enterprise_subscriptions_user_id on enterprise.subscriptions (user_id);
 create index if not exists enterprise_subscriptions_index on enterprise.subscriptions (product_id);
+create index if not exists enterprise_subscriptions_profile_id on enterprise.subscriptions (profile_id);
 
 create table if not exists enterprise.products
 (
@@ -90,9 +97,3 @@ create table if not exists enterprise.customization
 insert into enterprise.customization default
 values
 on conflict do nothing;
-
---v4 - Payments per page, user_id can be not unique and add primary key column
-alter table enterprise.subscriptions
-drop constraint if exists subscriptions_user_id_key,
-add column if not exists subscription_id text unique,
-add column if not exists id bigserial primary key;

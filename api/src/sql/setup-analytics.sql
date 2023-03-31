@@ -27,7 +27,7 @@ create table if not exists analytics.anonymous_visits
 );
 
 create index if not exists visits_referral_id_index on analytics.visits (referral_id);
-
+create index if not exists visits_type_index on analytics.visits (type);
 /*
  Creates a table for visiting analytics.
  type: The type of visit this was.

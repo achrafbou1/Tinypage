@@ -17,11 +17,59 @@ html {
     box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #FDFDFE;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #478ECC;
+    border-radius: 100vh;
+    border: 3px solid #f6f7ed;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4283ba;
+}
+
 *,
 *::before,
 *::after {
     box-sizing: border-box;
     outline: none;
+}
+
+input[type="checkbox"]:focus {
+    --tw-ring-shadow: none !important;
+    
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: transparent !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, .075) !important;
+}
+
+.btn-primary {
+    background-color: #478ecc !important;
+    border-color: #478ecc !important;
+}
+
+.page-item.active .page-link {
+    background-color: #478ecc !important;
+    border-color: #478ecc !important;
+    color: white !important;
+}
+
+.page-link {
+    color: #478ecc !important;
 }
 
 .ql-container.ql-snow, .vue-editor {

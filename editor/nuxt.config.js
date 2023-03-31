@@ -25,7 +25,6 @@ export default {
     host: process.env.SERVER_HOST ?? '0.0.0.0',
     port: process.env.EDITOR_PORT ?? 80
   },
-
   /*
   ** Headers of the page
   ** See https://nuxtjs.org/api/configuration-head
@@ -58,6 +57,10 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    {
+      src: '~plugins/fontawesome.js',
+      ssr: true
+    },
     {
       src: '~plugins/draggable.js',
       ssr: true

@@ -8,6 +8,9 @@ import {HttpError} from "../utils/http-error";
 import {StatusCodes} from "http-status-codes";
 import {Permission, PermissionUtils} from "../utils/permission-utils";
 import {config} from "../config/config";
+import {ReplyUtils} from "../utils/reply-utils";
+import {Auth} from "../utils/auth";
+import {FastifyReply} from "fastify";
 
 /**
  * Handles payment stuff.
@@ -63,8 +66,8 @@ export class SubscriptionService extends DatabaseService {
         let product = await this.stripe.products.retrieve(item);
         let tier = product?.metadata.permission;
         let allowDowngrade = false;
-        if(eventObject.cancel_at) {
-            tier= 'free';
+        if (eventObject.cancel_at) {
+            tier = 'free';
             allowDowngrade = true;
         }
 
@@ -76,6 +79,7 @@ export class SubscriptionService extends DatabaseService {
             console.error("[customer.subscription.updated] Couldn't set subscription for user: " + user.id + " to tier " + tier);
         }
     }
+
     async getProducts() {
         let products: Stripe.Product[] = (await this.stripe.products.list({active: true})).data;
 
@@ -147,6 +151,62 @@ export class SubscriptionService extends DatabaseService {
         }
 
         return paymentInfo;
+    }
+
+    async deleteSubscription(profileId: string, user: SensitiveUser, reply: FastifyReply) {
+        try {
+            let customer = await this.getOrCreateStripeCustomer(user);
+
+            if (!customer || customer.deleted) {
+                reply.status(StatusCodes.NOT_FOUND);
+                return ReplyUtils.error("A stripe customer does not exist for the provided user.");
+            }
+
+            const ownsProfile = await Auth.checkProfileOwnership(this.pool, profileId, user.id, false);
+
+            if (!ownsProfile) {
+                reply.status(StatusCodes.UNAUTHORIZED);
+                return ReplyUtils.error("You do not own this profile.");
+            }
+
+            const queryResult = await this.pool.query<{ subscription_id: string }>("select subscription_id from enterprise.subscriptions WHERE profile_id=$1 AND tier='pro'", [profileId]);
+            if (queryResult.rowCount < 1) {
+                reply.status(StatusCodes.UNAUTHORIZED);
+                return ReplyUtils.error("This profile is not subscribed.");
+            }
+            try {
+                const subscriptionId = queryResult.rows[0].subscription_id;
+                if (subscriptionId) {
+                    const deleted = await this.stripe.subscriptions.del(
+                        queryResult.rows[0].subscription_id
+                    );
+                    if (deleted.cancel_at_period_end) {
+                        reply.status(StatusCodes.UNAUTHORIZED);
+                        return ReplyUtils.success("Successfully downgraded !");
+                    }
+                } else {
+                    // In case of one-time payments
+                    await this.setDbSubscriptionTier(user, 'free', true, false, {});
+                    await this.checkProfilesForOverLimit(user.id);
+                }
+            } catch (err: any) {
+                if (err.code === "resource_missing") {
+                    reply.status(StatusCodes.NOT_FOUND);
+                    return ReplyUtils.success("Subscription not found.");
+                }
+                console.log(err);
+            }
+
+
+        } catch (e) {
+            if (e instanceof HttpError) {
+                if (e.statusCode !== StatusCodes.NOT_FOUND) {
+                    reply.code(e.statusCode);
+                    return ReplyUtils.error(e.message, e);
+                }
+            }
+        }
+        return ReplyUtils.success("Successfully unsubscribed");
     }
 
     async setCardInfo(user: SensitiveUser, card?: { number: string | null; expDate: string | null; cvc: string | null; }) {
@@ -255,6 +315,7 @@ export class SubscriptionService extends DatabaseService {
      * @param tier
      * @param allowDowngrade
      * @param create
+     * @param eventObject
      * @param productId
      */
     async setDbSubscriptionTier(user: User, tier: SubscriptionTier, allowDowngrade: boolean, create: boolean, eventObject: any, productId?: string) {
@@ -270,13 +331,15 @@ export class SubscriptionService extends DatabaseService {
         }
         let queryResult;
         if (create) {
-            queryResult = await this.pool.query<DbUser>("insert into enterprise.subscriptions(user_id, tier, product_id, last_updated, subscription_id) values ($1, $2, $3, $4, $5)",
+            const profileId = eventObject.metadata.profileId;
+            queryResult = await this.pool.query<DbUser>("insert into enterprise.subscriptions(user_id, tier, product_id, last_updated, subscription_id, profile_id) values ($1, $2, $3, $4, $5, $6) ON CONFLICT (profile_id) DO UPDATE SET user_id=$1, tier=$2, product_id=$3, last_updated=$4, subscription_id=$5, profile_id=$6",
                 [
                     user.id,
                     tier,
                     productId,
                     new Date(),
-                    subscriptionId
+                    subscriptionId,
+                    profileId
                 ]);
         } else {
             let updateQuery = "update enterprise.subscriptions set user_id=$1, tier=$2, product_id=$3, last_updated=$4";
@@ -286,7 +349,7 @@ export class SubscriptionService extends DatabaseService {
                 productId,
                 new Date()
             ];
-            if(subscriptionId) {
+            if (subscriptionId) {
                 updateQuery += " where subscription_id=$5";
                 updateValues.push(subscriptionId);
             } else {
@@ -348,7 +411,7 @@ export class SubscriptionService extends DatabaseService {
                 metadata: {
                     product: "Tinypage"
                 }
-            }, undefined);
+            });
 
             await this.setStripeId(user.id, newCustomer.id);
 

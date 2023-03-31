@@ -114,6 +114,10 @@ interface Profile {
     createdOn: string
 }
 
+interface ProfileWithAnalytics extends Profile {
+    pageViews: string
+}
+
 interface SensitiveProfile extends Profile {
     privateMetadata: any;
 }

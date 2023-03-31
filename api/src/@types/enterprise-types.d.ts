@@ -15,6 +15,12 @@ interface DbProduct {
     purchase_type?: 'one_time' | 'recurring' | 'free'
 }
 
+interface DbVisit {
+    type: VisitType,
+    referral_id: string,
+    created_on: string
+}
+
 interface DbServerCustomization {
     title: string,
     brandName: string,
