@@ -141,13 +141,23 @@ export class RouteHandler {
                 // Fetch profile from API
 
                 if (request.query.token) {
-                    response = await axios.post<{ profile: Profile, links: Link[], user: User, theme: Theme }>(`${config.apiUrl}/profile/${handle}`, {
+                    response = await axios.post<{
+                        profile: Profile,
+                        links: Link[],
+                        user: User,
+                        theme: Theme
+                    }>(`${config.apiUrl}/profile/${handle}`, {
                         token: request.query.token
                     });
 
                     isPreview = true;
                 } else {
-                    response = await axios.get<{ profile: Profile, links: Link[], user: User, theme: Theme }>(`${config.apiUrl}/profile/${handle}`);
+                    response = await axios.get<{
+                        profile: Profile,
+                        links: Link[],
+                        user: User,
+                        theme: Theme
+                    }>(`${config.apiUrl}/profile/${handle}`);
                 }
 
             } catch (err) {
@@ -323,13 +333,21 @@ export class RouteHandler {
                                 >
                                 <div
                                     class="rounded-2xl shadow bg-white w-full font-medium mx-auto mb-3 nc-link sl-item flex items-center justify-center"
-                                style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
+                                style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: center; align-items: center; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
                                 >
-                                ${buttonImageHtml}
-                                <span class="font-medium text-gray-900 sl-label"
-                                ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}"><span style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
-                                    </div>
+                                ${buttonImageHtml}`;
+
+                            if(!hiddenLabel) {
+                                linkHtml += `
+                                    <span class="font-medium text-gray-900 sl-label"
+                                ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span>
+                                    `;
+                            }
+
+                            linkHtml += `</div>
                             </a>`;
+
+
                         }
                         break;
                     }
@@ -376,7 +394,15 @@ function changeSlide(next = true, index) {
                         if (!link.metadata?.socialIcons || link.hidden)
                             break;
                         try {
-                            let socialIcons: { type: string, color: string, scale: number, label: string, labelColor: string, customSvg: string, url: string }[] = link.metadata?.socialIcons ?? [];
+                            let socialIcons: {
+                                type: string,
+                                color: string,
+                                scale: number,
+                                label: string,
+                                labelColor: string,
+                                customSvg: string,
+                                url: string
+                            }[] = link.metadata?.socialIcons ?? [];
 
                             if (socialIcons.length > 0) {
                                 let style = link.style ?? '';
@@ -484,7 +510,7 @@ function changeSlide(next = true, index) {
                                         </div>`;
                                 }
 
-                                const svgDataHtml =  cheerio.load(svgData, null, false);
+                                const svgDataHtml = cheerio.load(svgData, null, false);
                                 svgDataHtml("title").remove();
                                 svgDataHtml("svg").attr("style", `color:${siSettings.color};`);
                                 if (scale) {
@@ -579,11 +605,17 @@ function changeSlide(next = true, index) {
                                         style="${buttonImageFullWidthCss} position: relative; display: flex; flex-direction: row; justify-content: start; align-items: stretch; ${!subtitleHtml && buttonImageHtml ? 'min-height: 84px;' : ''} ${style}"
                                 >
                                     ${buttonImageHtml}
+                                `;
+                        if(!hiddenLabel) {
+                            linkHtml += `
                                     <span class="font-medium text-gray-900 sl-label"
-                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
-                                </div>
-                            </a>
-                        `;
+                                    ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span
+                                            style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                    `;
+                        }
+
+                        linkHtml += `</div>
+                            </a>`;
                         break;
                     }
 
@@ -612,7 +644,10 @@ function changeSlide(next = true, index) {
                         let customCss = link.customCss ?? '';
 
                         try {
-                            let dividerSettings: { color: string, fontSize: number } = link.metadata?.dividerSettings ?? {};
+                            let dividerSettings: {
+                                color: string,
+                                fontSize: number
+                            } = link.metadata?.dividerSettings ?? {};
 
                             if (!dividerSettings.color) {
                                 dividerSettings.color = "#FFFFFFFF";
@@ -719,7 +754,8 @@ function changeSlide(next = true, index) {
                                         }</style>
                                     <div class="embed-container mt-4" style="${style}">
                                         <iframe title="youtube"
-                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2" allowfullscreen
+                                                src="https://www.youtube.com/embed/${watchId[1]}?playsinline=0&controls=2"
+                                                allowfullscreen
                                         ></iframe>
                                     </div>
                                 `;
@@ -960,11 +996,13 @@ function changeSlide(next = true, index) {
                     >
 
                     <!-- Open Graph-->
-                    <meta property="og:title" content="${profile.metadata.previewTitle ?? profile.headline + ' - ' + config.appName}">
+                    <meta property="og:title"
+                          content="${profile.metadata.previewTitle ?? profile.headline + ' - ' + config.appName}">
                     <meta property="og:description"
                           content="${profile.metadata.previewDescription ?? profile.subtitle} | Powered by ${config.appName}"
                     >
-                    <meta property="og:image" content="${profile.metadata.previewImageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}">
+                    <meta property="og:image"
+                          content="${profile.metadata.previewImageUrl ?? config.apiUrl + '/profile/thumbnail/' + handle}">
                     <meta property="og:type" content="website">
 
                     <!-- Twitter Cards -->
