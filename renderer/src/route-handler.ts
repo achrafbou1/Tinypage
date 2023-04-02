@@ -329,7 +329,7 @@ export class RouteHandler {
                                            fetch(recordUrl);
                                            window.open('${link.url}');
                                        }"
-                                class="w-full sl-item-parent mt-4"
+                                class="w-full sl-item-parent"
                                 >
                                 <div
                                     class="rounded-2xl shadow bg-white w-full font-medium mx-auto mb-3 nc-link sl-item flex items-center justify-center"
