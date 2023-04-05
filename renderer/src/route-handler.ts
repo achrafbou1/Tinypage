@@ -340,7 +340,7 @@ export class RouteHandler {
                             if(!hiddenLabel) {
                                 linkHtml += `
                                     <span class="font-medium text-gray-900 sl-label"
-                                ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span>
+                                ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%; ${buttonImageSupportCss}">${link.label}</span>${subtitleHtml ? `${subtitleHtml}` : ''}</span>
                                     `;
                             }
 
@@ -610,7 +610,7 @@ function changeSlide(next = true, index) {
                             linkHtml += `
                                     <span class="font-medium text-gray-900 sl-label"
                                     ><span style="display: flow-root; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><span
-                                            style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `<br>${subtitleHtml}` : ''}</span></span>
+                                            style="${hiddenLabel ? 'visibility: hidden;' : ''}">${link.label}</span>${subtitleHtml ? `${subtitleHtml}` : ''}</span></span>
                                     `;
                         }
 
